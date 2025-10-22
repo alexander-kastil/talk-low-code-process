@@ -21,8 +21,8 @@ az webapp cors add --allowed-origins "*" --name food-catalog-api-$env --resource
 az webapp config appsettings set -g $grp -n food-catalog-api-$env --settings "ConnectionStrings:DefaultDatabase=$foodConStr"
 cd ..
 
-cd purchasing-service
-az webapp up -n purchasing-mcp-service-$env -g $grp -p process-purchasing-plan-$env -l $loc -r "dotnet:9"
+cd purchasing-mcp
+az webapp up -n purchasing-mcp-$env -g $grp -p process-purchasing-plan-$env -l $loc -r "dotnet:9"
 az webapp cors add --allowed-origins "*" --name purchasing-mcp-$env --resource-group $grp
 az webapp config.appsettings set -g $grp -n purchasing-mcp-$env --settings "ConnectionStrings:DefaultDatabase=$purchasingConStr"
 cd ..
