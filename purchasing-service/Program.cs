@@ -28,7 +28,9 @@ builder.Services.AddSingleton<IChatClient>(sp =>
         new Uri(aiOptions.Endpoint),
         new AzureKeyCredential(aiOptions.ApiKey));
 
-    return client.AsChatClient(aiOptions.Model);
+    var chatClient = client.GetChatClient(aiOptions.Model);
+
+    return chatClient.AsIChatClient();
 });
 
 // Register the IOfferRandomizer as a singleton that resolves the configured options

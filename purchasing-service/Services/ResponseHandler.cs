@@ -74,8 +74,8 @@ public static class ResponseHandler
                 new(ChatRole.User, userMessage)
             };
 
-            var result = await chatClient.CompleteAsync(messages).ConfigureAwait(false);
-            var generated = result.Message.Text;
+            var result = await chatClient.GetResponseAsync(messages).ConfigureAwait(false);
+            var generated = result.Text;
             if (!string.IsNullOrWhiteSpace(generated))
             {
                 return generated;
