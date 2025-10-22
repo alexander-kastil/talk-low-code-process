@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using PurchasingService.Data;
 using PurchasingService.Models;
+using PurchasingService.Services;
 
 namespace PurchasingService.Controllers;
 
@@ -8,32 +8,29 @@ namespace PurchasingService.Controllers;
 [Route("[controller]")]
 public class OrderController : ControllerBase
 {
+    private readonly IOrderService _orderService;
+
+    public OrderController(IOrderService orderService)
+    {
+        _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+    }
+
     [HttpPost("placeOrder")]
-    public ActionResult<object> PlaceOrder([FromBody] Order order)
+    public async Task<ActionResult<object>> PlaceOrder([FromBody] Order order)
     {
         if (!ModelState.IsValid)
         {
             return ValidationProblem(ModelState);
         }
 
-        var supplier = SupplierStore.GetSupplierById(order.SupplierId);
-
-        if (supplier is null)
+        try
         {
-            return NotFound($"Supplier with id {order.SupplierId} was not found.");
+            var response = await _orderService.PlaceOrderAsync(order);
+            return Ok(response);
         }
-
-        var total = order.OrderDetails.Sum(detail => detail.Price * detail.Quantity);
-
-        var response = new
+        catch (InvalidOperationException ex)
         {
-            Message = "Order placed successfully.",
-            order.RequestId,
-            order.SupplierId,
-            order.Date,
-            Total = total
-        };
-
-        return Ok(response);
+            return NotFound(ex.Message);
+        }
     }
 }
