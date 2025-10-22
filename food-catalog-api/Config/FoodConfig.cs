@@ -25,9 +25,6 @@ namespace FoodApp
         [ConfigurationKeyName("cacheLocation")]
         public string CacheLocation { get; set; }
         public string AppConfigurationCS { get; set; }
-        public string KeyVault { get; set; }
-        public string EventGridKey { get; set; }
-        public string EventGridEP { get; set; }
     }
 
     public class ApplicationInsights
@@ -38,14 +35,6 @@ namespace FoodApp
     public class ConnectionStrings
     {
         public string DefaultDatabase { get; set; }
-    }
-
-    public class FeatureManagement
-    {
-        public bool PublishEvents { get; set; }
-        public bool UseKeyVaultWithMI { get; set; }
-        public bool UseHealthChecks { get; set; }
-        public bool UseApplicationInsights { get; set; }
     }
 
     public class LogLevel
