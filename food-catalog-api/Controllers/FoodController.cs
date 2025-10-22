@@ -54,11 +54,6 @@ namespace FoodApi
         {
             ctx.Food.Add(item);
             ctx.SaveChanges();
-
-            if (cfg.FeatureManagement.PublishEvents)
-            {
-                Console.WriteLine("Publishing event to Service Bus - mock");
-            }
             return item;
         }
 
@@ -69,11 +64,6 @@ namespace FoodApi
             ctx.Food.Attach(item);
             ctx.Entry(item).State = EntityState.Modified;
             ctx.SaveChanges();
-
-            if (cfg.FeatureManagement.PublishEvents)
-            {
-                Console.WriteLine("Publishing event to Service Bus - mock");
-            }
             return item;
         }
 
@@ -87,16 +77,10 @@ namespace FoodApi
                 ctx.Remove(item);
                 ctx.SaveChanges();
             }
-
-            if (cfg.FeatureManagement.PublishEvents)
-            {
-                Console.WriteLine("Publishing event to Service Bus - mock");
-            }
-
             return Ok();
         }
 
-        [HttpPatch("{id}/update-instock")]
+        [HttpPatch("{id}/update-stock")]
         public ActionResult<FoodItem> UpdateInStock(int id, [FromQuery] int amount)
         {
             var item = ctx.Food.FirstOrDefault(f => f.ID == id);

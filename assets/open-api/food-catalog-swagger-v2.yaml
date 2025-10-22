@@ -29,13 +29,13 @@ definitions:
         type: string
     additionalProperties: false
 x-ms-openai-manifest:
-  humanName: Copilot-Food-Catalog
-  modelDescription: An Api that allows interaction with food items
+  humanName: Food-Catalog
+  modelDescription: An Api that allows to manage food stock for a restaurant
   contactEmail: ""
   legalUrl: ""
 securityDefinitions: {}
 info:
-  title: Copilot-Food-Catalog
+  title: Food-Catalog
   version: v1
   description: An Api that allows to manage food stock for a restaurant
 paths:
@@ -62,9 +62,9 @@ paths:
           - operationId: GetFood
             x-ms-require-user-confirmation: false
             summary: Gets all food
-            description: Gets all food
+            description: Returns every food item currently available in the catalog.
       summary: Gets all food
-      description: Gets all food
+      description: Returns every food item currently available in the catalog.
       operationId: GetFood
     post:
       tags:
@@ -93,9 +93,9 @@ paths:
           - operationId: AddFood
             x-ms-require-user-confirmation: false
             summary: Add food
-            description: Add food
+            description: Creates a new food item in the catalog.
       summary: Add food
-      description: Add food
+      description: Creates a new food item in the catalog.
       operationId: AddFood
     put:
       tags:
@@ -124,10 +124,39 @@ paths:
           - operationId: UpdateFood
             x-ms-require-user-confirmation: false
             summary: UpdateFood
-            description: UpdateFood
+            description: Updates an existing food item with the provided details.
       summary: UpdateFood
-      description: UpdateFood
+      description: Updates an existing food item with the provided details.
       operationId: UpdateFood
+  /Food/byname:
+    get:
+      tags:
+        - Food
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - in: query
+          name: name
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/FoodItem"
+      x-ms-openai-data:
+        openai-enabled: true
+        operations:
+          - operationId: GetFoodByName
+            x-ms-require-user-confirmation: false
+            summary: GetFoodByName
+            description: Finds food items whose name matches the supplied query.
+      summary: GetFoodByName
+      description: Finds food items whose name matches the supplied query.
+      operationId: GetFoodByName
   /Food/{id}:
     get:
       tags:
@@ -153,7 +182,66 @@ paths:
           - operationId: GetFoodByID
             x-ms-require-user-confirmation: false
             summary: GetFoodByID
-            description: GetFoodByID
+            description: Fetches a single food item by its unique identifier.
       summary: GetFoodByID
-      description: GetFoodByID
+      description: Fetches a single food item by its unique identifier.
       operationId: GetFoodByID
+    delete:
+      tags:
+        - Food
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+      x-ms-openai-data:
+        openai-enabled: true
+        operations:
+          - operationId: DeleteFood
+            x-ms-require-user-confirmation: false
+            summary: DeleteFood
+            description: Removes a food item from the catalog.
+      summary: DeleteFood
+      description: Removes a food item from the catalog.
+      operationId: DeleteFood
+  /Food/{id}/update-stock:
+    patch:
+      tags:
+        - Food
+      produces:
+        - text/plain
+        - application/json
+        - text/json
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          format: int32
+        - in: query
+          name: amount
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/FoodItem"
+      x-ms-openai-data:
+        openai-enabled: true
+        operations:
+          - operationId: UpdateFoodStock
+            x-ms-require-user-confirmation: false
+            summary: UpdateFoodStock
+            description: Adjusts the in-stock quantity for a specific food item.
+      summary: UpdateFoodStock
+      description: Adjusts the in-stock quantity for a specific food item.
+      operationId: UpdateFoodStock
