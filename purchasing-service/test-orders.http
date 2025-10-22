@@ -1,0 +1,26 @@
+@host = http://localhost:5151
+
+### Test: Place an order
+POST {{host}}/Order/placeOrder
+Content-Type: application/json
+
+{
+  "requestId": "REQ-{{$guid}}",
+  "supplierId": 1,
+  "date": "2025-10-22T10:00:00Z",
+  "orderDetails": [
+    {
+      "productName": "Butter Chicken",
+      "price": 6.50,
+      "quantity": 10
+    },
+    {
+      "productName": "Wiener Schnitzel",
+      "price": 14.00,
+      "quantity": 5
+    }
+  ]
+}
+
+### Test: Get all orders
+GET {{host}}/Order/getOrders

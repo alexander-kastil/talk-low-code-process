@@ -174,3 +174,49 @@ Randomness provider
 - A seeded `SystemRandomProvider` implementation still exists and can be used when deterministic, repeatable sequences are needed (for example in unit tests).
 
 The `OfferRandomizer` depends on an `IRandomProvider` abstraction (production binding uses a `SystemRandomProvider`), making the random behavior replaceable for deterministic tests.
+
+## Database Configuration
+
+The service uses Entity Framework Core with SQL Server for persisting orders and managing supplier data.
+
+### Connection String
+
+The database connection string is configured in `appsettings.json` under `ConnectionStrings:DefaultDatabase`:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultDatabase": "Data Source=...;Initial Catalog=PurchasingDB;..."
+  }
+}
+```
+
+### Database Initialization
+
+The database is initialized with supplier data automatically through EF Core migrations. To create/update the database:
+
+```bash
+dotnet ef database update
+```
+
+### Order Management Endpoints
+
+- `POST /Order/placeOrder` — create and persist a new order
+  - Input: `Order` object with `RequestId`, `SupplierId`, `Date`, and `OrderDetails` array
+  - Output: confirmation with order total
+  - The order is saved to the database
+
+- `GET /Order/getOrders` — retrieve all orders with denormalized view
+  - Output: Array of orders with columns:
+    - `Id` — order unique identifier (GUID)
+    - `RequestId` — correlation identifier
+    - `Date` — order date
+    - `OrderTotal` — calculated sum of all order details (price × quantity)
+    - `SupplierName` — company name of the supplier
+
+### Data Model
+
+- **Suppliers** — stored in database with their contact information
+- **SupplierProducts** — many-to-many relationship between suppliers and their products
+- **Orders** — order headers with supplier reference
+- **OrderDetails** — line items for each order (product name, price, quantity)
