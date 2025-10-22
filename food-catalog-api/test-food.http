@@ -1,0 +1,46 @@
+@baseUrl = https://food-catalog-api-dev.azurewebsites.net
+
+### Get all food items
+GET {{baseUrl}}/getFoodStock
+
+### Get a single food item by ID
+GET {{baseUrl}}/getFoodById/1
+
+### Create a new food item
+POST {{baseUrl}}/addFood
+Content-Type: application/json
+
+{
+  "name": "Falafel Bowl",
+  "price": 10.5,
+  "inStock": 15,
+  "pictureUrl": "https://m365copilotstoragedev.blob.core.windows.net/food/falaffel.jpg",
+  "code": "fal",
+  "description": "Crispy falafel served on a bed of fresh greens, drizzled with tahini sauce. A Middle Eastern classic that’s hearty, healthy, and full of flavor."
+}
+
+### Update an existing food item
+PUT {{baseUrl}}/updateFood
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Butter Chicken Deluxe",
+  "price": 14.0,
+  "inStock": 8,
+  "pictureUrl": "https://m365copilotstoragedev.blob.core.windows.net/food/falaffel.jpg",
+  "code": "btc",
+  "description": "A richer, creamier take on the classic butter chicken, with extra spices and a touch of honey."
+}
+
+### Delete a food item
+DELETE {{baseUrl}}/deleteFood/1
+
+### Get food items by name
+GET {{baseUrl}}/getFoodByName?name=Butter%20Chicken
+
+### Update in-stock amount for a food item (increment by 5)
+PATCH {{baseUrl}}/updateStock/1?amount=5
+
+### Update in-stock amount for a food item (decrement by 3)
+PATCH {{baseUrl}}/updateStock/1?amount=-3
