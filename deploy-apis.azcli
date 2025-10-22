@@ -23,6 +23,6 @@ cd ..
 
 cd purchasing-service
 az webapp up -n purchasing-mcp-service-$env -g $grp -p process-purchasing-plan-$env -l $loc -r "dotnet:9"
-az webapp cors add --allowed-origins "*" --name purchasing-mcp-service-$env --resource-group $grp
-az webapp config.appsettings set -g $grp -n purchasing-mcp-service-$env --settings "ConnectionStrings:DefaultDatabase=$purchasingConStr"
+az webapp cors add --allowed-origins "*" --name purchasing-mcp-$env --resource-group $grp
+az webapp config.appsettings set -g $grp -n purchasing-mcp-$env --settings "ConnectionStrings:DefaultDatabase=$purchasingConStr"
 cd ..
