@@ -1,0 +1,14 @@
+{
+    "mcpServers": {
+        "purchasing-mcp": {
+            "type": "streamable-http",
+            "url": "http://localhost:5151",
+            "note": "Local Purchasing MCP Server running on port 5151"
+        },
+        "purchasing-mcp-azure-dev": {
+            "type": "streamable-http",
+            "url": "https://purchasing-mcp-server-dev.azurewebsites.net",
+            "note": "Dev deployment hosted on Azure App Service"
+        }
+    }
+}

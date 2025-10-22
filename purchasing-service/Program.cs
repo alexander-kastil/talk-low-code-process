@@ -3,6 +3,7 @@ using Azure.AI.OpenAI;
 using Azure.Identity;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
+using ModelContextProtocol.Server;
 using PurchasingService.Configuration;
 using PurchasingService.Graph;
 using PurchasingService.Services;
@@ -41,6 +42,16 @@ builder.Services.AddSingleton<IOfferRandomizer>(sp =>
     return new OfferRandomizer(random, options);
 });
 
+// Register purchasing services
+builder.Services.AddScoped<ISupplierService, SupplierService>();
+builder.Services.AddScoped<IInquiryService, InquiryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
+// Add the MCP services: the transport to use (HTTP) and the tools to register.
+builder.Services.AddMcpServer()
+    .WithHttpTransport()
+    .WithToolsFromAssembly();
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -51,5 +62,8 @@ app.UseSwaggerUI(options =>
 });
 
 app.MapControllers();
+
+// Configure the application to use the MCP server
+app.MapMcp();
 
 app.Run();
