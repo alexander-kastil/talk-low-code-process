@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PurchasingService.Data;
 using PurchasingService.Models;
 
@@ -5,9 +6,16 @@ namespace PurchasingService.Services;
 
 public class OrderService : IOrderService
 {
-    public Task<object> PlaceOrderAsync(Order order)
+    private readonly PurchasingDbContext _context;
+
+    public OrderService(PurchasingDbContext context)
     {
-        var supplier = SupplierStore.GetSupplierById(order.SupplierId);
+        _context = context;
+    }
+
+    public async Task<object> PlaceOrderAsync(Order order)
+    {
+        var supplier = await _context.Suppliers.FindAsync(order.SupplierId);
 
         if (supplier is null)
         {
@@ -15,6 +23,10 @@ public class OrderService : IOrderService
         }
 
         var total = order.OrderDetails.Sum(detail => detail.Price * detail.Quantity);
+
+        // Persist the order to the database
+        _context.Orders.Add(order);
+        await _context.SaveChangesAsync();
 
         var response = new
         {
@@ -25,6 +37,24 @@ public class OrderService : IOrderService
             Total = total
         };
 
-        return Task.FromResult<object>(response);
+        return response;
+    }
+
+    public async Task<IEnumerable<object>> GetOrdersAsync()
+    {
+        var orders = await _context.Orders
+            .Include(o => o.Supplier)
+            .Include(o => o.OrderDetails)
+            .Select(o => new
+            {
+                o.Id,
+                o.RequestId,
+                o.Date,
+                OrderTotal = o.OrderDetails.Sum(od => od.Price * od.Quantity),
+                SupplierName = o.Supplier != null ? o.Supplier.CompanyName : string.Empty
+            })
+            .ToListAsync();
+
+        return orders;
     }
 }

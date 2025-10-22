@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.AI;
-using PurchasingService.Data;
 using PurchasingService.Graph;
 using PurchasingService.Models;
 
@@ -14,7 +13,7 @@ namespace PurchasingService.Services;
 
 public static class ResponseHandler
 {
-    public static async Task<bool> TrySendOfferAsync(GraphHelper graphHelper, IChatClient chatClient, OfferResponse response)
+    public static async Task<bool> TrySendOfferAsync(GraphHelper graphHelper, IChatClient chatClient, OfferResponse response, Supplier? supplier)
     {
         ArgumentNullException.ThrowIfNull(graphHelper);
         ArgumentNullException.ThrowIfNull(chatClient);
@@ -28,17 +27,16 @@ public static class ResponseHandler
         var sanitizedEmail = response.Email.Trim();
 
         var subject = $"Offer {response.RequestId}";
-        var body = await BuildEmailBodyAsync(chatClient, response).ConfigureAwait(false);
+        var body = await BuildEmailBodyAsync(chatClient, response, supplier).ConfigureAwait(false);
 
         await graphHelper.SendMailAsync(subject, body, new[] { sanitizedEmail }).ConfigureAwait(false);
 
         return true;
     }
 
-    private static async Task<string> BuildEmailBodyAsync(IChatClient chatClient, OfferResponse response)
+    private static async Task<string> BuildEmailBodyAsync(IChatClient chatClient, OfferResponse response, Supplier? supplier)
     {
         var details = response.OfferDetails ?? Array.Empty<OfferResponseDetail>();
-        var supplier = SupplierStore.GetSupplierById(response.SupplierId);
         var currencyCulture = GetCurrencyCulture(supplier);
         var detailLines = details.Select(detail =>
         {

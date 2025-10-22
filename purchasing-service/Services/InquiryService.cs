@@ -1,5 +1,4 @@
 using Microsoft.Extensions.AI;
-using PurchasingService.Data;
 using PurchasingService.Graph;
 using PurchasingService.Models;
 
@@ -10,12 +9,18 @@ public class InquiryService : IInquiryService
     private readonly IOfferRandomizer _offerRandomizer;
     private readonly GraphHelper _graphHelper;
     private readonly IChatClient _chatClient;
+    private readonly ISupplierService _supplierService;
 
-    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper graphHelper, IChatClient chatClient)
+    public InquiryService(
+        IOfferRandomizer offerRandomizer, 
+        GraphHelper graphHelper, 
+        IChatClient chatClient,
+        ISupplierService supplierService)
     {
         _offerRandomizer = offerRandomizer ?? throw new ArgumentNullException(nameof(offerRandomizer));
         _graphHelper = graphHelper ?? throw new ArgumentNullException(nameof(graphHelper));
         _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
+        _supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
     }
 
     public async Task<OfferResponse> RequestOfferAsync(OfferRequest request)
@@ -30,7 +35,7 @@ public class InquiryService : IInquiryService
             throw new ArgumentException("At least one product must be provided.", nameof(request));
         }
 
-        var supplier = SupplierStore.GetSupplierById(request.SupplierId);
+        var supplier = await _supplierService.GetSupplierByIdAsync(request.SupplierId);
 
         if (supplier is null)
         {
@@ -64,7 +69,7 @@ public class InquiryService : IInquiryService
             Email = request.Email?.Trim()
         };
 
-        await ResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response).ConfigureAwait(false);
+        await ResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response, supplier).ConfigureAwait(false);
 
         return response;
     }

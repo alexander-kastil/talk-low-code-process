@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.AI;
-using PurchasingService.Data;
-using PurchasingService.Graph;
 using PurchasingService.Models;
 using PurchasingService.Services;
 
@@ -9,8 +6,15 @@ namespace PurchasingService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class InquiryController(IOfferRandomizer offerRandomizer, GraphHelper graphHelper, IChatClient chatClient) : ControllerBase
+public class InquiryController : ControllerBase
 {
+    private readonly IInquiryService _inquiryService;
+
+    public InquiryController(IInquiryService inquiryService)
+    {
+        _inquiryService = inquiryService;
+    }
+
     [HttpPost("requestOffer")]
     public async Task<ActionResult<OfferResponse>> GetOffer([FromBody] OfferRequest request)
     {
@@ -24,56 +28,25 @@ public class InquiryController(IOfferRandomizer offerRandomizer, GraphHelper gra
             return BadRequest("At least one product must be provided.");
         }
 
-        var supplier = SupplierStore.GetSupplierById(request.SupplierId);
-
-        if (supplier is null)
+        try
         {
-            return NotFound($"Supplier with id {request.SupplierId} was not found.");
+            var response = await _inquiryService.RequestOfferAsync(request);
+            
+            // Check if email was provided and offer was sent
+            if (!string.IsNullOrWhiteSpace(request.Email))
+            {
+                return Ok("Offer has been sent successfully.");
+            }
+
+            return Ok(response);
         }
-
-        var offerLines = new List<OfferResponseDetail>(request.OfferDetails.Count);
-
-        foreach (var productRequest in request.OfferDetails)
+        catch (InvalidOperationException ex)
         {
-            if (productRequest is null)
-            {
-                return BadRequest("Product entries cannot be null.");
-            }
-
-            if (!offerRandomizer.TryGetBasePrice(productRequest.ProductName, out _))
-            {
-                return BadRequest($"Product '{productRequest.ProductName}' is not supported.");
-            }
-
-            try
-            {
-                offerLines.Add(offerRandomizer.GenerateOffer(productRequest.ProductName, productRequest.RequestedAmount));
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return NotFound(ex.Message);
         }
-
-        var response = new OfferResponse
+        catch (ArgumentException ex)
         {
-            RequestId = request.RequestId,
-            SupplierId = supplier.SupplierId,
-            TransportationCost = offerRandomizer.TransportationCost,
-            Timestamp = DateTimeOffset.UtcNow,
-            OfferDetails = offerLines,
-            Email = request.Email?.Trim()
-        };
-
-        if (await ResponseHandler.TrySendOfferAsync(graphHelper, chatClient, response).ConfigureAwait(false))
-        {
-            return Ok("Offer has been sent successfully.");
+            return BadRequest(ex.Message);
         }
-
-        return Ok(response);
     }
 }
