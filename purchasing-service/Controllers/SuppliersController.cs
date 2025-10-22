@@ -1,7 +1,5 @@
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using PurchasingService.Data;
+using PurchasingService.Services;
 
 namespace PurchasingService.Controllers;
 
@@ -9,43 +7,49 @@ namespace PurchasingService.Controllers;
 [Route("[controller]")]
 public class SuppliersController : ControllerBase
 {
-    [HttpGet("getSuppliers")]
-    public ActionResult<IEnumerable<Supplier>> GetSuppliers()
+    private readonly ISupplierService _supplierService;
+
+    public SuppliersController(ISupplierService supplierService)
     {
-        return Ok(SupplierStore.GetSuppliers());
+        _supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
+    }
+
+    [HttpGet("getSuppliers")]
+    public async Task<ActionResult<IEnumerable<Supplier>>> GetSuppliers()
+    {
+        var suppliers = await _supplierService.GetAllSuppliersAsync();
+        return Ok(suppliers);
     }
 
     [HttpGet("getSupplierByID/{id:int}")]
-    public ActionResult<Supplier> GetSupplierById(int id)
+    public async Task<ActionResult<Supplier>> GetSupplierById(int id)
     {
-        var supplier = SupplierStore.GetSupplierById(id);
+        var supplier = await _supplierService.GetSupplierByIdAsync(id);
         return supplier is null ? NotFound() : Ok(supplier);
     }
 
     [HttpGet("getSupplierByName/{name}")]
-    public ActionResult<Supplier> GetSupplierByName(string name)
+    public async Task<ActionResult<Supplier>> GetSupplierByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
             return BadRequest("Name must be provided.");
         }
 
-        var supplier = SupplierStore.GetSupplierByName(name);
+        var supplier = await _supplierService.GetSupplierByNameAsync(name);
 
         return supplier is null ? NotFound() : Ok(supplier);
     }
 
     [HttpGet("getSupplierFor/{product}")]
-    public ActionResult<IEnumerable<Supplier>> GetSupplierFor(string product)
+    public async Task<ActionResult<IEnumerable<Supplier>>> GetSupplierFor(string product)
     {
         if (string.IsNullOrWhiteSpace(product))
         {
             return BadRequest("Product name must be provided.");
         }
 
-        var matches = SupplierStore.GetSuppliers()
-            .Where(s => s.Products.Any(p => string.Equals(p, product, StringComparison.OrdinalIgnoreCase)))
-            .ToList();
+        var matches = await _supplierService.GetSuppliersForProductAsync(product);
 
         return matches.Count == 0 ? NotFound() : Ok(matches);
     }
