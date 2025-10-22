@@ -1,30 +1,48 @@
+using Microsoft.EntityFrameworkCore;
 using PurchasingService.Data;
 
 namespace PurchasingService.Services;
 
 public class SupplierService : ISupplierService
 {
-    public Task<List<Supplier>> GetAllSuppliersAsync()
+    private readonly PurchasingDbContext _context;
+
+    public SupplierService(PurchasingDbContext context)
     {
-        return Task.FromResult(SupplierStore.GetSuppliers().ToList());
+        _context = context;
     }
 
-    public Task<Supplier?> GetSupplierByIdAsync(int id)
+    public async Task<List<Supplier>> GetAllSuppliersAsync()
     {
-        return Task.FromResult(SupplierStore.GetSupplierById(id));
+        return await _context.Suppliers
+            .Include(s => s.SupplierProducts)
+            .ToListAsync();
     }
 
-    public Task<Supplier?> GetSupplierByNameAsync(string name)
+    public async Task<Supplier?> GetSupplierByIdAsync(int id)
     {
-        return Task.FromResult(SupplierStore.GetSupplierByName(name));
+        return await _context.Suppliers
+            .Include(s => s.SupplierProducts)
+            .FirstOrDefaultAsync(s => s.SupplierId == id);
     }
 
-    public Task<List<Supplier>> GetSuppliersForProductAsync(string product)
+    public async Task<Supplier?> GetSupplierByNameAsync(string name)
     {
-        var matches = SupplierStore.GetSuppliers()
-            .Where(s => s.Products.Any(p => string.Equals(p, product, StringComparison.OrdinalIgnoreCase)))
-            .ToList();
-        
-        return Task.FromResult(matches);
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return null;
+        }
+
+        return await _context.Suppliers
+            .Include(s => s.SupplierProducts)
+            .FirstOrDefaultAsync(s => EF.Functions.Like(s.CompanyName, name));
+    }
+
+    public async Task<List<Supplier>> GetSuppliersForProductAsync(string product)
+    {
+        return await _context.Suppliers
+            .Include(s => s.SupplierProducts)
+            .Where(s => s.SupplierProducts.Any(p => EF.Functions.Like(p.ProductName, product)))
+            .ToListAsync();
     }
 }

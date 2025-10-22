@@ -1,10 +1,12 @@
 using Azure;
 using Azure.AI.OpenAI;
 using Azure.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 using ModelContextProtocol.Server;
 using PurchasingService.Configuration;
+using PurchasingService.Data;
 using PurchasingService.Graph;
 using PurchasingService.Services;
 
@@ -14,6 +16,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configure Database
+builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.AddDbContext<PurchasingDbContext>((sp, options) =>
+{
+    var dbOptions = sp.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+    options.UseSqlServer(dbOptions.DefaultDatabase);
+});
+
 // Prefer a cryptographically-strong provider for less-predictable random values.
 builder.Services.AddSingleton<IRandomProvider, SecureRandomProvider>();
 // Bind OfferRandomizerOptions from configuration

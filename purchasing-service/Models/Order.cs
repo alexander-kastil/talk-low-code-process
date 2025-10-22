@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PurchasingService.Models;
 
 public class Order
 {
+    [Key]
     public Guid Id { get; set; } = Guid.NewGuid();
 
     [Required]
@@ -17,6 +19,9 @@ public class Order
     [Required]
     public DateTime Date { get; set; }
 
-    [MinLength(1)]
-    public List<OrderDetail> OrderDetails { get; set; } = new();
+    // Navigation properties
+    public Supplier? Supplier { get; set; }
+    
+    public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 }
+
