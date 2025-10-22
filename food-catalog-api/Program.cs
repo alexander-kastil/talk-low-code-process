@@ -1,17 +1,11 @@
 using System;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using FoodApi;
 using FoodApp;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,10 +24,6 @@ if (string.IsNullOrWhiteSpace(connectionString))
 }
 
 builder.Services.AddDbContext<FoodDBContext>(options => options.UseSqlServer(connectionString));
-
-//Microsoft Identity auth
-var az = Configuration.GetSection("Azure");
-
 builder.Services.AddControllers();
 
 // Swagger
@@ -44,7 +34,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Cors
-builder.Services.AddCors(o => o.AddPolicy("nocors", builder =>
+builder.Services.AddCors(o => o.AddPolicy("NoCORS", builder =>
 {
     builder
         .SetIsOriginAllowed(host => true)
@@ -70,7 +60,7 @@ app.UseSwaggerUI(c =>
 });
 
 //Cors and Routing
-app.UseCors("nocors");
+app.UseCors("NoCORS");
 
 app.MapControllers();
 app.Run();

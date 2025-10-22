@@ -7,8 +7,8 @@
         },
         "purchasing-mcp-azure-dev": {
             "type": "streamable-http",
-            "url": "https://purchasing-mcp-server-dev.azurewebsites.net",
-            "note": "Dev deployment hosted on Azure App Service"
+            "url": "https://purchasing-mcp-service-dev.azurewebsites.net",
+            "note": "Purchasing mock hosted on Azure App Service"
         }
     }
 }

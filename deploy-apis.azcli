@@ -3,6 +3,9 @@ grp=agentic-process-$env
 loc=westeurope
 acct=agenticprocess$env
 container=food
+foodConStr="$(printenv fooddb)"
+purchasingConStr="$(printenv purchasingdb)"
+
 
 az group create -n $grp -l $loc
 
@@ -15,9 +18,11 @@ az storage blob upload-batch -d $container -s "assets/images" --account-name $ac
 cd food-catalog-api
 az webapp up -n food-catalog-api-$env -g $grp -p process-food-plan-$env -l $loc -r "dotnet:9"
 az webapp cors add --allowed-origins "*" --name food-catalog-api-$env --resource-group $grp
+az webapp config appsettings set -g $grp -n food-catalog-api-$env --settings "ConnectionStrings:DefaultDatabase=$foodConStr"
 cd ..
 
 cd purchasing-service
-az webapp up -n purchasing-service-$env -g $grp -p process-purchasing-plan-$env -l $loc -r "dotnet:9"
-az webapp cors add --allowed-origins "*" --name purchasing-service-$env --resource-group $grp
+az webapp up -n purchasing-mcp-service-$env -g $grp -p process-purchasing-plan-$env -l $loc -r "dotnet:9"
+az webapp cors add --allowed-origins "*" --name purchasing-mcp-service-$env --resource-group $grp
+az webapp config.appsettings set -g $grp -n purchasing-mcp-service-$env --settings "ConnectionStrings:DefaultDatabase=$purchasingConStr"
 cd ..
