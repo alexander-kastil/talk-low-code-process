@@ -1,26 +1,26 @@
 @baseUrl = https://food-catalog-api-dev.azurewebsites.net
+@blobBaseUrl = https://agenticprocessdev.blob.core.windows.net/food
 
 ### Get all food items
-GET {{baseUrl}}/getFoodStock
+GET {{baseUrl}}/food
 
 ### Get a single food item by ID
-GET {{baseUrl}}/getFoodById/1
+GET {{baseUrl}}/food/1
 
 ### Create a new food item
-POST {{baseUrl}}/addFood
+POST {{baseUrl}}/food
 Content-Type: application/json
 
 {
-  "name": "Falafel Bowl",
-  "price": 10.5,
-  "inStock": 15,
-  "pictureUrl": "https://m365copilotstoragedev.blob.core.windows.net/food/falaffel.jpg",
-  "code": "fal",
-  "description": "Crispy falafel served on a bed of fresh greens, drizzled with tahini sauce. A Middle Eastern classic that’s hearty, healthy, and full of flavor."
+  "name": "Massaman Curry",
+  "price": 12.0,
+  "inStock": 20,
+  "pictureUrl": "{{blobBaseUrl}}/massaman.jpg",
+  "description": "Rich and aromatic Thai curry made with tender beef, potatoes, and roasted peanuts in a creamy coconut milk sauce. A comforting blend of sweet, savory, and mildly spicy flavors."
 }
 
 ### Update an existing food item
-PUT {{baseUrl}}/updateFood
+PUT {{baseUrl}}/food
 Content-Type: application/json
 
 {
@@ -28,8 +28,7 @@ Content-Type: application/json
   "name": "Butter Chicken Deluxe",
   "price": 14.0,
   "inStock": 8,
-  "pictureUrl": "https://m365copilotstoragedev.blob.core.windows.net/food/falaffel.jpg",
-  "code": "btc",
+  "pictureUrl": "{{blobBaseUrl}}/butter-chicken.jpg",
   "description": "A richer, creamier take on the classic butter chicken, with extra spices and a touch of honey."
 }
 

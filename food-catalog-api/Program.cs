@@ -55,7 +55,7 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Food-Api");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", cfg.App.Title);
     c.RoutePrefix = string.Empty;
 });
 

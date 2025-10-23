@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using Microsoft.Identity.Web.Resource;
 using Microsoft.Extensions.Configuration;
 using FoodApp;
 
@@ -22,14 +20,12 @@ namespace FoodApi
         FoodDBContext ctx;
         FoodConfig cfg;
 
-        // http://localhost:PORT/food
         [HttpGet()]
         public IEnumerable<FoodItem> GetFood()
         {
             return ctx.Food.ToArray();
         }
 
-        // GET /food/byname?name=Apple
         [HttpGet("byname")]
         public ActionResult<IEnumerable<FoodItem>> GetFoodByName([FromQuery] string name)
         {
@@ -41,14 +37,12 @@ namespace FoodApi
             return Ok(items);
         }
 
-        // http://localhost:PORT/food/3
         [HttpGet("{id}")]
         public FoodItem GetById(int id)
         {
             return ctx.Food.FirstOrDefault(v => v.ID == id);
         }
 
-        // http://localhost:PORT/food
         [HttpPost()]
         public FoodItem InsertFood(FoodItem item)
         {
@@ -57,7 +51,6 @@ namespace FoodApi
             return item;
         }
 
-        // http://localhost:PORT/food
         [HttpPut()]
         public FoodItem UpdateFood(FoodItem item)
         {
@@ -67,7 +60,6 @@ namespace FoodApi
             return item;
         }
 
-        // http://localhost:PORT/food
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
