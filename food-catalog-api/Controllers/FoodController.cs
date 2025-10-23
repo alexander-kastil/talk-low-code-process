@@ -48,11 +48,9 @@ namespace FoodApi
         {
             var foodItem = new FoodItem
             {
-                ID = ctx.Food.Max(f => f.ID) + 1,
                 Name = item.Name,
                 Price = item.Price,
                 InStock = item.InStock,
-                MinStock = item.MinStock,
                 PictureUrl = item.PictureUrl,
                 Description = item.Description
             };

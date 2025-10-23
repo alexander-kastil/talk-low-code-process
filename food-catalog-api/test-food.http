@@ -1,4 +1,5 @@
-@baseUrl = https://food-catalog-api-dev.azurewebsites.net
+# @baseUrl = https://food-catalog-api-dev.azurewebsites.net
+@baseUrl = http://localhost:5000
 @blobBaseUrl = https://agenticprocessdev.blob.core.windows.net/food
 
 ### Get all food items
