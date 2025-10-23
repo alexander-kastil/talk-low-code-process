@@ -17,6 +17,8 @@ az monitor app-insights component create --app $appInsights -g $grp -l $loc --ap
 az storage account create -l $loc -n $acct -g $grp --sku Standard_LRS
 key=$(az storage account keys list -n $acct -g $grp --query "[0].value" -o tsv)
 az storage container create -n $container --account-key $key --account-name $acct
+az storage account create -l $loc -n $acct -g $grp --sku Standard_LRS --allow-blob-public-access true
+az storage container create -n $container --account-key $key --account-name $acct --public-access blob
 
 az storage blob upload-batch -d $container -s "assets/images" --account-name $acct --account-key $key
 
