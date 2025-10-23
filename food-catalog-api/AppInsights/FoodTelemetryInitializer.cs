@@ -3,14 +3,14 @@ using Microsoft.ApplicationInsights.Extensibility;
 
 namespace FoodApp
 {
-    public class FoodTelemetryInitializer : ITelemetryInitializer{
+    public class FoodTelemetryInitializer : ITelemetryInitializer
+    {
 
         public void Initialize(ITelemetry telemetry)
         {
             if (string.IsNullOrEmpty(telemetry.Context.Cloud.RoleName))
             {
-                telemetry.Context.Cloud.RoleName = "net-food-api";
-                // telemetry.Context.Cloud.RoleInstance = "Custom RoleInstance";
+                telemetry.Context.Cloud.RoleName = "Food Api";
             }
         }
     }

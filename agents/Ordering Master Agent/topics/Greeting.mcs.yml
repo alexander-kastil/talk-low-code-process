@@ -1,0 +1,20 @@
+# Name: Greeting
+# This topic is triggered when the user greets the agent.
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    displayName: Greeting
+    includeInOnSelectIntent: false
+    triggerQueries:
+      - Good afternoon
+      - Good morning
+      - Hello
+      - Hey
+      - Hi
+
+  actions:
+    - kind: BeginDialog
+      id: 5FOiqe
+      dialog: cr6f9_orderingMasterAgent.topic.CreaterequestId

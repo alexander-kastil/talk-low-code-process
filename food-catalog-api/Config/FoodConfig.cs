@@ -15,6 +15,7 @@ namespace FoodApp
     {
         public string Title { get; set; }
         public bool AuthEnabled { get; set; }
+        public string ImgBaseUrl { get; set; }
     }
 
     public class Azure
@@ -24,7 +25,6 @@ namespace FoodApp
         public string Instance { get; set; }
         [ConfigurationKeyName("cacheLocation")]
         public string CacheLocation { get; set; }
-        public string AppConfigurationCS { get; set; }
     }
 
     public class ApplicationInsights

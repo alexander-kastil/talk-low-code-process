@@ -1,0 +1,16 @@
+# Name: food-stock-connector - Gets all food
+kind: TaskDialog
+modelDisplayName: Gets all food
+modelDescription: Returns every food item currently available in the catalog including current stock and min stock
+outputs:
+  - propertyName: Response
+
+action:
+  kind: InvokeConnectorTaskAction
+  connectionReference: cr6f9_inventoryAgent.shared_food-2dstock-2dconnector-5fe009d3cff382bfc1-5f26dfabd9fb0863ca.2cf5877732174d4d895617be2e556206
+  connectionProperties:
+    mode: Invoker
+
+  operationId: GetFood
+
+outputMode: All

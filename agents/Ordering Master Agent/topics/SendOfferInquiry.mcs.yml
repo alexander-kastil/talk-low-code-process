@@ -1,0 +1,25 @@
+# Name: Send Offer Inquiry
+kind: AdaptiveDialog
+modelDescription: "This topic send the offer inquiry. Respond to phrases like: I want to send the inquiry, get an offer, I want  to order food"
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: SetVariable
+      id: setVariable_bUmQkU
+      variable: Global.requestId
+      value: "\"RFO\" + Text(GUID())"
+
+    - kind: ConditionGroup
+      id: conditionGroup_20ZAjK
+      conditions:
+        - id: conditionItem_edxjJM
+          condition: =IsBlank(Global.foodToOrder)
+          actions:
+            - kind: BeginDialog
+              id: YFasY2
+              dialog: cr6f9_orderingMasterAgent.topic.CheckInventoryandcalculateorderamount
+
+inputType: {}
+outputType: {}

@@ -28,6 +28,5 @@ namespace FoodApp
         {
             ai.TrackEvent(text, arr);
         }
-
     }
 }
