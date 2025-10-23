@@ -5,6 +5,36 @@
     "https"
   ],
   "definitions": {
+    "FoodDTO": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "price": {
+          "format": "double",
+          "type": "number"
+        },
+        "inStock": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "minStock": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "pictureUrl": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "description": {
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "additionalProperties": false
+    },
     "FoodItem": {
       "type": "object",
       "properties": {
@@ -13,7 +43,8 @@
           "type": "integer"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "x-nullable": true
         },
         "price": {
           "format": "double",
@@ -29,26 +60,25 @@
           "description": "Minimum amount to keep in stock"
         },
         "pictureUrl": {
-          "type": "string"
-        },
-        "code": {
-          "type": "string"
+          "type": "string",
+          "x-nullable": true
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "x-nullable": true
         }
       },
       "additionalProperties": false
     }
   },
   "x-ms-openai-manifest": {
-    "humanName": "Food-Catalog-Api",
+    "humanName": "Food-Inventory",
     "modelDescription": "An Api that allows to manage food stock for a restaurant",
     "contactEmail": "",
     "legalUrl": ""
   },
   "info": {
-    "title": "Food-Catalog-Api",
+    "title": "Food-Inventory",
     "version": "v1",
     "description": "An Api that allows to manage food stock for a restaurant"
   },
@@ -75,7 +105,7 @@
             "in": "body",
             "name": "body",
             "schema": {
-              "$ref": "#/definitions/FoodItem"
+              "$ref": "#/definitions/FoodDTO"
             }
           }
         ],
