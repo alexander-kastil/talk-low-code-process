@@ -1,9 +1,0 @@
-# Name: Get Inquiry
-kind: AdaptiveDialog
-beginDialog:
-  kind: OnRecognizedIntent
-  id: main
-  intent: {}
-
-inputType: {}
-outputType: {}
