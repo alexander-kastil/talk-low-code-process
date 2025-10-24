@@ -66,7 +66,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Butter Chicken",
+                      "text": "Kaiserschmarrn",
                       "wrap": true
                     }
                   ]
@@ -78,7 +78,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "Input.Number",
-                      "id": "qty.ButterChicken",
+                      "id": "qty.Kaiserschmarrn",
                       "min": 0,
                       "value": 0
                     }
@@ -96,7 +96,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Blini with Salmon",
+                      "text": "Weisswurst mit Brezn",
                       "wrap": true
                     }
                   ]
@@ -108,7 +108,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "Input.Number",
-                      "id": "qty.BliniWithSalmon",
+                      "id": "qty.WeisswurstMitBrezn",
                       "min": 0,
                       "value": 0
                     }
@@ -246,7 +246,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Spare Ribs",
+                      "text": "Schweinshaxe mit Kraut",
                       "wrap": true
                     }
                   ]
@@ -258,7 +258,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "Input.Number",
-                      "id": "qty.SpareRibs",
+                      "id": "qty.SchweinshaxeMitKraut",
                       "min": 0,
                       "value": 0
                     }
@@ -306,7 +306,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Falafel with Humus",
+                      "text": "Green Curry",
                       "wrap": true
                     }
                   ]
@@ -318,7 +318,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "Input.Number",
-                      "id": "qty.FalafelWithHumus",
+                      "id": "qty.GreenCurry",
                       "min": 0,
                       "value": 0
                     }
@@ -336,26 +336,26 @@ beginDialog:
         }
       output:
         binding:
-          qty.BliniWithSalmon: Topic.qtyBliniWithSalmon
-          qty.ButterChicken: Topic.qtyButterChicken
+          qty.Kaiserschmarrn: Topic.qtyKaiserschmarrn
+          qty.WeisswurstMitBrezn: Topic.qtyWeisswurstMitBrezn
           qty.Cevapcici: Topic.qtyCevapcici
-          qty.FalafelWithHumus: Topic.qtyFalafelWithHumus
+          qty.GreenCurry: Topic.qtyGreenCurry
           qty.Germknoedel: Topic.qtyGermknoedel
           qty.GreekSalad: Topic.qtyGreekSalad
           qty.PadKaPrao: Topic.qtyPadKaPrao
-          qty.SpareRibs: Topic.qtySpareRibs
+          qty.SchweinshaxeMitKraut: Topic.qtySchweinshaxeMitKraut
           qty.WienerSchnitzel: Topic.qtyWienerSchnitzel
 
       outputType:
         properties:
-          qty.BliniWithSalmon: Number
-          qty.ButterChicken: Number
+          qty.Kaiserschmarrn: Number
+          qty.WeisswurstMitBrezn: Number
           qty.Cevapcici: Number
-          qty.FalafelWithHumus: Number
+          qty.GreenCurry: Number
           qty.Germknoedel: Number
           qty.GreekSalad: Number
           qty.PadKaPrao: Number
-          qty.SpareRibs: Number
+          qty.SchweinshaxeMitKraut: Number
           qty.WienerSchnitzel: Number
 
     - kind: SetVariable
@@ -363,20 +363,20 @@ beginDialog:
       variable: Global.orderDemand
       value: |-
         =JSON({
-              ButterChicken: Topic.qtyButterChicken,
-              BliniWithSalmon: Topic.qtyBliniWithSalmon,
+              Kaiserschmarrn: Topic.qtyKaiserschmarrn,
+              WeisswurstMitBrezn: Topic.qtyWeisswurstMitBrezn,
               WienerSchnitzel: Topic.qtyWienerSchnitzel,
               Cevapcici: Topic.qtyCevapcici,
               Germknoedel: Topic.qtyGermknoedel,
               GreekSalad: Topic.qtyGreekSalad,
-              SpareRibs: Topic.qtySpareRibs,
+              SchweinshaxeMitKraut: Topic.qtySchweinshaxeMitKraut,
               PadKaPrao: Topic.qtyPadKaPrao,
-              FalafelWithHumus: Topic.qtyFalafelWithHumus
+              GreenCurry: Topic.qtyGreenCurry
         })
 
     - kind: SendActivity
       id: sendActivity_MnOZNi
-      activity: "Your demand was sucessfully noted: {Global.orderDemand}"
+      activity: "Your demand was successfully noted: {Global.orderDemand}"
 
 inputType: {}
 outputType: {}
