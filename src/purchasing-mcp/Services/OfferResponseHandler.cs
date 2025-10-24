@@ -12,7 +12,7 @@ using PurchasingService.Models;
 
 namespace PurchasingService.Services;
 
-public static class ResponseHandler
+public static class OfferResponseHandler
 {
     public static async Task<bool> TrySendOfferAsync(GraphHelper graphHelper, IChatClient chatClient, Offer response)
     {
