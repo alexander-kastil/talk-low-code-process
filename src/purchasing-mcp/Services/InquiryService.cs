@@ -10,12 +10,14 @@ public class InquiryService : IInquiryService
     private readonly IOfferRandomizer _offerRandomizer;
     private readonly GraphHelper _graphHelper;
     private readonly IChatClient _chatClient;
+    private readonly PurchasingDbContext _dbContext;
 
-    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper graphHelper, IChatClient chatClient)
+    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper graphHelper, IChatClient chatClient, PurchasingDbContext dbContext)
     {
         _offerRandomizer = offerRandomizer ?? throw new ArgumentNullException(nameof(offerRandomizer));
         _graphHelper = graphHelper ?? throw new ArgumentNullException(nameof(graphHelper));
         _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
     public async Task<OfferResponse> RequestOfferAsync(OfferRequest request)
@@ -62,6 +64,29 @@ public class InquiryService : IInquiryService
             RequestDetails = offerLines,
             Email = request.Email?.Trim()
         };
+
+        // Save offer to database before sending email
+        var offer = new Offer
+        {
+            Id = response.Id,
+            SupplierId = response.SupplierId,
+            TransportationCost = response.TransportationCost,
+            Timestamp = response.Timestamp,
+            Email = response.Email,
+            OfferDetails = response.RequestDetails.Select(d => new OfferDetail
+            {
+                ProductName = d.ProductName,
+                BasePrice = d.BasePrice,
+                OfferedPrice = d.OfferedPrice,
+                RequestedQuantity = d.RequestedQuantity,
+                OfferedQuantity = d.OfferedQuantity,
+                DeliveryDurationDays = d.DeliveryDurationDays,
+                IsAvailable = d.IsAvailable
+            }).ToList()
+        };
+
+        _dbContext.Offers.Add(offer);
+        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
 
         await ResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response).ConfigureAwait(false);
 
