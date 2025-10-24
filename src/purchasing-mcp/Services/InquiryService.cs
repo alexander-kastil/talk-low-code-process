@@ -90,4 +90,11 @@ public class InquiryService : IInquiryService
 
         return response;
     }
+
+    public async Task<Offer?> GetOfferByIdAsync(Guid offerId)
+    {
+        return await _dbContext.Offers
+            .Include(o => o.OfferDetails)
+            .FirstOrDefaultAsync(o => o.OfferId == offerId);
+    }
 }

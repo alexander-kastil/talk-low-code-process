@@ -51,10 +51,10 @@ public class PurchasingDbContext : DbContext
             entity.Property(e => e.Phone).HasMaxLength(50);
             entity.Property(e => e.EMail).HasMaxLength(255);
             entity.Property(e => e.HomePage).HasMaxLength(500);
-            
+
             // Ignore the computed property
             entity.Ignore(e => e.AvailableProducts);
-            
+
             // Configure the many-to-many relationship
             entity.HasMany(s => s.Products)
                 .WithMany()
@@ -64,6 +64,7 @@ public class PurchasingDbContext : DbContext
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(e => e.ProductId);
+            entity.Property(e => e.ProductId).ValueGeneratedNever();
             entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
             entity.Property(e => e.BasePrice).HasColumnType("decimal(18,2)");
             entity.HasIndex(e => e.Name).IsUnique();

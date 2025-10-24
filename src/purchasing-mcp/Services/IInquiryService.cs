@@ -5,4 +5,5 @@ namespace PurchasingService.Services;
 public interface IInquiryService
 {
     Task<Offer> RequestOfferAsync(OfferRequest request);
+    Task<Offer?> GetOfferByIdAsync(Guid offerId);
 }

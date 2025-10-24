@@ -57,16 +57,13 @@ namespace PurchasingService.Migrations
 
                     b.HasKey("OfferId");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("PurchasingService.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(18,2)");
@@ -81,7 +78,7 @@ namespace PurchasingService.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Supplier", b =>
@@ -146,7 +143,7 @@ namespace PurchasingService.Migrations
 
                     b.HasKey("SupplierId");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("ProductSupplier", b =>
@@ -196,7 +193,7 @@ namespace PurchasingService.Migrations
 
                             b1.HasKey("OfferId", "Id");
 
-                            b1.ToTable("OfferDetails");
+                            b1.ToTable("OfferDetails", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OfferId");

@@ -10,7 +10,7 @@ public class Offer
 
     public DateTimeOffset Timestamp { get; set; }
 
-    public IReadOnlyList<OfferDetails> OfferDetails { get; set; } = Array.Empty<OfferDetails>();
+    public List<OfferDetails> OfferDetails { get; set; } = new List<OfferDetails>();
 
     public string? Email { get; set; }
 }

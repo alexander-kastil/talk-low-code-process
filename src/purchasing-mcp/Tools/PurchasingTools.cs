@@ -128,4 +128,31 @@ public class PurchasingTools
             return $"Error: {ex.Message}";
         }
     }
+
+    [McpServerTool]
+    [Description("Retrieves an offer by its unique identifier, including all offer details.")]
+    public async Task<string> GetOfferById(
+        [Description("The unique identifier of the offer")] string offerId)
+    {
+        if (!Guid.TryParse(offerId, out var guid))
+        {
+            return "Error: Invalid GUID format.";
+        }
+
+        _logger.LogInformation("Retrieving offer {OfferId}", offerId);
+
+        try
+        {
+            var offer = await _inquiryService.GetOfferByIdAsync(guid);
+            if (offer == null)
+            {
+                return $"Error: Offer with ID {offerId} was not found.";
+            }
+            return JsonSerializer.Serialize(offer, new JsonSerializerOptions { WriteIndented = true });
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
+    }
 }

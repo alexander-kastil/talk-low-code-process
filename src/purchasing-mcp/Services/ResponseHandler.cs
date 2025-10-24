@@ -37,7 +37,7 @@ public static class ResponseHandler
 
     private static async Task<string> BuildEmailBodyAsync(IChatClient chatClient, Offer response)
     {
-        var details = response.OfferDetails ?? Array.Empty<OfferDetails>();
+        var details = response.OfferDetails;
         var supplier = SupplierStore.GetSupplierById(response.SupplierId);
         var currencyCulture = GetCurrencyCulture(supplier);
         var detailLines = details.Select(detail =>
@@ -85,7 +85,7 @@ public static class ResponseHandler
         }
 
         // Fallback deterministic formatting if AI generation fails or exception occurs
-        var fallbackDetails = response.OfferDetails ?? Array.Empty<OfferDetails>();
+        var fallbackDetails = response.OfferDetails;
         var fallbackDetailBuilder = new StringBuilder();
         foreach (var detail in fallbackDetails)
         {
