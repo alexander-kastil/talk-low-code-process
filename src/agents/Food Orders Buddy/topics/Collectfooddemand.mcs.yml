@@ -21,7 +21,7 @@ beginDialog:
           "body": [
             {
               "type": "TextBlock",
-              "text": "Provide your demand",
+              "text": "Please enter your demand",
               "size": "Large",
               "weight": "Bolder",
               "wrap": true,
@@ -37,7 +37,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Food Item",
+                      "text": "Enter required quantity",
                       "weight": "Bolder",
                       "wrap": true
                     }
@@ -375,9 +375,17 @@ beginDialog:
               GreenCurry: Topic.qtyGreenCurry
         })
 
+    - kind: SetVariable
+      id: setOutput
+      variable: Topic.niceOutput
+      value: "=JSON(Filter(Table({Name: \"Kaiserschmarrn\", Quantity: Topic.qtyKaiserschmarrn}, {Name: \"WeisswurstMitBrezn\", Quantity: Topic.qtyWeisswurstMitBrezn}, {Name: \"WienerSchnitzel\", Quantity: Topic.qtyWienerSchnitzel}, {Name: \"PizzaNapoli\", Quantity: Topic.qtyPizzaNapoli}, {Name: \"Germknoedel\", Quantity: Topic.qtyGermknoedel}, {Name: \"AranciniNapoletana\", Quantity: Topic.qtyAranciniNapoletana}, {Name: \"SchweinshaxeMitKraut\", Quantity: Topic.qtySchweinshaxeMitKraut}, {Name: \"PadKaPrao\", Quantity: Topic.qtyPadKaPrao}, {Name: \"GreenCurry\", Quantity: Topic.qtyGreenCurry}), Quantity > 0), JSONFormat.Compact)"
+
     - kind: SendActivity
       id: sendActivity_MnOZNi
-      activity: "Your demand was successfully noted: {Global.orderDemand}"
+      activity:
+        value: =Topic.niceOutput
+        text:
+          - "Your demand was successfully noted:{Topic.niceOutput}"
 
 inputType: {}
 outputType: {}
