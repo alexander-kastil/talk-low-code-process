@@ -20,7 +20,7 @@ beginDialog:
           "body": [
             {
               "type": "TextBlock",
-              "text": "Provide your demand",
+              "text": "Please enter your demand",
               "size": "Large",
               "weight": "Bolder",
               "wrap": true,
@@ -36,7 +36,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Food Item",
+                      "text": "Enter required quantity",
                       "weight": "Bolder",
                       "wrap": true
                     }
@@ -336,26 +336,26 @@ beginDialog:
         }
       output:
         binding:
-          qty.Kaiserschmarrn: Topic.qtyKaiserschmarrn
-          qty.WeisswurstMitBrezn: Topic.qtyWeisswurstMitBrezn
-          qty.PizzaNapoli: Topic.qtyPizzaNapoli
-          qty.GreenCurry: Topic.qtyGreenCurry
-          qty.Germknoedel: Topic.qtyGermknoedel
           qty.AranciniNapoletana: Topic.qtyAranciniNapoletana
+          qty.Germknoedel: Topic.qtyGermknoedel
+          qty.GreenCurry: Topic.qtyGreenCurry
+          qty.Kaiserschmarrn: Topic.qtyKaiserschmarrn
           qty.PadKaPrao: Topic.qtyPadKaPrao
+          qty.PizzaNapoli: Topic.qtyPizzaNapoli
           qty.SchweinshaxeMitKraut: Topic.qtySchweinshaxeMitKraut
+          qty.WeisswurstMitBrezn: Topic.qtyWeisswurstMitBrezn
           qty.WienerSchnitzel: Topic.qtyWienerSchnitzel
 
       outputType:
         properties:
-          qty.Kaiserschmarrn: Number
-          qty.WeisswurstMitBrezn: Number
-          qty.PizzaNapoli: Number
-          qty.GreenCurry: Number
-          qty.Germknoedel: Number
           qty.AranciniNapoletana: Number
+          qty.Germknoedel: Number
+          qty.GreenCurry: Number
+          qty.Kaiserschmarrn: Number
           qty.PadKaPrao: Number
+          qty.PizzaNapoli: Number
           qty.SchweinshaxeMitKraut: Number
+          qty.WeisswurstMitBrezn: Number
           qty.WienerSchnitzel: Number
 
     - kind: SetVariable
@@ -374,9 +374,17 @@ beginDialog:
               GreenCurry: Topic.qtyGreenCurry
         })
 
+    - kind: SetVariable
+      id: setOutput
+      variable: Topic.niceOutput
+      value: '=JSON(Filter(Table({Name: "Kaiserschmarrn", Quantity: Topic.qtyKaiserschmarrn}, {Name: "WeisswurstMitBrezn", Quantity: Topic.qtyWeisswurstMitBrezn}, {Name: "WienerSchnitzel", Quantity: Topic.qtyWienerSchnitzel}, {Name: "PizzaNapoli", Quantity: Topic.qtyPizzaNapoli}, {Name: "Germknoedel", Quantity: Topic.qtyGermknoedel}, {Name: "AranciniNapoletana", Quantity: Topic.qtyAranciniNapoletana}, {Name: "SchweinshaxeMitKraut", Quantity: Topic.qtySchweinshaxeMitKraut}, {Name: "PadKaPrao", Quantity: Topic.qtyPadKaPrao}, {Name: "GreenCurry", Quantity: Topic.qtyGreenCurry}), Quantity > 0), JSONFormat.Compact)'
+
     - kind: SendActivity
       id: sendActivity_MnOZNi
-      activity: "Your demand was successfully noted: {Global.orderDemand}"
+      activity:
+        value: =Topic.niceOutput
+        text:
+          - "Your demand was successfully noted:{Topic.niceOutput}"
 
 inputType: {}
 outputType: {}
