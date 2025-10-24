@@ -42,4 +42,27 @@ public class InquiryController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpGet("getOfferById/{offerId}")]
+    public async Task<ActionResult<Offer>> GetOfferById(string offerId)
+    {
+        if (!Guid.TryParse(offerId, out var guid))
+        {
+            return BadRequest("Invalid GUID format.");
+        }
+
+        try
+        {
+            var offer = await _inquiryService.GetOfferByIdAsync(guid);
+            if (offer == null)
+            {
+                return NotFound($"Offer with ID {offerId} was not found.");
+            }
+            return Ok(offer);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
 }

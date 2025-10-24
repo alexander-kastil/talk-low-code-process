@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PurchasingService.Data;
 using PurchasingService.Models;
 
@@ -5,9 +6,16 @@ namespace PurchasingService.Services;
 
 public class OrderService : IOrderService
 {
-    public Task<object> PlaceOrderAsync(Order order)
+    private readonly PurchasingDbContext _dbContext;
+
+    public OrderService(PurchasingDbContext dbContext)
     {
-        var supplier = SupplierStore.GetSupplierById(order.SupplierId);
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    }
+
+    public async Task<object> PlaceOrderAsync(Order order)
+    {
+        var supplier = await _dbContext.Suppliers.FirstOrDefaultAsync(s => s.SupplierId == order.SupplierId);
 
         if (supplier is null)
         {
@@ -25,6 +33,6 @@ public class OrderService : IOrderService
             Total = total
         };
 
-        return Task.FromResult<object>(response);
+        return response;
     }
 }

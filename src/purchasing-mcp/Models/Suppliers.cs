@@ -1,4 +1,6 @@
+using PurchasingService.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Supplier
 {
@@ -14,5 +16,16 @@ public class Supplier
     public string Phone { get; set; } = string.Empty;
     public string EMail { get; set; } = string.Empty;
     public string HomePage { get; set; } = string.Empty;
-    public IReadOnlyList<string> AvailableProducts { get; set; } = new List<string>();
+    
+    // Navigation property for EF Core
+    public ICollection<Product> Products { get; set; } = new List<Product>();
+    
+    // For backward compatibility with SupplierStore - this will be phased out
+    private List<string>? _availableProductNames;
+    
+    public IReadOnlyList<string> AvailableProducts 
+    {
+        get => _availableProductNames ?? Products.Select(p => p.Name).ToList();
+        set => _availableProductNames = value?.ToList();
+    }
 }

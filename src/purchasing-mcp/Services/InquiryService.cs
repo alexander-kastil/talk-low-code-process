@@ -9,15 +9,15 @@ namespace PurchasingService.Services;
 public class InquiryService : IInquiryService
 {
     private readonly IOfferRandomizer _offerRandomizer;
-    private readonly GraphHelper _graphHelper;
-    private readonly IChatClient _chatClient;
+    private readonly GraphHelper? _graphHelper;
+    private readonly IChatClient? _chatClient;
     private readonly PurchasingDbContext _dbContext;
 
-    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper graphHelper, IChatClient chatClient, PurchasingDbContext dbContext)
+    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper? graphHelper, IChatClient? chatClient, PurchasingDbContext dbContext)
     {
         _offerRandomizer = offerRandomizer ?? throw new ArgumentNullException(nameof(offerRandomizer));
-        _graphHelper = graphHelper ?? throw new ArgumentNullException(nameof(graphHelper));
-        _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
+        _graphHelper = graphHelper;
+        _chatClient = chatClient;
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
@@ -33,7 +33,9 @@ public class InquiryService : IInquiryService
             throw new ArgumentException("At least one product must be provided.", nameof(request));
         }
 
-        var supplier = SupplierStore.GetSupplierById(request.SupplierId);
+        var supplier = await _dbContext.Suppliers
+            .Include(s => s.Products)
+            .FirstOrDefaultAsync(s => s.SupplierId == request.SupplierId);
 
         if (supplier is null)
         {
@@ -49,11 +51,11 @@ public class InquiryService : IInquiryService
                 throw new ArgumentException("Product entries cannot be null.", nameof(request));
             }
 
-            var isOffered = supplier.AvailableProducts.Contains(productRequest.Product, StringComparer.OrdinalIgnoreCase);
+            var isOffered = supplier.Products.Any(p => string.Equals(p.Name, productRequest.Product, StringComparison.OrdinalIgnoreCase));
 
             if (isOffered)
             {
-                offerLines.Add(_offerRandomizer.GenerateOffer(productRequest.Product, productRequest.RequestedQuantity));
+                offerLines.Add(await _offerRandomizer.GenerateOfferAsync(productRequest.Product, productRequest.RequestedQuantity));
             }
             else
             {
@@ -81,8 +83,18 @@ public class InquiryService : IInquiryService
         _dbContext.Offers.Add(response);
         await _dbContext.SaveChangesAsync();
 
-        await ResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response).ConfigureAwait(false);
+        if (_graphHelper != null && _chatClient != null)
+        {
+            await ResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response).ConfigureAwait(false);
+        }
 
         return response;
+    }
+
+    public async Task<Offer?> GetOfferByIdAsync(Guid offerId)
+    {
+        return await _dbContext.Offers
+            .Include(o => o.OfferDetails)
+            .FirstOrDefaultAsync(o => o.OfferId == offerId);
     }
 }

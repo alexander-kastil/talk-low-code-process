@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PurchasingService.Data;
 
@@ -11,9 +12,11 @@ using PurchasingService.Data;
 namespace PurchasingService.Migrations
 {
     [DbContext(typeof(PurchasingDbContext))]
-    partial class PurchasingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251024223107_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,13 +60,16 @@ namespace PurchasingService.Migrations
 
                     b.HasKey("OfferId");
 
-                    b.ToTable("Offers", (string)null);
+                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("PurchasingService.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(18,2)");
@@ -78,7 +84,7 @@ namespace PurchasingService.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Supplier", b =>
@@ -143,7 +149,7 @@ namespace PurchasingService.Migrations
 
                     b.HasKey("SupplierId");
 
-                    b.ToTable("Suppliers", (string)null);
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("ProductSupplier", b =>
@@ -193,7 +199,7 @@ namespace PurchasingService.Migrations
 
                             b1.HasKey("OfferId", "Id");
 
-                            b1.ToTable("OfferDetails", (string)null);
+                            b1.ToTable("OfferDetails");
 
                             b1.WithOwner()
                                 .HasForeignKey("OfferId");
