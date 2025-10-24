@@ -62,6 +62,13 @@ builder.Services.AddMcpServer()
 
 var app = builder.Build();
 
+// Apply migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<PurchasingDbContext>();
+    dbContext.Database.Migrate();
+}
+
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
