@@ -71,7 +71,7 @@ public interface IOfferRandomizer
 
     bool TryGetBasePrice(string productName, out decimal basePrice);
 
-    OfferResponseDetail GenerateOffer(string productName, int requestedAmount);
+    OfferDetails GenerateOffer(string productName, int requestedAmount);
 }
 
 public sealed class OfferRandomizer : IOfferRandomizer
@@ -94,7 +94,7 @@ public sealed class OfferRandomizer : IOfferRandomizer
         return _basePrices.TryGetValue(productName, out basePrice);
     }
 
-    public OfferResponseDetail GenerateOffer(string productName, int requestedAmount)
+    public OfferDetails GenerateOffer(string productName, int requestedAmount)
     {
         if (string.IsNullOrWhiteSpace(productName))
         {
@@ -132,15 +132,13 @@ public sealed class OfferRandomizer : IOfferRandomizer
             deliveryDurationDays = CalculateDeliveryDurationDays();
         }
 
-        return new OfferResponseDetail
+        return new OfferDetails
         {
             ProductName = NormalizeProductName(productName),
-            BasePrice = basePrice,
-            OfferedPrice = offeredPrice,
+            Price = offeredPrice,
             RequestedQuantity = requestedAmount,
-            OfferedQuantity = offeredAmount,
+            Quantity = offeredAmount,
             DeliveryDurationDays = deliveryDurationDays,
-            IsAvailable = isAvailable
         };
     }
 

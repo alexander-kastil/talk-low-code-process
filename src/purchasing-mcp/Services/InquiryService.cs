@@ -37,7 +37,7 @@ public class InquiryService : IInquiryService
             throw new InvalidOperationException($"Supplier with id {request.SupplierId} was not found.");
         }
 
-        var offerLines = new List<OfferResponseDetail>(request.RequestDetails.Count);
+        var offerLines = new List<OfferDetails>(request.RequestDetails.Count);
 
         foreach (var productRequest in request.RequestDetails)
         {

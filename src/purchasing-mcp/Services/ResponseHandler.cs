@@ -37,14 +37,13 @@ public static class ResponseHandler
 
     private static async Task<string> BuildEmailBodyAsync(IChatClient chatClient, OfferResponse response)
     {
-        var details = response.RequestDetails ?? Array.Empty<OfferResponseDetail>();
+        var details = response.RequestDetails ?? Array.Empty<OfferDetails>();
         var supplier = SupplierStore.GetSupplierById(response.SupplierId);
         var currencyCulture = GetCurrencyCulture(supplier);
         var detailLines = details.Select(detail =>
         {
-            var total = detail.OfferedQuantity * detail.OfferedPrice;
-            var statusSuffix = detail.IsAvailable ? string.Empty : "; Status: Unavailable";
-            return $"- Product: {detail.ProductName}; Requested: {detail.RequestedQuantity}; Offered: {detail.OfferedQuantity}; Price: {FormatCurrency(detail.OfferedPrice, currencyCulture)}; Total: {FormatCurrency(total, currencyCulture)}; Delivery: {detail.DeliveryDurationDays} days{statusSuffix}";
+            var total = detail.Quantity * detail.Price;
+            return $"- Product: {detail.ProductName}; Requested: {detail.RequestedQuantity}; Offered: {detail.Quantity}; Price: {FormatCurrency(detail.Price, currencyCulture)}; Total: {FormatCurrency(total, currencyCulture)}; Delivery: {detail.DeliveryDurationDays} days";
         });
         var detailsText = detailLines.Any() ? string.Join(Environment.NewLine, detailLines) : "No offer lines present.";
         var unavailableNotice = BuildUnavailableNotice(details);
@@ -86,12 +85,12 @@ public static class ResponseHandler
         }
 
         // Fallback deterministic formatting if AI generation fails or exception occurs
-        var fallbackDetails = response.RequestDetails ?? Array.Empty<OfferResponseDetail>();
+        var fallbackDetails = response.RequestDetails ?? Array.Empty<OfferDetails>();
         var fallbackDetailBuilder = new StringBuilder();
         foreach (var detail in fallbackDetails)
         {
-            var total = detail.OfferedQuantity * detail.OfferedPrice;
-            var line = $"- Product: {detail.ProductName}; Requested: {detail.RequestedQuantity}; Offered: {detail.OfferedQuantity}; Price: {FormatCurrency(detail.OfferedPrice, currencyCulture)}; Total: {FormatCurrency(total, currencyCulture)}; Delivery: {detail.DeliveryDurationDays} days";
+            var total = detail.Quantity * detail.Price;
+            var line = $"- Product: {detail.ProductName}; Requested: {detail.RequestedQuantity}; Offered: {detail.Quantity}; Price: {FormatCurrency(detail.Price, currencyCulture)}; Total: {FormatCurrency(total, currencyCulture)}; Delivery: {detail.DeliveryDurationDays} days";
             fallbackDetailBuilder.AppendLine(line);
         }
 
@@ -205,10 +204,10 @@ public static class ResponseHandler
         return value.ToString("C", culture);
     }
 
-    private static string BuildUnavailableNotice(IEnumerable<OfferResponseDetail> details)
+    private static string BuildUnavailableNotice(IEnumerable<OfferDetails> details)
     {
         var unavailableProducts = details
-            .Where(detail => !detail.IsAvailable)
+            .Where(detail => detail.Quantity <= 0)
             .Select(detail => detail.ProductName)
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .ToList();
