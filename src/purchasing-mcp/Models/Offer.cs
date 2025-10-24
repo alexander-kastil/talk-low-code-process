@@ -13,4 +13,6 @@ public class Offer
     public List<OfferDetails> OfferDetails { get; set; } = new List<OfferDetails>();
 
     public string? Email { get; set; }
+
+    public int Status { get; set; } = 0; // 0 = Pending, 1 = Accepted, 2 = Rejected
 }

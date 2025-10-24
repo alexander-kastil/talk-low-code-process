@@ -19,4 +19,8 @@ public class Order
 
     [MinLength(1)]
     public List<OrderDetail> OrderDetails { get; set; } = new();
+
+    public string? OfferId { get; set; }
+
+    public decimal TransportationCost { get; set; }
 }

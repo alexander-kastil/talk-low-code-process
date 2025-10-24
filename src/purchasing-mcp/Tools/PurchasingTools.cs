@@ -80,7 +80,8 @@ public class PurchasingTools
         [Description("A unique identifier for this order request")] string requestId,
         [Description("The unique identifier of the supplier")] int supplierId,
         [Description("The date of the order in ISO 8601 format (e.g., '2024-01-15T10:30:00Z')")] string orderDate,
-        [Description("JSON array of order items. Each item must have 'productName' (string), 'price' (decimal), and 'quantity' (integer). Example: [{\"productName\":\"Chai\",\"price\":18.50,\"quantity\":100}]")] string orderDetailsJson)
+        [Description("JSON array of order items. Each item must have 'productName' (string), 'price' (decimal), and 'quantity' (integer). Example: [{\"productName\":\"Chai\",\"price\":18.50,\"quantity\":100}]")] string orderDetailsJson,
+        [Description("Optional: The unique identifier of the offer to validate against")] string? offerId = null)
     {
         _logger.LogInformation("Placing order for supplier {SupplierId}, request {RequestId}", supplierId, requestId);
 
@@ -115,7 +116,8 @@ public class PurchasingTools
             RequestId = requestId,
             SupplierId = supplierId,
             Date = parsedDate,
-            OrderDetails = orderDetails
+            OrderDetails = orderDetails,
+            OfferId = offerId
         };
 
         try
