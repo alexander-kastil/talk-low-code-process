@@ -39,7 +39,7 @@ Content-Type: application/json
   "requestDetails": [
     { "product": "Wiener Schnitzel", "requestedQuantity": 20 },
     { "product": "Curry Wurst", "requestedQuantity": 18 },
-    { "product": "Cevapcici", "requestedQuantity": 15 },
+    { "product": "Pizza Napoli", "requestedQuantity": 15 },
     { "product": "Greek salad", "requestedQuantity": 14 }
   ],
   "email": "{{email}}"
@@ -72,7 +72,7 @@ Content-Type: application/json
   "requestDetails": [
     { "product": "Wiener Schnitzel", "requestedQuantity": 30 },
     { "product": "Curry Wurst", "requestedQuantity": 28 },
-    { "product": "Cevapcici", "requestedQuantity": 20 },
+    { "product": "Pizza Napoli", "requestedQuantity": 20 },
     { "product": "Greek salad", "requestedQuantity": 18 },
     { "product": "Pad Ka Prao", "requestedQuantity": 16 },
     { "product": "Spare Ribs", "requestedQuantity": 14 },

@@ -14,5 +14,5 @@ public class Supplier
     public string Phone { get; set; } = string.Empty;
     public string EMail { get; set; } = string.Empty;
     public string HomePage { get; set; } = string.Empty;
-    public IReadOnlyList<string> Products { get; set; } = new List<string>();
+    public IReadOnlyList<string> AvailableProducts { get; set; } = new List<string>();
 }

@@ -22,9 +22,9 @@ public class SupplierService : ISupplierService
     public Task<List<Supplier>> GetSuppliersForProductAsync(string product)
     {
         var matches = SupplierStore.GetSuppliers()
-            .Where(s => s.Products.Any(p => string.Equals(p, product, StringComparison.OrdinalIgnoreCase)))
+            .Where(s => s.AvailableProducts.Any(p => string.Equals(p, product, StringComparison.OrdinalIgnoreCase)))
             .ToList();
-        
+
         return Task.FromResult(matches);
     }
 }

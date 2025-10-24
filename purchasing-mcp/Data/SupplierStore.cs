@@ -11,26 +11,24 @@ public static class SupplierStore
             {
                 SupplierId = 1,
                 CompanyName = "Wiener Feinkost GmbH",
-                ContactName = "Anna Schmid",
+                ContactName = "Anna Stöger",
                 ContactTitle = "Einkaufsleiterin",
                 City = "Vienna",
                 Region = "Wien",
                 Country = "Austria",
                 PostalCode = "1010",
                 Phone = "+43 1 234 5678",
-                EMail = "anna.schmid@wiener-feinkost.example",
+                EMail = "anna.stoeger@wiener-feinkost.at",
                 Address = "Graben 21",
-                HomePage = "https://wiener-feinkost.example",
-                Products = new List<string>
+                HomePage = "https://wiener-feinkost.at",
+                AvailableProducts = new List<string>
                 {
-                    "Butter Chicken",
-                    "Blini with Salmon",
                     "Wiener Schnitzel",
-                    "Cevapcici",
                     "Germknoedel",
-                    "Greek Salad",
-                    "Spare Ribs",
-                    "Falafel with Humus."
+                    "Kaiserschmarrn",
+                    "Sachertorte",
+                    "Falafel with Humus.",
+                    "Linsen mit Semmelknödel",
                 }
             },
             new()
@@ -44,15 +42,15 @@ public static class SupplierStore
                 Country = "Germany",
                 PostalCode = "80331",
                 Phone = "+49 89 123456",
-                EMail = "info@muenchner-gewuerze.example",
+                EMail = "info@muenchner-gewuerze.de",
                 Address = "Marienplatz 1",
-                HomePage = "https://muenchner-gewuerze.example",
-                Products = new List<string>
+                HomePage = "https://muenchner-gewuerze.de",
+                AvailableProducts = new List<string>
                 {
-                    "Butter Chicken",
-                    "Blini with Salmon",
+                    "Weißwurst mit Brezn und süßem Senf",
+                    "Curry Wurst",
                     "Wiener Schnitzel",
-                    "Cevapcici",
+                    "Schweinshaxe mit Knödel und Sauerkraut",
                     "Germknoedel",
                     "Greek Salad",
                     "Spare Ribs",
@@ -60,48 +58,45 @@ public static class SupplierStore
                 }
             },
             new()
-            {
+             {
                 SupplierId = 3,
-                CompanyName = "Antica Cucina S.r.l.",
-                ContactName = "Lucia Romano",
-                ContactTitle = "Responsabile Acquisti",
-                City = "Milano",
-                Region = "Lombardia",
+                CompanyName = "Partenope Gastronomia S.r.l.",
+                ContactName = "Antonio Bianchi",
+                ContactTitle = "Manager Operativo",
+                City = "Napoli",
+                Region = "Campania",
                 Country = "Italy",
-                PostalCode = "20121",
-                Phone = "+39 02 3456789",
-                EMail = "info@anticacucina.example",
-                Address = "Via Dante 34",
-                HomePage = "https://anticacucina.example",
-                Products = new List<string>
+                PostalCode = "80132",
+                Phone = "+39 081 555 7890",
+                EMail = "antonio.bianchi@partenope.it",
+                Address = "Corso Umberto I 15",
+                HomePage = "https://pizza-napoli.it",
+                AvailableProducts = new List<string>
                 {
-                    "Butter Chicken",
-                    "Blini with Salmon",
-                    "Wiener Schnitzel",
-                    "Cevapcici",
-                    "Germknoedel",
-                    "Greek Salad",
-                    "Spare Ribs",
-                    "Falafel with Humus."
+                    "Pizza Napoli",
+                    "Arancini Napoletana"
                 }
             },
             new()
             {
                 SupplierId = 4,
-                CompanyName = "Bangkok Foods Co., Ltd.",
-                ContactName = "Somsak Chaiyawan",
+                CompanyName = "Same, same but different Foods Co., Ltd.",
+                ContactName = "Alek Kastil",
                 ContactTitle = "Operations Manager",
                 City = "Bangkok",
                 Region = string.Empty,
                 Country = "Thailand",
                 PostalCode = "10100",
                 Phone = "+66 2 123 4567",
-                EMail = "somsak.chaiyawan@bangkokfoods.example",
+                EMail = "alek.kastil@bangkokfoods.th",
                 Address = "Sukhumvit Rd. 45",
-                HomePage = "https://bangkokfoods.example",
-                Products = new List<string>
+                HomePage = "https://bangkokfoods.th",
+                AvailableProducts = new List<string>
                 {
-                    "Pad Ka Prao"
+                    "Pad Ka Prao",
+                    "Massaman Curry",
+                    "Green Curry",
+                    "Tom Yum Goong",
                 }
             }
         });
