@@ -230,7 +230,7 @@ public class PurchasingToolsTests : IDisposable
         // Verify offer status was updated to Accepted (1)
         var updatedOffer = await _dbContext.Offers.FindAsync(offer.OfferId);
         Assert.NotNull(updatedOffer);
-        Assert.Equal(1, updatedOffer.Status);
+        Assert.Equal(OfferStatus.Accepted, updatedOffer.Status);
     }
 
     [Fact]

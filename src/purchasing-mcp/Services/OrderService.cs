@@ -56,11 +56,6 @@ public class OrderService : IOrderService
                     throw new InvalidOperationException($"Product '{orderDetail.ProductName}' is not included in the offer.");
                 }
 
-                if (offerDetail.Quantity == 0)
-                {
-                    throw new InvalidOperationException($"Product '{orderDetail.ProductName}' is not available in the offer.");
-                }
-
                 if (orderDetail.Quantity > offerDetail.Quantity)
                 {
                     throw new InvalidOperationException($"Requested quantity for '{orderDetail.ProductName}' exceeds the offered quantity.");
@@ -73,7 +68,7 @@ public class OrderService : IOrderService
             }
 
             // Update offer status to Accepted
-            offer.Status = 1; // Accepted
+            offer.Status = OfferStatus.Accepted;
             await _dbContext.SaveChangesAsync();
 
             var total = order.OrderDetails.Sum(detail => detail.Price * detail.Quantity) + offer.TransportationCost;

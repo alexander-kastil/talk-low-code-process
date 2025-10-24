@@ -14,5 +14,5 @@ public class Offer
 
     public string? Email { get; set; }
 
-    public int Status { get; set; } = 0; // 0 = Pending, 1 = Accepted, 2 = Rejected
+    public OfferStatus Status { get; set; } = OfferStatus.Pending;
 }
