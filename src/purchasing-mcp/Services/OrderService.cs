@@ -48,7 +48,7 @@ public class OrderService : IOrderService
             // Validate order details against offer details
             foreach (var orderDetail in order.OrderDetails)
             {
-                var offerDetail = offer.OfferDetails.FirstOrDefault(od => 
+                var offerDetail = offer.OfferDetails.FirstOrDefault(od =>
                     string.Equals(od.ProductName, orderDetail.ProductName, StringComparison.OrdinalIgnoreCase));
 
                 if (offerDetail is null)
