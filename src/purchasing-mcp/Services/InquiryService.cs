@@ -9,15 +9,15 @@ namespace PurchasingService.Services;
 public class InquiryService : IInquiryService
 {
     private readonly IOfferRandomizer _offerRandomizer;
-    private readonly GraphHelper _graphHelper;
-    private readonly IChatClient _chatClient;
+    private readonly GraphHelper? _graphHelper;
+    private readonly IChatClient? _chatClient;
     private readonly PurchasingDbContext _dbContext;
 
-    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper graphHelper, IChatClient chatClient, PurchasingDbContext dbContext)
+    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper? graphHelper, IChatClient? chatClient, PurchasingDbContext dbContext)
     {
         _offerRandomizer = offerRandomizer ?? throw new ArgumentNullException(nameof(offerRandomizer));
-        _graphHelper = graphHelper ?? throw new ArgumentNullException(nameof(graphHelper));
-        _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
+        _graphHelper = graphHelper;
+        _chatClient = chatClient;
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
@@ -83,7 +83,10 @@ public class InquiryService : IInquiryService
         _dbContext.Offers.Add(response);
         await _dbContext.SaveChangesAsync();
 
-        await ResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response).ConfigureAwait(false);
+        if (_graphHelper != null && _chatClient != null)
+        {
+            await ResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response).ConfigureAwait(false);
+        }
 
         return response;
     }

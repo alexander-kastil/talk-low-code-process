@@ -12,7 +12,7 @@ namespace PurchasingService.Tools;
 /// Enables AI agents to manage suppliers, request offers, and place orders.
 /// </summary>
 [McpServerToolType]
-internal class PurchasingTools
+public class PurchasingTools
 {
     private readonly ISupplierService _supplierService;
     private readonly IInquiryService _inquiryService;
