@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using PurchasingService.Data;
 using PurchasingService.Graph;
@@ -10,12 +11,14 @@ public class InquiryService : IInquiryService
     private readonly IOfferRandomizer _offerRandomizer;
     private readonly GraphHelper _graphHelper;
     private readonly IChatClient _chatClient;
+    private readonly PurchasingDbContext _dbContext;
 
-    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper graphHelper, IChatClient chatClient)
+    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper graphHelper, IChatClient chatClient, PurchasingDbContext dbContext)
     {
         _offerRandomizer = offerRandomizer ?? throw new ArgumentNullException(nameof(offerRandomizer));
         _graphHelper = graphHelper ?? throw new ArgumentNullException(nameof(graphHelper));
         _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
     public async Task<Offer> RequestOfferAsync(OfferRequest request)
@@ -73,6 +76,10 @@ public class InquiryService : IInquiryService
             OfferDetails = offerLines,
             Email = request.Email?.Trim()
         };
+
+        // Save the offer to the database
+        _dbContext.Offers.Add(response);
+        await _dbContext.SaveChangesAsync();
 
         await ResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response).ConfigureAwait(false);
 
