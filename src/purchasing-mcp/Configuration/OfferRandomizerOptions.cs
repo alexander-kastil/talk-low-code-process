@@ -12,8 +12,6 @@ public sealed class OfferRandomizerOptions
 
     public DeliveryOptions Delivery { get; set; } = new();
 
-    public Dictionary<string, decimal> BasePrices { get; set; } = new(StringComparer.OrdinalIgnoreCase);
-
     public sealed class PricingOptions
     {
         public double BaseProbability { get; set; } = 0.5d;

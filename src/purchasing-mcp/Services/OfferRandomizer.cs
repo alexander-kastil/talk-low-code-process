@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using PurchasingService.Data;
 using PurchasingService.Models;
 using System.Security.Cryptography;
 
@@ -69,32 +71,32 @@ public interface IOfferRandomizer
 {
     decimal TransportationCost { get; }
 
-    bool TryGetBasePrice(string productName, out decimal basePrice);
-
-    OfferDetails GenerateOffer(string productName, int requestedAmount);
+    Task<OfferDetails> GenerateOfferAsync(string productName, int requestedAmount);
 }
 
 public sealed class OfferRandomizer : IOfferRandomizer
 {
     private readonly IRandomProvider _random;
     private readonly OfferRandomizerOptions _options;
-    private readonly Dictionary<string, decimal> _basePrices;
+    private readonly PurchasingDbContext _dbContext;
 
-    public OfferRandomizer(IRandomProvider randomProvider, OfferRandomizerOptions options)
+    public OfferRandomizer(IRandomProvider randomProvider, OfferRandomizerOptions options, PurchasingDbContext dbContext)
     {
         _random = randomProvider ?? throw new ArgumentNullException(nameof(randomProvider));
         _options = options ?? throw new ArgumentNullException(nameof(options));
-        _basePrices = new Dictionary<string, decimal>(_options.BasePrices ?? new(), StringComparer.OrdinalIgnoreCase);
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
     public decimal TransportationCost => _options.TransportationCost;
 
-    public bool TryGetBasePrice(string productName, out decimal basePrice)
+    private async Task<decimal?> TryGetBasePriceAsync(string productName)
     {
-        return _basePrices.TryGetValue(productName, out basePrice);
+        var product = await _dbContext.Products
+            .FirstOrDefaultAsync(p => p.Name == productName);
+        return product?.BasePrice;
     }
 
-    public OfferDetails GenerateOffer(string productName, int requestedAmount)
+    public async Task<OfferDetails> GenerateOfferAsync(string productName, int requestedAmount)
     {
         if (string.IsNullOrWhiteSpace(productName))
         {
@@ -106,12 +108,13 @@ public sealed class OfferRandomizer : IOfferRandomizer
             throw new ArgumentOutOfRangeException(nameof(requestedAmount), "Requested amount must be greater than zero.");
         }
 
-        if (!TryGetBasePrice(productName, out var basePrice))
+        var basePrice = await TryGetBasePriceAsync(productName);
+        if (!basePrice.HasValue)
         {
             throw new ArgumentException($"No base price configured for product '{productName}'.", nameof(productName));
         }
 
-        var offeredPrice = CalculateOfferedPrice(basePrice);
+        var offeredPrice = CalculateOfferedPrice(basePrice.Value);
         var sameDayProbability = Math.Clamp(_options.Delivery.SameDaySingleDeliveryPercentage, 0d, 100d) / 100d;
         var isSameDaySingleDelivery = _random.NextDouble() < sameDayProbability;
 
@@ -134,7 +137,7 @@ public sealed class OfferRandomizer : IOfferRandomizer
 
         return new OfferDetails
         {
-            ProductName = NormalizeProductName(productName),
+            ProductName = productName,
             Price = offeredPrice,
             RequestedQuantity = requestedAmount,
             Quantity = offeredAmount,
@@ -205,17 +208,4 @@ public sealed class OfferRandomizer : IOfferRandomizer
     }
 
     private static decimal RoundMoney(decimal value) => Math.Round(value, 2, MidpointRounding.AwayFromZero);
-
-    private string NormalizeProductName(string productName)
-    {
-        foreach (var basePrice in _basePrices.Keys)
-        {
-            if (string.Equals(basePrice, productName, StringComparison.OrdinalIgnoreCase))
-            {
-                return basePrice;
-            }
-        }
-
-        return productName;
-    }
 }

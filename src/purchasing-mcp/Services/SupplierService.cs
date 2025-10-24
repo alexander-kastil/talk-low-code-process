@@ -1,30 +1,43 @@
+using Microsoft.EntityFrameworkCore;
 using PurchasingService.Data;
 
 namespace PurchasingService.Services;
 
 public class SupplierService : ISupplierService
 {
-    public Task<List<Supplier>> GetAllSuppliersAsync()
+    private readonly PurchasingDbContext _dbContext;
+
+    public SupplierService(PurchasingDbContext dbContext)
     {
-        return Task.FromResult(SupplierStore.GetSuppliers().ToList());
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public Task<Supplier?> GetSupplierByIdAsync(int id)
+    public async Task<List<Supplier>> GetAllSuppliersAsync()
     {
-        return Task.FromResult(SupplierStore.GetSupplierById(id));
+        return await _dbContext.Suppliers
+            .Include(s => s.Products)
+            .ToListAsync();
     }
 
-    public Task<Supplier?> GetSupplierByNameAsync(string name)
+    public async Task<Supplier?> GetSupplierByIdAsync(int id)
     {
-        return Task.FromResult(SupplierStore.GetSupplierByName(name));
+        return await _dbContext.Suppliers
+            .Include(s => s.Products)
+            .FirstOrDefaultAsync(s => s.SupplierId == id);
     }
 
-    public Task<List<Supplier>> GetSuppliersForProductAsync(string product)
+    public async Task<Supplier?> GetSupplierByNameAsync(string name)
     {
-        var matches = SupplierStore.GetSuppliers()
-            .Where(s => s.AvailableProducts.Any(p => string.Equals(p, product, StringComparison.OrdinalIgnoreCase)))
-            .ToList();
+        return await _dbContext.Suppliers
+            .Include(s => s.Products)
+            .FirstOrDefaultAsync(s => s.CompanyName == name);
+    }
 
-        return Task.FromResult(matches);
+    public async Task<List<Supplier>> GetSuppliersForProductAsync(string product)
+    {
+        return await _dbContext.Suppliers
+            .Include(s => s.Products)
+            .Where(s => s.Products.Any(p => p.Name == product))
+            .ToListAsync();
     }
 }

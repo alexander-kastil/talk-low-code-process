@@ -33,7 +33,9 @@ public class InquiryService : IInquiryService
             throw new ArgumentException("At least one product must be provided.", nameof(request));
         }
 
-        var supplier = SupplierStore.GetSupplierById(request.SupplierId);
+        var supplier = await _dbContext.Suppliers
+            .Include(s => s.Products)
+            .FirstOrDefaultAsync(s => s.SupplierId == request.SupplierId);
 
         if (supplier is null)
         {
@@ -49,11 +51,11 @@ public class InquiryService : IInquiryService
                 throw new ArgumentException("Product entries cannot be null.", nameof(request));
             }
 
-            var isOffered = supplier.AvailableProducts.Contains(productRequest.Product, StringComparer.OrdinalIgnoreCase);
+            var isOffered = supplier.Products.Any(p => string.Equals(p.Name, productRequest.Product, StringComparison.OrdinalIgnoreCase));
 
             if (isOffered)
             {
-                offerLines.Add(_offerRandomizer.GenerateOffer(productRequest.Product, productRequest.RequestedQuantity));
+                offerLines.Add(await _offerRandomizer.GenerateOfferAsync(productRequest.Product, productRequest.RequestedQuantity));
             }
             else
             {

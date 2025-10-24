@@ -42,12 +42,13 @@ builder.Services.AddSingleton<IChatClient>(sp =>
     return chatClient.AsIChatClient();
 });
 
-// Register the IOfferRandomizer as a singleton that resolves the configured options
-builder.Services.AddSingleton<IOfferRandomizer>(sp =>
+// Register the IOfferRandomizer as a scoped service that resolves the configured options and DbContext
+builder.Services.AddScoped<IOfferRandomizer>(sp =>
 {
     var options = sp.GetRequiredService<IOptions<OfferRandomizerOptions>>().Value;
     var random = sp.GetRequiredService<IRandomProvider>();
-    return new OfferRandomizer(random, options);
+    var dbContext = sp.GetRequiredService<PurchasingDbContext>();
+    return new OfferRandomizer(random, options, dbContext);
 });
 
 // Register purchasing services
@@ -62,11 +63,12 @@ builder.Services.AddMcpServer()
 
 var app = builder.Build();
 
-// Apply migrations on startup
+// Apply migrations and seed data on startup
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<PurchasingDbContext>();
     dbContext.Database.Migrate();
+    await DbSeeder.SeedAsync(dbContext);
 }
 
 app.UseSwagger();
