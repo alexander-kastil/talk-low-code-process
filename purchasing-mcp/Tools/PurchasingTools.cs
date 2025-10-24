@@ -32,7 +32,7 @@ internal class PurchasingTools
     }
 
     [McpServerTool]
-    [Description("Retrieves the complete list of suppliers")]
+    [Description("Retrieves the complete list of suppliers. Use this as the default supplier lookup when no filters are required.")]
     public async Task<SupplierCollection> GetSuppliers()
     {
         _logger.LogInformation("Fetching all suppliers");
@@ -64,7 +64,7 @@ internal class PurchasingTools
     }
 
     [McpServerTool]
-    [Description("Retrieves all suppliers that offer a specific product")]
+    [Description("Retrieves all suppliers that offer a specific product. Prefer GetSuppliers unless product-specific filtering is needed.")]
     public async Task<SupplierCollection> GetSuppliersForProduct(
         [Description("The name of the product to search for")] string productName)
     {
@@ -101,7 +101,7 @@ internal class PurchasingTools
         List<OfferRequestDetail> offerDetails;
         try
         {
-            offerDetails = JsonSerializer.Deserialize<List<OfferRequestDetail>>(offerDetailsJson) 
+            offerDetails = JsonSerializer.Deserialize<List<OfferRequestDetail>>(offerDetailsJson)
                 ?? throw new ArgumentException("Failed to parse offer details JSON.", nameof(offerDetailsJson));
         }
         catch (JsonException ex)

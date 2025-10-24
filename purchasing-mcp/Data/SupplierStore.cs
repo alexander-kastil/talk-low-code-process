@@ -30,7 +30,7 @@ public static class SupplierStore
                     "Germknoedel",
                     "Greek Salad",
                     "Spare Ribs",
-                    "Falaffel with Humus."
+                    "Falafel with Humus."
                 }
             },
             new()
@@ -56,7 +56,7 @@ public static class SupplierStore
                     "Germknoedel",
                     "Greek Salad",
                     "Spare Ribs",
-                    "Falaffel with Humus."
+                    "Falafel with Humus."
                 }
             },
             new()
@@ -82,7 +82,7 @@ public static class SupplierStore
                     "Germknoedel",
                     "Greek Salad",
                     "Spare Ribs",
-                    "Falaffel with Humus."
+                    "Falafel with Humus."
                 }
             },
             new()
