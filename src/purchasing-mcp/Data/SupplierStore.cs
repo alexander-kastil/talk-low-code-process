@@ -44,9 +44,8 @@ public static class SupplierStore
                 HomePage = "https://muenchner-gewuerze.de",
                 AvailableProducts = new List<string>
                 {
-                    "Weisswurst mit Senf",
-                    "Curry Wurst",
-                    "Schweinshaxe mit Sauerkraut",
+                    "Weisswurst mit Brezn",
+                    "Schweinshaxe mit Kraut",
                 }
             },
             new()
@@ -72,21 +71,20 @@ public static class SupplierStore
             new()
             {
                 SupplierId = 4,
-                CompanyName = "Same, same but different Foods Co., Ltd.",
-                ContactName = "Alek Kastil",
+                CompanyName = "Same, same Foods Co., Ltd.",
+                ContactName = "Alek Looklike",
                 ContactTitle = "Operations Manager",
                 City = "Bangkok",
                 Region = string.Empty,
                 Country = "Thailand",
                 PostalCode = "10100",
                 Phone = "+66 2 123 4567",
-                EMail = "alek.kastil@bangkokfoods.th",
+                EMail = "alek.looklike@bangkokfoods.th",
                 Address = "Sukhumvit Rd. 45",
                 HomePage = "https://bangkokfoods.th",
                 AvailableProducts = new List<string>
                 {
                     "Pad Ka Prao",
-                    "Massaman Curry",
                     "Green Curry",
                 }
             }
