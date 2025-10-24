@@ -56,67 +56,7 @@ beginDialog:
                 }
               ]
             },
-            {
-              "type": "ColumnSet",
-              "spacing": "Small",
-              "columns": [
-                {
-                  "type": "Column",
-                  "width": "stretch",
-                  "items": [
-                    {
-                      "type": "TextBlock",
-                      "text": "Kaiserschmarrn",
-                      "wrap": true
-                    }
-                  ]
-                },
-                {
-                  "type": "Column",
-                  "width": "auto",
-                  "verticalContentAlignment": "Center",
-                  "items": [
-                    {
-                      "type": "Input.Number",
-                      "id": "qty.Kaiserschmarrn",
-                      "min": 0,
-                      "value": 0
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "ColumnSet",
-              "spacing": "Small",
-              "columns": [
-                {
-                  "type": "Column",
-                  "width": "stretch",
-                  "items": [
-                    {
-                      "type": "TextBlock",
-                      "text": "Weisswurst mit Brezn",
-                      "wrap": true
-                    }
-                  ]
-                },
-                {
-                  "type": "Column",
-                  "width": "auto",
-                  "verticalContentAlignment": "Center",
-                  "items": [
-                    {
-                      "type": "Input.Number",
-                      "id": "qty.WeisswurstMitBrezn",
-                      "min": 0,
-                      "value": 0
-                    }
-                  ]
-                }
-              ]
-            },
-            {
+              {
               "type": "ColumnSet",
               "spacing": "Small",
               "columns": [
@@ -156,7 +96,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Cevapcici",
+                      "text": "Kaiserschmarrn",
                       "wrap": true
                     }
                   ]
@@ -168,7 +108,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "Input.Number",
-                      "id": "qty.Cevapcici",
+                      "id": "qty.Kaiserschmarrn",
                       "min": 0,
                       "value": 0
                     }
@@ -216,7 +156,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Greek Salad",
+                      "text": "Weisswurst mit Brezn",
                       "wrap": true
                     }
                   ]
@@ -228,7 +168,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "Input.Number",
-                      "id": "qty.GreekSalad",
+                      "id": "qty.WeisswurstMitBrezn",
                       "min": 0,
                       "value": 0
                     }
@@ -236,7 +176,7 @@ beginDialog:
                 }
               ]
             },
-            {
+              {
               "type": "ColumnSet",
               "spacing": "Small",
               "columns": [
@@ -265,7 +205,67 @@ beginDialog:
                   ]
                 }
               ]
-            },
+            },          
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Pizza Napoli",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.PizzaNapoli",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },            
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Arancini Napoletana",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.AranciniNapoletana",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },          
             {
               "type": "ColumnSet",
               "spacing": "Small",
@@ -338,10 +338,10 @@ beginDialog:
         binding:
           qty.Kaiserschmarrn: Topic.qtyKaiserschmarrn
           qty.WeisswurstMitBrezn: Topic.qtyWeisswurstMitBrezn
-          qty.Cevapcici: Topic.qtyCevapcici
+          qty.PizzaNapoli: Topic.qtyPizzaNapoli
           qty.GreenCurry: Topic.qtyGreenCurry
           qty.Germknoedel: Topic.qtyGermknoedel
-          qty.GreekSalad: Topic.qtyGreekSalad
+          qty.AranciniNapoletana: Topic.qtyAranciniNapoletana
           qty.PadKaPrao: Topic.qtyPadKaPrao
           qty.SchweinshaxeMitKraut: Topic.qtySchweinshaxeMitKraut
           qty.WienerSchnitzel: Topic.qtyWienerSchnitzel
@@ -350,10 +350,10 @@ beginDialog:
         properties:
           qty.Kaiserschmarrn: Number
           qty.WeisswurstMitBrezn: Number
-          qty.Cevapcici: Number
+          qty.PizzaNapoli: Number
           qty.GreenCurry: Number
           qty.Germknoedel: Number
-          qty.GreekSalad: Number
+          qty.AranciniNapoletana: Number
           qty.PadKaPrao: Number
           qty.SchweinshaxeMitKraut: Number
           qty.WienerSchnitzel: Number
@@ -366,9 +366,9 @@ beginDialog:
               Kaiserschmarrn: Topic.qtyKaiserschmarrn,
               WeisswurstMitBrezn: Topic.qtyWeisswurstMitBrezn,
               WienerSchnitzel: Topic.qtyWienerSchnitzel,
-              Cevapcici: Topic.qtyCevapcici,
+              PizzaNapoli: Topic.qtyPizzaNapoli,
               Germknoedel: Topic.qtyGermknoedel,
-              GreekSalad: Topic.qtyGreekSalad,
+              AranciniNapoletana: Topic.qtyAranciniNapoletana,
               SchweinshaxeMitKraut: Topic.qtySchweinshaxeMitKraut,
               PadKaPrao: Topic.qtyPadKaPrao,
               GreenCurry: Topic.qtyGreenCurry

@@ -57,67 +57,7 @@ beginDialog:
                 }
               ]
             },
-            {
-              "type": "ColumnSet",
-              "spacing": "Small",
-              "columns": [
-                {
-                  "type": "Column",
-                  "width": "stretch",
-                  "items": [
-                    {
-                      "type": "TextBlock",
-                      "text": "Butter Chicken",
-                      "wrap": true
-                    }
-                  ]
-                },
-                {
-                  "type": "Column",
-                  "width": "auto",
-                  "verticalContentAlignment": "Center",
-                  "items": [
-                    {
-                      "type": "Input.Number",
-                      "id": "qty.ButterChicken",
-                      "min": 0,
-                      "value": 0
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "ColumnSet",
-              "spacing": "Small",
-              "columns": [
-                {
-                  "type": "Column",
-                  "width": "stretch",
-                  "items": [
-                    {
-                      "type": "TextBlock",
-                      "text": "Blini with Salmon",
-                      "wrap": true
-                    }
-                  ]
-                },
-                {
-                  "type": "Column",
-                  "width": "auto",
-                  "verticalContentAlignment": "Center",
-                  "items": [
-                    {
-                      "type": "Input.Number",
-                      "id": "qty.BliniWithSalmon",
-                      "min": 0,
-                      "value": 0
-                    }
-                  ]
-                }
-              ]
-            },
-            {
+              {
               "type": "ColumnSet",
               "spacing": "Small",
               "columns": [
@@ -157,7 +97,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Cevapcici",
+                      "text": "Kaiserschmarrn",
                       "wrap": true
                     }
                   ]
@@ -169,7 +109,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "Input.Number",
-                      "id": "qty.Cevapcici",
+                      "id": "qty.Kaiserschmarrn",
                       "min": 0,
                       "value": 0
                     }
@@ -217,7 +157,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Greek Salad",
+                      "text": "Weisswurst mit Brezn",
                       "wrap": true
                     }
                   ]
@@ -229,7 +169,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "Input.Number",
-                      "id": "qty.GreekSalad",
+                      "id": "qty.WeisswurstMitBrezn",
                       "min": 0,
                       "value": 0
                     }
@@ -237,6 +177,36 @@ beginDialog:
                 }
               ]
             },
+              {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Schweinshaxe mit Kraut",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.SchweinshaxeMitKraut",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },          
             {
               "type": "ColumnSet",
               "spacing": "Small",
@@ -247,7 +217,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Spare Ribs",
+                      "text": "Pizza Napoli",
                       "wrap": true
                     }
                   ]
@@ -259,14 +229,44 @@ beginDialog:
                   "items": [
                     {
                       "type": "Input.Number",
-                      "id": "qty.SpareRibs",
+                      "id": "qty.PizzaNapoli",
                       "min": 0,
                       "value": 0
                     }
                   ]
                 }
               ]
-            },
+            },            
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Arancini Napoletana",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.AranciniNapoletana",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },          
             {
               "type": "ColumnSet",
               "spacing": "Small",
@@ -307,7 +307,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "TextBlock",
-                      "text": "Falafel with Humus",
+                      "text": "Green Curry",
                       "wrap": true
                     }
                   ]
@@ -319,7 +319,7 @@ beginDialog:
                   "items": [
                     {
                       "type": "Input.Number",
-                      "id": "qty.FalafelWithHumus",
+                      "id": "qty.GreenCurry",
                       "min": 0,
                       "value": 0
                     }
@@ -337,26 +337,26 @@ beginDialog:
         }
       output:
         binding:
-          qty.BliniWithSalmon: Topic.qtyBliniWithSalmon
-          qty.ButterChicken: Topic.qtyButterChicken
-          qty.Cevapcici: Topic.qtyCevapcici
-          qty.FalafelWithHumus: Topic.qtyFalafelWithHumus
+          qty.AranciniNapoletana: Topic.qtyAranciniNapoletana
           qty.Germknoedel: Topic.qtyGermknoedel
-          qty.GreekSalad: Topic.qtyGreekSalad
+          qty.GreenCurry: Topic.qtyGreenCurry
+          qty.Kaiserschmarrn: Topic.qtyKaiserschmarrn
           qty.PadKaPrao: Topic.qtyPadKaPrao
-          qty.SpareRibs: Topic.qtySpareRibs
+          qty.PizzaNapoli: Topic.qtyPizzaNapoli
+          qty.SchweinshaxeMitKraut: Topic.qtySchweinshaxeMitKraut
+          qty.WeisswurstMitBrezn: Topic.qtyWeisswurstMitBrezn
           qty.WienerSchnitzel: Topic.qtyWienerSchnitzel
 
       outputType:
         properties:
-          qty.BliniWithSalmon: Number
-          qty.ButterChicken: Number
-          qty.Cevapcici: Number
-          qty.FalafelWithHumus: Number
+          qty.AranciniNapoletana: Number
           qty.Germknoedel: Number
-          qty.GreekSalad: Number
+          qty.GreenCurry: Number
+          qty.Kaiserschmarrn: Number
           qty.PadKaPrao: Number
-          qty.SpareRibs: Number
+          qty.PizzaNapoli: Number
+          qty.SchweinshaxeMitKraut: Number
+          qty.WeisswurstMitBrezn: Number
           qty.WienerSchnitzel: Number
 
     - kind: SetVariable
@@ -364,20 +364,20 @@ beginDialog:
       variable: Global.orderDemand
       value: |-
         =JSON({
-              ButterChicken: Topic.qtyButterChicken,
-              BliniWithSalmon: Topic.qtyBliniWithSalmon,
+              Kaiserschmarrn: Topic.qtyKaiserschmarrn,
+              WeisswurstMitBrezn: Topic.qtyWeisswurstMitBrezn,
               WienerSchnitzel: Topic.qtyWienerSchnitzel,
-              Cevapcici: Topic.qtyCevapcici,
+              PizzaNapoli: Topic.qtyPizzaNapoli,
               Germknoedel: Topic.qtyGermknoedel,
-              GreekSalad: Topic.qtyGreekSalad,
-              SpareRibs: Topic.qtySpareRibs,
+              AranciniNapoletana: Topic.qtyAranciniNapoletana,
+              SchweinshaxeMitKraut: Topic.qtySchweinshaxeMitKraut,
               PadKaPrao: Topic.qtyPadKaPrao,
-              FalafelWithHumus: Topic.qtyFalafelWithHumus
+              GreenCurry: Topic.qtyGreenCurry
         })
 
     - kind: SendActivity
       id: sendActivity_MnOZNi
-      activity: "Your demand was sucessfully noted: {Global.orderDemand}"
+      activity: "Your demand was successfully noted: {Global.orderDemand}"
 
 inputType: {}
 outputType: {}
