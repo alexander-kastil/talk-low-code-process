@@ -75,6 +75,7 @@ public class InquiryService : IInquiryService
             Email = response.Email,
             OfferDetails = response.RequestDetails.Select(d => new OfferDetail
             {
+                OfferId = response.Id,
                 ProductName = d.ProductName,
                 BasePrice = d.BasePrice,
                 OfferedPrice = d.OfferedPrice,

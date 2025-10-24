@@ -25,8 +25,9 @@ builder.Services.Configure<GraphOptions>(builder.Configuration.GetSection("Graph
 builder.Services.Configure<AzureOpenAIOptions>(builder.Configuration.GetSection("AzureOpenAI"));
 
 // Configure Entity Framework
+var databaseOptions = builder.Configuration.GetSection("ConnectionStrings").Get<DatabaseOptions>();
 builder.Services.AddDbContext<PurchasingDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase")));
+    options.UseSqlServer(databaseOptions?.DefaultDatabase ?? throw new InvalidOperationException("DefaultDatabase connection string not configured")));
 builder.Services.AddSingleton<GraphHelper>();
 builder.Services.AddSingleton<IChatClient>(sp =>
 {
