@@ -72,14 +72,14 @@ public static class SupplierStore
             {
                 SupplierId = 4,
                 CompanyName = "Same, same Foods Co., Ltd.",
-                ContactName = "Alek Looklike",
+                ContactName = "Alek Nohep",
                 ContactTitle = "Operations Manager",
                 City = "Bangkok",
                 Region = string.Empty,
                 Country = "Thailand",
                 PostalCode = "10100",
                 Phone = "+66 2 123 4567",
-                EMail = "alek.looklike@bangkokfoods.th",
+                EMail = "alek.nohep@bangkokfoods.th",
                 Address = "Sukhumvit Rd. 45",
                 HomePage = "https://bangkokfoods.th",
                 AvailableProducts = new List<string>
