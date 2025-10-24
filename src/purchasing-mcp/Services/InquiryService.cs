@@ -18,7 +18,7 @@ public class InquiryService : IInquiryService
         _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
     }
 
-    public async Task<OfferResponse> RequestOfferAsync(OfferRequest request)
+    public async Task<Offer> RequestOfferAsync(OfferRequest request)
     {
         if (request is null)
         {
@@ -65,12 +65,12 @@ public class InquiryService : IInquiryService
             }
         }
 
-        var response = new OfferResponse
+        var response = new Offer
         {
             SupplierId = supplier.SupplierId,
             TransportationCost = _offerRandomizer.TransportationCost,
             Timestamp = DateTimeOffset.UtcNow,
-            RequestDetails = offerLines,
+            OfferDetails = offerLines,
             Email = request.Email?.Trim()
         };
 

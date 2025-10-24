@@ -1,6 +1,6 @@
 namespace PurchasingService.Models;
 
-public class OfferResponse
+public class Offer
 {
     public Guid OfferId { get; set; } = Guid.NewGuid();
 
@@ -10,7 +10,7 @@ public class OfferResponse
 
     public DateTimeOffset Timestamp { get; set; }
 
-    public IReadOnlyList<OfferDetails> RequestDetails { get; set; } = Array.Empty<OfferDetails>();
+    public IReadOnlyList<OfferDetails> OfferDetails { get; set; } = Array.Empty<OfferDetails>();
 
     public string? Email { get; set; }
 }

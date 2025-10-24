@@ -16,7 +16,7 @@ public class InquiryController : ControllerBase
     }
 
     [HttpPost("requestOffer")]
-    public async Task<ActionResult<OfferResponse>> GetOffer([FromBody] OfferRequest request)
+    public async Task<ActionResult<Offer>> GetOffer([FromBody] OfferRequest request)
     {
         if (request is null)
         {

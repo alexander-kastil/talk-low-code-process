@@ -14,7 +14,7 @@ namespace PurchasingService.Services;
 
 public static class ResponseHandler
 {
-    public static async Task<bool> TrySendOfferAsync(GraphHelper graphHelper, IChatClient chatClient, OfferResponse response)
+    public static async Task<bool> TrySendOfferAsync(GraphHelper graphHelper, IChatClient chatClient, Offer response)
     {
         ArgumentNullException.ThrowIfNull(graphHelper);
         ArgumentNullException.ThrowIfNull(chatClient);
@@ -35,9 +35,9 @@ public static class ResponseHandler
         return true;
     }
 
-    private static async Task<string> BuildEmailBodyAsync(IChatClient chatClient, OfferResponse response)
+    private static async Task<string> BuildEmailBodyAsync(IChatClient chatClient, Offer response)
     {
-        var details = response.RequestDetails ?? Array.Empty<OfferDetails>();
+        var details = response.OfferDetails ?? Array.Empty<OfferDetails>();
         var supplier = SupplierStore.GetSupplierById(response.SupplierId);
         var currencyCulture = GetCurrencyCulture(supplier);
         var detailLines = details.Select(detail =>
@@ -85,7 +85,7 @@ public static class ResponseHandler
         }
 
         // Fallback deterministic formatting if AI generation fails or exception occurs
-        var fallbackDetails = response.RequestDetails ?? Array.Empty<OfferDetails>();
+        var fallbackDetails = response.OfferDetails ?? Array.Empty<OfferDetails>();
         var fallbackDetailBuilder = new StringBuilder();
         foreach (var detail in fallbackDetails)
         {
