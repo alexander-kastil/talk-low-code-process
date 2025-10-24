@@ -26,9 +26,6 @@ public static class SupplierStore
                     "Wiener Schnitzel",
                     "Germknoedel",
                     "Kaiserschmarrn",
-                    "Sachertorte",
-                    "Falafel with Humus.",
-                    "Linsen mit Semmelknödel",
                 }
             },
             new()
@@ -47,14 +44,9 @@ public static class SupplierStore
                 HomePage = "https://muenchner-gewuerze.de",
                 AvailableProducts = new List<string>
                 {
-                    "Weißwurst mit Brezn und süßem Senf",
+                    "Weisswurst mit Senf",
                     "Curry Wurst",
-                    "Wiener Schnitzel",
-                    "Schweinshaxe mit Knödel und Sauerkraut",
-                    "Germknoedel",
-                    "Greek Salad",
-                    "Spare Ribs",
-                    "Falafel with Humus."
+                    "Schweinshaxe mit Sauerkraut",
                 }
             },
             new()
@@ -96,7 +88,6 @@ public static class SupplierStore
                     "Pad Ka Prao",
                     "Massaman Curry",
                     "Green Curry",
-                    "Tom Yum Goong",
                 }
             }
         });

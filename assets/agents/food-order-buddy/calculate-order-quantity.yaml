@@ -1,0 +1,47 @@
+kind: AdaptiveDialog
+modelDescription: "Calculates order quantity Triggered with phased like: Calculate quantity to order"
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - Calculate order quantity
+      - What do i have to order
+
+  actions:
+    - kind: InvokeConnectorAction
+      id: invokeConnectorAction_NThbKI
+      output:
+        kind: SingleVariableOutputBinding
+        variable: Topic.foodStock
+
+      connectionReference: cr6f9_inventoryClerk.shared_food-2dstock-2dconnector-5fe009d3cff382bfc1-5f26dfabd9fb0863ca.2cf5877732174d4d895617be2e556206
+      connectionProperties:
+        mode: Invoker
+
+      operationId: GetFood
+
+    - kind: InvokeAIBuilderModelAction
+      id: invokeAIBuilderModelAction_v61Znw
+      input:
+        binding:
+          Demand: =JSON(Global.orderDemand)
+          FoodStockData: =JSON(Topic.foodStock)
+
+      output:
+        binding:
+          predictionOutput: Topic.itemsToOrderResponse
+
+      aIModelId: 1d2c5135-265b-4f0b-a847-116d2ec700c5
+
+    - kind: SetVariable
+      id: setVariable_AJlCiO
+      variable: Topic.itemsToOrder
+      value: =JSON(Topic.itemsToOrderResponse.structuredOutput.result)
+
+    - kind: SendActivity
+      id: sendActivity_dYbYG5
+      activity: "Based on our current stock we have to order: {Topic.itemsToOrder}"
+
+inputType: {}
+outputType: {}
