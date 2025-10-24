@@ -25,7 +25,7 @@ public class InquiryService : IInquiryService
             throw new ArgumentNullException(nameof(request));
         }
 
-        if (request.OfferDetails is null || request.OfferDetails.Count == 0)
+        if (request.RequestDetails is null || request.RequestDetails.Count == 0)
         {
             throw new ArgumentException("At least one product must be provided.", nameof(request));
         }
@@ -37,30 +37,29 @@ public class InquiryService : IInquiryService
             throw new InvalidOperationException($"Supplier with id {request.SupplierId} was not found.");
         }
 
-        var offerLines = new List<OfferResponseDetail>(request.OfferDetails.Count);
+        var offerLines = new List<OfferResponseDetail>(request.RequestDetails.Count);
 
-        foreach (var productRequest in request.OfferDetails)
+        foreach (var productRequest in request.RequestDetails)
         {
             if (productRequest is null)
             {
                 throw new ArgumentException("Product entries cannot be null.", nameof(request));
             }
 
-            if (!_offerRandomizer.TryGetBasePrice(productRequest.ProductName, out _))
+            if (!_offerRandomizer.TryGetBasePrice(productRequest.Product, out _))
             {
-                throw new ArgumentException($"Product '{productRequest.ProductName}' is not supported.", nameof(request));
+                throw new ArgumentException($"Product '{productRequest.Product}' is not supported.", nameof(request));
             }
 
-            offerLines.Add(_offerRandomizer.GenerateOffer(productRequest.ProductName, productRequest.RequestedAmount));
+            offerLines.Add(_offerRandomizer.GenerateOffer(productRequest.Product, productRequest.RequestedQuantity));
         }
 
         var response = new OfferResponse
         {
-            RequestId = request.RequestId,
             SupplierId = supplier.SupplierId,
             TransportationCost = _offerRandomizer.TransportationCost,
             Timestamp = DateTimeOffset.UtcNow,
-            OfferDetails = offerLines,
+            RequestDetails = offerLines,
             Email = request.Email?.Trim()
         };
 

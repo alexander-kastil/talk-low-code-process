@@ -27,7 +27,7 @@ public static class ResponseHandler
 
         var sanitizedEmail = response.Email.Trim();
 
-        var subject = $"Offer {response.RequestId}";
+        var subject = "Offer";
         var body = await BuildEmailBodyAsync(chatClient, response).ConfigureAwait(false);
 
         await graphHelper.SendMailAsync(subject, body, new[] { sanitizedEmail }).ConfigureAwait(false);
@@ -37,14 +37,14 @@ public static class ResponseHandler
 
     private static async Task<string> BuildEmailBodyAsync(IChatClient chatClient, OfferResponse response)
     {
-        var details = response.OfferDetails ?? Array.Empty<OfferResponseDetail>();
+        var details = response.RequestDetails ?? Array.Empty<OfferResponseDetail>();
         var supplier = SupplierStore.GetSupplierById(response.SupplierId);
         var currencyCulture = GetCurrencyCulture(supplier);
         var detailLines = details.Select(detail =>
         {
-            var total = detail.OfferedAmount * detail.OfferedPrice;
+            var total = detail.OfferedQuantity * detail.OfferedPrice;
             var statusSuffix = detail.IsAvailable ? string.Empty : "; Status: Unavailable";
-            return $"- Product: {detail.ProductName}; Requested: {detail.RequestedAmount}; Offered: {detail.OfferedAmount}; Price: {FormatCurrency(detail.OfferedPrice, currencyCulture)}; Total: {FormatCurrency(total, currencyCulture)}; Delivery: {detail.DeliveryDurationDays} days{statusSuffix}";
+            return $"- Product: {detail.ProductName}; Requested: {detail.RequestedQuantity}; Offered: {detail.OfferedQuantity}; Price: {FormatCurrency(detail.OfferedPrice, currencyCulture)}; Total: {FormatCurrency(total, currencyCulture)}; Delivery: {detail.DeliveryDurationDays} days{statusSuffix}";
         });
         var detailsText = detailLines.Any() ? string.Join(Environment.NewLine, detailLines) : "No offer lines present.";
         var unavailableNotice = BuildUnavailableNotice(details);
@@ -58,7 +58,6 @@ public static class ResponseHandler
             var prompty = ParsePromptyFile(promptyContent);
             var userMessage = ReplaceTemplateVariables(prompty.UserTemplate, new Dictionary<string, string>
             {
-                ["requestId"] = response.RequestId,
                 ["supplierId"] = response.SupplierId.ToString(CultureInfo.InvariantCulture),
                 ["supplierCompany"] = supplierCompany,
                 ["supplierAddress"] = supplierAddress,
@@ -87,12 +86,12 @@ public static class ResponseHandler
         }
 
         // Fallback deterministic formatting if AI generation fails or exception occurs
-        var fallbackDetails = response.OfferDetails ?? Array.Empty<OfferResponseDetail>();
+        var fallbackDetails = response.RequestDetails ?? Array.Empty<OfferResponseDetail>();
         var fallbackDetailBuilder = new StringBuilder();
         foreach (var detail in fallbackDetails)
         {
-            var total = detail.OfferedAmount * detail.OfferedPrice;
-            var line = $"- Product: {detail.ProductName}; Requested: {detail.RequestedAmount}; Offered: {detail.OfferedAmount}; Price: {FormatCurrency(detail.OfferedPrice, currencyCulture)}; Total: {FormatCurrency(total, currencyCulture)}; Delivery: {detail.DeliveryDurationDays} days";
+            var total = detail.OfferedQuantity * detail.OfferedPrice;
+            var line = $"- Product: {detail.ProductName}; Requested: {detail.RequestedQuantity}; Offered: {detail.OfferedQuantity}; Price: {FormatCurrency(detail.OfferedPrice, currencyCulture)}; Total: {FormatCurrency(total, currencyCulture)}; Delivery: {detail.DeliveryDurationDays} days";
             fallbackDetailBuilder.AppendLine(line);
         }
 
@@ -101,7 +100,7 @@ public static class ResponseHandler
 
         var fallbackSections = new List<string>
         {
-            $"Offer {response.RequestId} from supplier {response.SupplierId} at {response.Timestamp:u}",
+            $"Offer from supplier {response.SupplierId} at {response.Timestamp:u}",
             $"Transportation Cost: {FormatCurrency(response.TransportationCost, currencyCulture)}",
             "Details:",
             fallbackDetailsText

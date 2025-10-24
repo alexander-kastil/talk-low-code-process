@@ -8,9 +8,9 @@ public class OfferResponseDetail
 
     public decimal OfferedPrice { get; set; }
 
-    public int RequestedAmount { get; set; }
+    public int RequestedQuantity { get; set; }
 
-    public int OfferedAmount { get; set; }
+    public int OfferedQuantity { get; set; }
 
     public int DeliveryDurationDays { get; set; }
 

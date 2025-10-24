@@ -8,10 +8,10 @@ Content-Type: application/json
 {
   "supplierId": 1,
   "requestId": "REQ-BULK-3P-{{$guid}}",
-  "offerDetails": [
-    { "productName": "Butter Chicken", "requestedAmount": 14 },
-    { "productName": "Blini with Salmon", "requestedAmount": 15 },
-    { "productName": "Falafel", "requestedAmount": 16 }
+  "requestDetails": [
+    { "product": "Butter Chicken", "requestedQuantity": 14 },
+    { "product": "Blini with Salmon", "requestedQuantity": 15 },
+    { "product": "Falafel", "requestedQuantity": 16 }
   ],
   "email": "{{email}}"
 }
@@ -22,11 +22,10 @@ Content-Type: application/json
 
 {
   "supplierId": 1,
-  "requestId": "REQ-BULK-3P-{{$guid}}",
-  "offerDetails": [
-    { "productName": "Butter Chicken", "requestedAmount": 14 },
-    { "productName": "Blini with Salmon", "requestedAmount": 15 },
-    { "productName": "Falafel", "requestedAmount": 16 }
+  "requestDetails": [
+    { "product": "Butter Chicken", "requestedQuantity": 14 },
+    { "product": "Blini with Salmon", "requestedQuantity": 15 },
+    { "product": "Falafel", "requestedQuantity": 16 }
   ]
 }
 
@@ -37,11 +36,11 @@ Content-Type: application/json
 {
   "supplierId": 2,
   "requestId": "REQ-BULK-4P-{{$guid}}",
-  "offerDetails": [
-    { "productName": "Wiener Schnitzel", "requestedAmount": 20 },
-    { "productName": "Curry Wurst", "requestedAmount": 18 },
-    { "productName": "Cevapcici", "requestedAmount": 15 },
-    { "productName": "Greek salad", "requestedAmount": 14 }
+  "requestDetails": [
+    { "product": "Wiener Schnitzel", "requestedQuantity": 20 },
+    { "product": "Curry Wurst", "requestedQuantity": 18 },
+    { "product": "Cevapcici", "requestedQuantity": 15 },
+    { "product": "Greek salad", "requestedQuantity": 14 }
   ],
   "email": "{{email}}"
 }
@@ -53,12 +52,12 @@ Content-Type: application/json
 {
   "supplierId": 3,
   "requestId": "REQ-BULK-5P-{{$guid}}",
-  "offerDetails": [
-    { "productName": "Pad Ka Prao", "requestedAmount": 22 },
-    { "productName": "Spare Ribs", "requestedAmount": 24 },
-    { "productName": "Butter Chicken", "requestedAmount": 18 },
-    { "productName": "Blini with Salmon", "requestedAmount": 16 },
-    { "productName": "Falafel", "requestedAmount": 14 }
+  "requestDetails": [
+    { "product": "Pad Ka Prao", "requestedQuantity": 22 },
+    { "product": "Spare Ribs", "requestedQuantity": 24 },
+    { "product": "Butter Chicken", "requestedQuantity": 18 },
+    { "product": "Blini with Salmon", "requestedQuantity": 16 },
+    { "product": "Falafel", "requestedQuantity": 14 }
   ],
   "email": "{{email}}"
 }
@@ -70,14 +69,14 @@ Content-Type: application/json
 {
   "supplierId": 4,
   "requestId": "REQ-BULK-7P-{{$guid}}",
-  "offerDetails": [
-    { "productName": "Wiener Schnitzel", "requestedAmount": 30 },
-    { "productName": "Curry Wurst", "requestedAmount": 28 },
-    { "productName": "Cevapcici", "requestedAmount": 20 },
-    { "productName": "Greek salad", "requestedAmount": 18 },
-    { "productName": "Pad Ka Prao", "requestedAmount": 16 },
-    { "productName": "Spare Ribs", "requestedAmount": 14 },
-    { "productName": "Butter Chicken", "requestedAmount": 15 }
+  "requestDetails": [
+    { "product": "Wiener Schnitzel", "requestedQuantity": 30 },
+    { "product": "Curry Wurst", "requestedQuantity": 28 },
+    { "product": "Cevapcici", "requestedQuantity": 20 },
+    { "product": "Greek salad", "requestedQuantity": 18 },
+    { "product": "Pad Ka Prao", "requestedQuantity": 16 },
+    { "product": "Spare Ribs", "requestedQuantity": 14 },
+    { "product": "Butter Chicken", "requestedQuantity": 15 }
   ],
   "email": "{{email}}"
 }

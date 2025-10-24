@@ -23,7 +23,7 @@ public class InquiryController : ControllerBase
             return BadRequest("Request payload is required.");
         }
 
-        if (request.OfferDetails is null || request.OfferDetails.Count == 0)
+        if (request.RequestDetails is null || request.RequestDetails.Count == 0)
         {
             return BadRequest("At least one product must be provided.");
         }

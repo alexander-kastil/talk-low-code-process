@@ -8,8 +8,6 @@ model:
   configuration:
     type: azure_openai
 inputs:
-  requestId:
-    type: string
   supplierId:
     type: string
   supplierCompany:
@@ -40,7 +38,6 @@ Finish with a footer that repeats the supplier company name and full mailing add
 
 user:
 Context:
-- Request Id: {{requestId}}
 - Supplier Id: {{supplierId}}
 - Supplier Company: {{supplierCompany}}
 - Supplier Address: {{supplierAddress}}

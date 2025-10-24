@@ -8,10 +8,7 @@ public class OfferRequest
     public int SupplierId { get; set; }
 
     [Required]
-    public string RequestId { get; set; } = string.Empty;
-
-    [Required]
-    public List<OfferRequestDetail> OfferDetails { get; set; } = new();
+    public List<OfferRequestDetail> RequestDetails { get; set; } = new();
 
     [EmailAddress]
     public string? Email { get; set; }

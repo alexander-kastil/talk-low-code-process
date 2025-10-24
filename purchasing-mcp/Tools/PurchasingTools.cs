@@ -40,43 +40,43 @@ internal class PurchasingTools
         return new SupplierCollection { Suppliers = suppliers };
     }
 
-    [McpServerTool]
-    [Description("Retrieves a supplier by their unique ID")]
-    public async Task<Supplier?> GetSupplierById(
-        [Description("The unique identifier of the supplier")] int supplierId)
-    {
-        _logger.LogInformation("Fetching supplier with ID {SupplierId}", supplierId);
-        return await _supplierService.GetSupplierByIdAsync(supplierId);
-    }
+    // [McpServerTool]
+    // [Description("Retrieves a supplier by their unique ID")]
+    // public async Task<Supplier?> GetSupplierById(
+    //     [Description("The unique identifier of the supplier")] int supplierId)
+    // {
+    //     _logger.LogInformation("Fetching supplier with ID {SupplierId}", supplierId);
+    //     return await _supplierService.GetSupplierByIdAsync(supplierId);
+    // }
 
-    [McpServerTool]
-    [Description("Retrieves a supplier by their company name")]
-    public async Task<Supplier?> GetSupplierByName(
-        [Description("The name of the supplier company")] string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new ArgumentException("Name must be provided.", nameof(name));
-        }
+    // [McpServerTool]
+    // [Description("Retrieves a supplier by their company name")]
+    // public async Task<Supplier?> GetSupplierByName(
+    //     [Description("The name of the supplier company")] string name)
+    // {
+    //     if (string.IsNullOrWhiteSpace(name))
+    //     {
+    //         throw new ArgumentException("Name must be provided.", nameof(name));
+    //     }
 
-        _logger.LogInformation("Fetching supplier with name {Name}", name);
-        return await _supplierService.GetSupplierByNameAsync(name);
-    }
+    //     _logger.LogInformation("Fetching supplier with name {Name}", name);
+    //     return await _supplierService.GetSupplierByNameAsync(name);
+    // }
 
-    [McpServerTool]
-    [Description("Retrieves all suppliers that offer a specific product. Prefer GetSuppliers unless product-specific filtering is needed.")]
-    public async Task<SupplierCollection> GetSuppliersForProduct(
-        [Description("The name of the product to search for")] string productName)
-    {
-        if (string.IsNullOrWhiteSpace(productName))
-        {
-            throw new ArgumentException("Product name must be provided.", nameof(productName));
-        }
+    // [McpServerTool]
+    // [Description("Retrieves all suppliers that offer a specific product. Prefer GetSuppliers unless product-specific filtering is needed.")]
+    // public async Task<SupplierCollection> GetSuppliersForProduct(
+    //     [Description("The name of the product to search for")] string productName)
+    // {
+    //     if (string.IsNullOrWhiteSpace(productName))
+    //     {
+    //         throw new ArgumentException("Product name must be provided.", nameof(productName));
+    //     }
 
-        _logger.LogInformation("Fetching suppliers for product {ProductName}", productName);
-        var suppliers = await _supplierService.GetSuppliersForProductAsync(productName);
-        return new SupplierCollection { Suppliers = suppliers };
-    }
+    //     _logger.LogInformation("Fetching suppliers for product {ProductName}", productName);
+    //     var suppliers = await _supplierService.GetSuppliersForProductAsync(productName);
+    //     return new SupplierCollection { Suppliers = suppliers };
+    // }
 
     [McpServerTool]
     [Description("Requests an offer from a supplier for specified products. Returns offer details including pricing and availability.")]
@@ -112,8 +112,7 @@ internal class PurchasingTools
         var request = new OfferRequest
         {
             SupplierId = supplierId,
-            RequestId = requestId,
-            OfferDetails = offerDetails,
+            RequestDetails = offerDetails,
             Email = email
         };
 

@@ -137,8 +137,8 @@ public sealed class OfferRandomizer : IOfferRandomizer
             ProductName = NormalizeProductName(productName),
             BasePrice = basePrice,
             OfferedPrice = offeredPrice,
-            RequestedAmount = requestedAmount,
-            OfferedAmount = offeredAmount,
+            RequestedQuantity = requestedAmount,
+            OfferedQuantity = offeredAmount,
             DeliveryDurationDays = deliveryDurationDays,
             IsAvailable = isAvailable
         };

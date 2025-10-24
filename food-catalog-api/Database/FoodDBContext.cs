@@ -103,12 +103,12 @@ namespace FoodApi
             list.Add(new FoodItem
             {
                 ID = 9,
-                Name = "Falaffel with Humus",
+                Name = "Falafel with Humus",
                 InStock = 26,
                 MinStock = 6,
                 Price = 9m,
                 Description = "Crispy, golden falafel served alongside silky hummus, bright pickles and warm pita — a satisfying vegetarian plate packed with herbaceous crunch and creamy comfort.",
-                PictureUrl = imgBaseUrl + "falaffel.jpg"
+                PictureUrl = imgBaseUrl + "falafel.jpg"
             });
             modelBuilder.Entity<FoodItem>()
                 .Property(food => food.Price)
