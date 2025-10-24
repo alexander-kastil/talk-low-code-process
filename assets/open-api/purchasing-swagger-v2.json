@@ -6,12 +6,12 @@
     ],
     "basePath": "/",
     "info": {
-        "title": "Purchasing Service",
-        "version": "v1",
+        "title": "PurchasingService",
+        "version": "1.0",
         "description": "API for requesting supplier offers and retrieving supplier information"
     },
     "x-ms-openai-manifest": {
-        "humanName": "Purchasing Service",
+        "humanName": "PurchasingService",
         "modelDescription": "Request purchase offers and browse supplier details",
         "contactEmail": "",
         "legalUrl": ""
@@ -51,6 +51,49 @@
                         "schema": {
                             "$ref": "#/definitions/OfferResponse"
                         }
+                    }
+                },
+                "x-ms-openai-data": {
+                    "openai-enabled": true,
+                    "operations": [
+                        {
+                            "x-ms-require-user-confirmation": false
+                        }
+                    ]
+                }
+            }
+        },
+        "/Order/placeOrder": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Place order",
+                "description": "Submit a purchase order for processing",
+                "operationId": "PlaceOrder",
+                "consumes": [
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "text/plain",
+                    "application/json",
+                    "text/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 },
                 "x-ms-openai-data": {
@@ -175,26 +218,63 @@
                     ]
                 }
             }
+        },
+        "/Suppliers/getSupplierFor/{product}": {
+            "get": {
+                "tags": [
+                    "Suppliers"
+                ],
+                "summary": "Get suppliers for product",
+                "description": "Retrieve suppliers that provide the specified product",
+                "operationId": "GetSupplierForProduct",
+                "produces": [
+                    "text/plain",
+                    "application/json",
+                    "text/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Supplier"
+                            }
+                        }
+                    }
+                },
+                "x-ms-openai-data": {
+                    "openai-enabled": true,
+                    "operations": [
+                        {
+                            "x-ms-require-user-confirmation": false
+                        }
+                    ]
+                }
+            }
         }
     },
     "definitions": {
         "OfferRequest": {
             "type": "object",
             "required": [
-                "supplierId",
-                "requestId",
-                "offerDetails"
+                "requestDetails",
+                "supplierId"
             ],
             "properties": {
                 "supplierId": {
                     "type": "integer",
                     "format": "int32"
                 },
-                "requestId": {
-                    "type": "string",
-                    "minLength": 1
-                },
-                "offerDetails": {
+                "requestDetails": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/OfferRequestDetail"
@@ -211,14 +291,14 @@
         "OfferRequestDetail": {
             "type": "object",
             "required": [
-                "productName"
+                "product"
             ],
             "properties": {
-                "productName": {
+                "product": {
                     "type": "string",
                     "minLength": 1
                 },
-                "requestedAmount": {
+                "requestedQuantity": {
                     "type": "integer",
                     "format": "int32",
                     "minimum": 1,
@@ -234,10 +314,6 @@
                     "type": "string",
                     "format": "uuid"
                 },
-                "requestId": {
-                    "type": "string",
-                    "x-nullable": true
-                },
                 "supplierId": {
                     "type": "integer",
                     "format": "int32"
@@ -250,7 +326,7 @@
                     "type": "string",
                     "format": "date-time"
                 },
-                "offerDetails": {
+                "requestDetails": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/OfferResponseDetail"
@@ -279,11 +355,11 @@
                     "type": "number",
                     "format": "double"
                 },
-                "requestedAmount": {
+                "requestedQuantity": {
                     "type": "integer",
                     "format": "int32"
                 },
-                "offeredAmount": {
+                "offeredQuantity": {
                     "type": "integer",
                     "format": "int32"
                 },
@@ -293,6 +369,66 @@
                 },
                 "isAvailable": {
                     "type": "boolean"
+                }
+            },
+            "additionalProperties": false
+        },
+        "Order": {
+            "type": "object",
+            "required": [
+                "date",
+                "requestId"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "requestId": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "supplierId": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                },
+                "date": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "orderDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/OrderDetail"
+                    },
+                    "minItems": 1,
+                    "x-nullable": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "OrderDetail": {
+            "type": "object",
+            "required": [
+                "productName"
+            ],
+            "properties": {
+                "productName": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "price": {
+                    "type": "number",
+                    "format": "double",
+                    "minimum": 0.01
+                },
+                "quantity": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 2147483647
                 }
             },
             "additionalProperties": false
@@ -346,6 +482,13 @@
                 },
                 "homePage": {
                     "type": "string",
+                    "x-nullable": true
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
                     "x-nullable": true
                 }
             },
