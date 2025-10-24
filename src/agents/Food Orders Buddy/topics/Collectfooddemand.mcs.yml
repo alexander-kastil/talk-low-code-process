@@ -1,0 +1,383 @@
+# Name: Submit demand
+kind: AdaptiveDialog
+modelDescription: "Collect demand for food items to order. Triggered by phrases like: I want to provide my demand, I want to tell you what food I need"
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - I want to submit demand
+      - I want to plan an order
+      - I want to buy food
+
+  actions:
+    - kind: AdaptiveCardPrompt
+      id: demandCard
+      card: |-
+        {
+          "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+          "type": "AdaptiveCard",
+          "version": "1.5",
+          "body": [
+            {
+              "type": "TextBlock",
+              "text": "Provide your demand",
+              "size": "Large",
+              "weight": "Bolder",
+              "wrap": true,
+              "spacing": "Medium"
+            },
+            {
+              "type": "ColumnSet",
+              "spacing": "Medium",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Food Item",
+                      "weight": "Bolder",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Quantity",
+                      "weight": "Bolder",
+                      "wrap": true
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Butter Chicken",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.ButterChicken",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Blini with Salmon",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.BliniWithSalmon",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Wiener Schnitzel",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.WienerSchnitzel",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Cevapcici",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.Cevapcici",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Germknödel",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.Germknoedel",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Greek Salad",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.GreekSalad",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Spare Ribs",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.SpareRibs",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Pad Ka Prao",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.PadKaPrao",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "ColumnSet",
+              "spacing": "Small",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Falafel with Humus",
+                      "wrap": true
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "auto",
+                  "verticalContentAlignment": "Center",
+                  "items": [
+                    {
+                      "type": "Input.Number",
+                      "id": "qty.FalafelWithHumus",
+                      "min": 0,
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "actions": [
+            {
+              "type": "Action.Submit",
+              "title": "Submit Demand"
+            }
+          ]
+        }
+      output:
+        binding:
+          qty.BliniWithSalmon: Topic.qtyBliniWithSalmon
+          qty.ButterChicken: Topic.qtyButterChicken
+          qty.Cevapcici: Topic.qtyCevapcici
+          qty.FalafelWithHumus: Topic.qtyFalafelWithHumus
+          qty.Germknoedel: Topic.qtyGermknoedel
+          qty.GreekSalad: Topic.qtyGreekSalad
+          qty.PadKaPrao: Topic.qtyPadKaPrao
+          qty.SpareRibs: Topic.qtySpareRibs
+          qty.WienerSchnitzel: Topic.qtyWienerSchnitzel
+
+      outputType:
+        properties:
+          qty.BliniWithSalmon: Number
+          qty.ButterChicken: Number
+          qty.Cevapcici: Number
+          qty.FalafelWithHumus: Number
+          qty.Germknoedel: Number
+          qty.GreekSalad: Number
+          qty.PadKaPrao: Number
+          qty.SpareRibs: Number
+          qty.WienerSchnitzel: Number
+
+    - kind: SetVariable
+      id: setVariable_eIf7DZ
+      variable: Global.orderDemand
+      value: |-
+        =JSON({
+              ButterChicken: Topic.qtyButterChicken,
+              BliniWithSalmon: Topic.qtyBliniWithSalmon,
+              WienerSchnitzel: Topic.qtyWienerSchnitzel,
+              Cevapcici: Topic.qtyCevapcici,
+              Germknoedel: Topic.qtyGermknoedel,
+              GreekSalad: Topic.qtyGreekSalad,
+              SpareRibs: Topic.qtySpareRibs,
+              PadKaPrao: Topic.qtyPadKaPrao,
+              FalafelWithHumus: Topic.qtyFalafelWithHumus
+        })
+
+    - kind: SendActivity
+      id: sendActivity_MnOZNi
+      activity: "Your demand was sucessfully noted: {Global.orderDemand}"
+
+inputType: {}
+outputType: {}

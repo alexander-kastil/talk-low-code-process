@@ -1,0 +1,50 @@
+# Name: food-stock-connector - Add food
+kind: TaskDialog
+inputs:
+  - kind: AutomaticTaskInput
+    propertyName: description
+    name: description
+
+  - kind: AutomaticTaskInput
+    propertyName: inStock
+    name: inStock
+
+  - kind: AutomaticTaskInput
+    propertyName: minStock
+    name: minStock
+    description: Minimum amount to keep in stock
+
+  - kind: AutomaticTaskInput
+    propertyName: name
+    name: name
+
+  - kind: AutomaticTaskInput
+    propertyName: price
+    name: price
+
+modelDisplayName: Add food
+modelDescription: Creates a new food item in the catalog.
+outputs:
+  - propertyName: description
+
+  - propertyName: id
+
+  - propertyName: inStock
+
+  - propertyName: minStock
+
+  - propertyName: name
+
+  - propertyName: pictureUrl
+
+  - propertyName: price
+
+action:
+  kind: InvokeConnectorTaskAction
+  connectionReference: cr6f9_inventoryClerk.shared_food-2dstock-2dconnector-5fe009d3cff382bfc1-5f26dfabd9fb0863ca.2cf5877732174d4d895617be2e556206
+  connectionProperties:
+    mode: Invoker
+
+  operationId: AddFood
+
+outputMode: All
