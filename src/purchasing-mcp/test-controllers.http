@@ -1,78 +1,81 @@
 @host = http://localhost:5151
 @email = offers@integrations.at
 
-### Test 1: Bulk order - 3 products (total 15)
+### Test 1: Bulk order - 3 products
 POST {{host}}/inquiry/requestOffer
 Content-Type: application/json
 
 {
   "supplierId": 1,
   "requestDetails": [
-    { "product": "Butter Chicken", "requestedQuantity": 14 },
-    { "product": "Blini with Salmon", "requestedQuantity": 15 },
-    { "product": "Falafel", "requestedQuantity": 16 }
+    { "product": "Wiener Schnitzel", "requestedQuantity": 14 },
+    { "product": "Germknoedel", "requestedQuantity": 15 },
+    { "product": "Kaiserschmarrn", "requestedQuantity": 16 }
   ],
   "email": "{{email}}"
 }
 
-### Test 1: Bulk order - 3 products (total 15) - no email
+### Test 1: Bulk order - 3 products - no email
 POST {{host}}/inquiry/requestOffer
 Content-Type: application/json
 
 {
   "supplierId": 1,
   "requestDetails": [
-    { "product": "Butter Chicken", "requestedQuantity": 14 },
-    { "product": "Blini with Salmon", "requestedQuantity": 15 },
-    { "product": "Falafel", "requestedQuantity": 16 }
+    { "product": "Wiener Schnitzel", "requestedQuantity": 14 },
+    { "product": "Germknoedel", "requestedQuantity": 15 },
+    { "product": "Kaiserschmarrn", "requestedQuantity": 16 }
   ]
 }
 
-### Test 2: Bulk order - 4 products (total 17)
+### Test 2: Bulk order - 2 products
 POST {{host}}/inquiry/requestOffer
 Content-Type: application/json
 
 {
   "supplierId": 2,
   "requestDetails": [
-    { "product": "Wiener Schnitzel", "requestedQuantity": 20 },
-    { "product": "Curry Wurst", "requestedQuantity": 18 },
-    { "product": "Pizza Napoli", "requestedQuantity": 15 },
-    { "product": "Greek salad", "requestedQuantity": 14 }
+    { "product": "Weisswurst mit Brezn", "requestedQuantity": 20 },
+    { "product": "Schweinshaxe mit Kraut", "requestedQuantity": 18 }
   ],
   "email": "{{email}}"
 }
 
-### Test 3: Bulk order - 5 products (total 25)
+### Test 3: Bulk order - 2 products
 POST {{host}}/inquiry/requestOffer
 Content-Type: application/json
 
 {
   "supplierId": 3,
   "requestDetails": [
-    { "product": "Pad Ka Prao", "requestedQuantity": 22 },
-    { "product": "Spare Ribs", "requestedQuantity": 24 },
-    { "product": "Butter Chicken", "requestedQuantity": 18 },
-    { "product": "Blini with Salmon", "requestedQuantity": 16 },
-    { "product": "Falafel", "requestedQuantity": 14 }
+    { "product": "Pizza Napoli", "requestedQuantity": 22 },
+    { "product": "Arancini Napoletana", "requestedQuantity": 24 }
   ],
   "email": "{{email}}"
 }
 
-### Test 4: Bulk order - 7 products (total 30)
+### Test 4: Bulk order - 2 products
 POST {{host}}/inquiry/requestOffer
 Content-Type: application/json
 
 {
   "supplierId": 4,
   "requestDetails": [
-    { "product": "Wiener Schnitzel", "requestedQuantity": 30 },
-    { "product": "Curry Wurst", "requestedQuantity": 28 },
-    { "product": "Pizza Napoli", "requestedQuantity": 20 },
-    { "product": "Greek salad", "requestedQuantity": 18 },
     { "product": "Pad Ka Prao", "requestedQuantity": 16 },
-    { "product": "Spare Ribs", "requestedQuantity": 14 },
-    { "product": "Butter Chicken", "requestedQuantity": 15 }
+    { "product": "Green Curry", "requestedQuantity": 14 }
+  ],
+  "email": "{{email}}"
+}
+
+### Test 5: Bulk order with one invalid product
+POST {{host}}/inquiry/requestOffer
+Content-Type: application/json
+
+{
+  "supplierId": 1,
+  "requestDetails": [
+    { "product": "Wiener Schnitzel", "requestedQuantity": 10 },
+    { "product": "Invalid Product", "requestedQuantity": 10 }
   ],
   "email": "{{email}}"
 }

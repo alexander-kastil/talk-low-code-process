@@ -46,12 +46,23 @@ public class InquiryService : IInquiryService
                 throw new ArgumentException("Product entries cannot be null.", nameof(request));
             }
 
-            if (!_offerRandomizer.TryGetBasePrice(productRequest.Product, out _))
-            {
-                throw new ArgumentException($"Product '{productRequest.Product}' is not supported.", nameof(request));
-            }
+            var isOffered = supplier.AvailableProducts.Contains(productRequest.Product, StringComparer.OrdinalIgnoreCase);
 
-            offerLines.Add(_offerRandomizer.GenerateOffer(productRequest.Product, productRequest.RequestedQuantity));
+            if (isOffered)
+            {
+                offerLines.Add(_offerRandomizer.GenerateOffer(productRequest.Product, productRequest.RequestedQuantity));
+            }
+            else
+            {
+                offerLines.Add(new OfferDetails
+                {
+                    ProductName = productRequest.Product,
+                    Price = 0,
+                    RequestedQuantity = productRequest.RequestedQuantity,
+                    Quantity = 0,
+                    DeliveryDurationDays = 0
+                });
+            }
         }
 
         var response = new OfferResponse

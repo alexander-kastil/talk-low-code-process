@@ -44,23 +44,12 @@ internal class PurchasingTools
     [Description("Requests an offer (inquiry) from a supplier for specified products. Returns offer details including pricing and availability.")]
     public async Task<string> RequestOffer(
         [Description("The unique identifier of the supplier: supplierId")] int supplierId,
-        [Description("JSON array of products to request. Each item must have 'Product' (string) and 'RequestedQuantity' (integer). Example: [{\"Product\":\"Chai\",\"RequestedQuantity\":100}]")] string offerDetailsJson,
+        [Description("Array of products to request. Each item must have 'Product' (string) and 'RequestedQuantity' (integer).")] List<OfferRequestDetail> offerDetails,
         [Description("Optional email address to send the offer to")] string? email = null)
     {
-        if (string.IsNullOrWhiteSpace(offerDetailsJson))
+        if (offerDetails is null || offerDetails.Count == 0)
         {
-            throw new ArgumentException("Offer details must be provided.", nameof(offerDetailsJson));
-        }
-
-        List<OfferRequestDetail> offerDetails;
-        try
-        {
-            offerDetails = JsonSerializer.Deserialize<List<OfferRequestDetail>>(offerDetailsJson)
-                ?? throw new ArgumentException("Failed to parse offer details JSON.", nameof(offerDetailsJson));
-        }
-        catch (JsonException ex)
-        {
-            throw new ArgumentException($"Invalid JSON format for offer details: {ex.Message}", nameof(offerDetailsJson));
+            throw new ArgumentException("Offer details must be provided.", nameof(offerDetails));
         }
 
         var request = new OfferRequest
