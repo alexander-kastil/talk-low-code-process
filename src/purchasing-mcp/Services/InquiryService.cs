@@ -18,7 +18,7 @@ public class InquiryService : IInquiryService
         _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
     }
 
-    public async Task<OfferResponse> RequestOfferAsync(OfferRequest request)
+    public async Task<Offer> RequestOfferAsync(OfferRequest request)
     {
         if (request is null)
         {
@@ -37,7 +37,7 @@ public class InquiryService : IInquiryService
             throw new InvalidOperationException($"Supplier with id {request.SupplierId} was not found.");
         }
 
-        var offerLines = new List<OfferResponseDetail>(request.RequestDetails.Count);
+        var offerLines = new List<OfferDetails>(request.RequestDetails.Count);
 
         foreach (var productRequest in request.RequestDetails)
         {
@@ -46,20 +46,31 @@ public class InquiryService : IInquiryService
                 throw new ArgumentException("Product entries cannot be null.", nameof(request));
             }
 
-            if (!_offerRandomizer.TryGetBasePrice(productRequest.Product, out _))
-            {
-                throw new ArgumentException($"Product '{productRequest.Product}' is not supported.", nameof(request));
-            }
+            var isOffered = supplier.AvailableProducts.Contains(productRequest.Product, StringComparer.OrdinalIgnoreCase);
 
-            offerLines.Add(_offerRandomizer.GenerateOffer(productRequest.Product, productRequest.RequestedQuantity));
+            if (isOffered)
+            {
+                offerLines.Add(_offerRandomizer.GenerateOffer(productRequest.Product, productRequest.RequestedQuantity));
+            }
+            else
+            {
+                offerLines.Add(new OfferDetails
+                {
+                    ProductName = productRequest.Product,
+                    Price = 0,
+                    RequestedQuantity = productRequest.RequestedQuantity,
+                    Quantity = 0,
+                    DeliveryDurationDays = 0
+                });
+            }
         }
 
-        var response = new OfferResponse
+        var response = new Offer
         {
             SupplierId = supplier.SupplierId,
             TransportationCost = _offerRandomizer.TransportationCost,
             Timestamp = DateTimeOffset.UtcNow,
-            RequestDetails = offerLines,
+            OfferDetails = offerLines,
             Email = request.Email?.Trim()
         };
 
