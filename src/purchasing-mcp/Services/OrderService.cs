@@ -78,7 +78,6 @@ public class OrderService : IOrderService
                 Message = "Order placed successfully.",
                 order.RequestId,
                 order.SupplierId,
-                order.Date,
                 OfferId = order.OfferId,
                 TransportationCost = offer.TransportationCost,
                 Total = total
@@ -96,7 +95,6 @@ public class OrderService : IOrderService
                 Message = "Order placed successfully.",
                 order.RequestId,
                 order.SupplierId,
-                order.Date,
                 Total = total
             };
 

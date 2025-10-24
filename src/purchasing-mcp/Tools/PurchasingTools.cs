@@ -79,7 +79,6 @@ public class PurchasingTools
     public async Task<string> PlaceOrder(
         [Description("A unique identifier for this order request")] string requestId,
         [Description("The unique identifier of the supplier")] int supplierId,
-        [Description("The date of the order in ISO 8601 format (e.g., '2024-01-15T10:30:00Z')")] string orderDate,
         [Description("JSON array of order items. Each item must have 'productName' (string), 'price' (decimal), and 'quantity' (integer). Example: [{\"productName\":\"Chai\",\"price\":18.50,\"quantity\":100}]")] string orderDetailsJson,
         [Description("Optional: The unique identifier of the offer to validate against")] string? offerId = null)
     {
@@ -93,11 +92,6 @@ public class PurchasingTools
         if (string.IsNullOrWhiteSpace(orderDetailsJson))
         {
             throw new ArgumentException("Order details must be provided.", nameof(orderDetailsJson));
-        }
-
-        if (!DateTime.TryParse(orderDate, out var parsedDate))
-        {
-            throw new ArgumentException("Order date must be a valid ISO 8601 date time string.", nameof(orderDate));
         }
 
         List<OrderDetail> orderDetails;
@@ -115,7 +109,6 @@ public class PurchasingTools
         {
             RequestId = requestId,
             SupplierId = supplierId,
-            Date = parsedDate,
             OrderDetails = orderDetails,
             OfferId = offerId
         };

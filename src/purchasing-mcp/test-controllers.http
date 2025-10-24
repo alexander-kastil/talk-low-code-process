@@ -101,3 +101,34 @@ GET {{host}}/Suppliers/getSupplierFor/Pad%20Ka%20Prao
 
 ### Get offer by ID (use a real offer ID from a previous POST request, this placeholder will return 404)
 GET {{host}}/inquiry/getOfferById/DF2568ED-A73E-45C4-ACB1-696651F40643
+
+### Order tests
+
+### Place order (correct details - valid offer ID)
+POST {{host}}/order/placeOrder
+Content-Type: application/json
+
+{
+  "offerId": "DF2568ED-A73E-45C4-ACB1-696651F40643",
+  "supplierId": 1,
+  "orderDetails": [
+    { "productName": "Wiener Schnitzel", "price": 14, "quantity": 14 },
+    { "productName": "Germknoedel", "price": 7, "quantity": 15 },
+    { "productName": "Kaiserschmarrn", "price": 8, "quantity": 16 }
+  ]
+}
+
+### Place order (mismatch - invalid offer ID)
+POST {{host}}/order/placeOrder
+Content-Type: application/json
+
+{
+  "offerId": "DF2568ED-A73E-45C4-ACB1-696651F40643",
+  "requestId": "REQ124",
+  "supplierId": 1,
+  "orderDetails": [
+    { "productName": "Wiener Schnitzel", "price": 14, "quantity": 14 },
+    { "productName": "Germknoedel", "price": 7, "quantity": 15 },
+    { "productName": "Kaiserschmarrn", "price": 4, "quantity": 16 }
+  ]
+}

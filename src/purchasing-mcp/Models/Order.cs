@@ -8,14 +8,10 @@ public class Order
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    [Required]
-    public string RequestId { get; set; } = string.Empty;
+    public string? RequestId { get; set; }
 
     [Range(1, int.MaxValue)]
     public int SupplierId { get; set; }
-
-    [Required]
-    public DateTime Date { get; set; }
 
     [MinLength(1)]
     public List<OrderDetail> OrderDetails { get; set; } = new();
