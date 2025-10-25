@@ -75,7 +75,7 @@ public class PurchasingTools
     }
 
     [McpServerTool]
-    [Description("Places an order with a supplier based on a validated offer. Requires a valid offer ID. If order details are provided, they will be validated against the offer. If not provided, the order will be placed using the offer's details without additional validation.")]
+    [Description("Places an order with a supplier based on a validated offer. Requires a valid offer ID. If order details are provided, they will be validated against the offer. If not provided, the order will be placed using the offer's details without additional validation. Returns order confirmation including planned delivery date.")]
     public async Task<string> PlaceOrder(
         [Description("The unique identifier of the offer (offerId) to accept")] string offerId,
         [Description("The unique identifier of the supplier")] int supplierId,

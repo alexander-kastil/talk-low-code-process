@@ -72,6 +72,7 @@ public class OrderService : IOrderService
             await _dbContext.SaveChangesAsync();
 
             var total = order.OrderDetails.Sum(detail => detail.Price * detail.Quantity) + offer.TransportationCost;
+            var maxDeliveryDays = offer.OfferDetails.Max(od => od.DeliveryDurationDays);
 
             var response = new
             {
@@ -80,7 +81,8 @@ public class OrderService : IOrderService
                 order.SupplierId,
                 OfferId = order.OfferId,
                 TransportationCost = offer.TransportationCost,
-                Total = total
+                Total = total,
+                PlannedDeliveryDate = DateTimeOffset.Now.AddDays(maxDeliveryDays)
             };
 
             return response;
