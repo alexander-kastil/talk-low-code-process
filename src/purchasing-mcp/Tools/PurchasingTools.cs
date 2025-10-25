@@ -75,12 +75,12 @@ public class PurchasingTools
     }
 
     [McpServerTool]
-    [Description("Places an order with a supplier for specified products. Returns order confirmation with total cost.")]
+    [Description("Places an order with a supplier for specified products. Returns order confirmation details including the order's request ID, supplier ID, offer ID (if validated), and transportation cost (if applicable). If an offer ID is provided, validates the order against the offer and updates the offer status.")]
     public async Task<string> PlaceOrder(
         [Description("A unique identifier for this order request")] string requestId,
         [Description("The unique identifier of the supplier")] int supplierId,
-        [Description("The date of the order in ISO 8601 format (e.g., '2024-01-15T10:30:00Z')")] string orderDate,
-        [Description("JSON array of order items. Each item must have 'productName' (string), 'price' (decimal), and 'quantity' (integer). Example: [{\"productName\":\"Chai\",\"price\":18.50,\"quantity\":100}]")] string orderDetailsJson)
+        [Description("JSON array of order items. Each item must have 'productName' (string), 'price' (decimal), and 'quantity' (integer). Example: [{\"productName\":\"Chai\",\"price\":18.50,\"quantity\":100}]")] string orderDetailsJson,
+        [Description("Optional: The unique identifier of the offer to validate against")] string? offerId = null)
     {
         _logger.LogInformation("Placing order for supplier {SupplierId}, request {RequestId}", supplierId, requestId);
 
@@ -92,11 +92,6 @@ public class PurchasingTools
         if (string.IsNullOrWhiteSpace(orderDetailsJson))
         {
             throw new ArgumentException("Order details must be provided.", nameof(orderDetailsJson));
-        }
-
-        if (!DateTime.TryParse(orderDate, out var parsedDate))
-        {
-            throw new ArgumentException("Order date must be a valid ISO 8601 date time string.", nameof(orderDate));
         }
 
         List<OrderDetail> orderDetails;
@@ -114,8 +109,8 @@ public class PurchasingTools
         {
             RequestId = requestId,
             SupplierId = supplierId,
-            Date = parsedDate,
-            OrderDetails = orderDetails
+            OrderDetails = orderDetails,
+            OfferId = offerId
         };
 
         try
@@ -130,7 +125,7 @@ public class PurchasingTools
     }
 
     [McpServerTool]
-    [Description("Retrieves an offer by its unique identifier, including all offer details.")]
+    [Description("Retrieves an offer by its unique identifier, including all offer details such as supplier ID, transportation cost, timestamp, status, email, and a list of offer details with product names, prices, requested quantities, available quantities, and delivery duration days. This information is essential for validating offers and preparing order placements.")]
     public async Task<string> GetOfferById(
         [Description("The unique identifier of the offer")] string offerId)
     {

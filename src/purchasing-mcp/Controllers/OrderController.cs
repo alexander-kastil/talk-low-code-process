@@ -26,7 +26,7 @@ public class OrderController : ControllerBase
         try
         {
             var response = await _orderService.PlaceOrderAsync(order);
-            return Ok(response);
+            return Ok(order);
         }
         catch (InvalidOperationException ex)
         {

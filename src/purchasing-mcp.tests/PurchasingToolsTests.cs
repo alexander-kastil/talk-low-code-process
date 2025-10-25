@@ -199,6 +199,171 @@ public class PurchasingToolsTests : IDisposable
             async () => await _tools.RequestOffer(1, offerDetails));
     }
 
+    [Fact]
+    public async Task PlaceOrder_WithValidOffer_UpdatesOfferStatus()
+    {
+        // Arrange - First request an offer
+        var offerDetails = new List<OfferRequestDetail>
+        {
+            new() { Product = "Wiener Schnitzel", RequestedQuantity = 10 }
+        };
+        var offerJson = await _tools.RequestOffer(1, offerDetails);
+        var offer = JsonSerializer.Deserialize<Offer>(offerJson);
+        Assert.NotNull(offer);
+
+        // Act - Place an order with the offer
+        var orderDetailsJson = JsonSerializer.Serialize(new[]
+        {
+            new { ProductName = "Wiener Schnitzel", Price = 14.00m, Quantity = 10 }
+        });
+        var result = await _tools.PlaceOrder(
+            "REQ-001",
+            1,
+            DateTime.UtcNow.ToString("o"),
+            orderDetailsJson,
+            offer.OfferId.ToString());
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.DoesNotContain("Error:", result);
+        
+        // Verify offer status was updated to Accepted (1)
+        var updatedOffer = await _dbContext.Offers.FindAsync(offer.OfferId);
+        Assert.NotNull(updatedOffer);
+        Assert.Equal(OfferStatus.Accepted, updatedOffer.Status);
+    }
+
+    [Fact]
+    public async Task PlaceOrder_WithInvalidOfferId_ReturnsError()
+    {
+        // Arrange
+        var orderDetailsJson = JsonSerializer.Serialize(new[]
+        {
+            new { ProductName = "Wiener Schnitzel", Price = 14.00m, Quantity = 10 }
+        });
+
+        // Act
+        var result = await _tools.PlaceOrder(
+            "REQ-002",
+            1,
+            DateTime.UtcNow.ToString("o"),
+            orderDetailsJson,
+            Guid.NewGuid().ToString()); // Non-existent offer ID
+
+        // Assert
+        Assert.Contains("Error:", result);
+        Assert.Contains("was not found", result);
+    }
+
+    [Fact]
+    public async Task PlaceOrder_WithMismatchedPrice_ReturnsError()
+    {
+        // Arrange - First request an offer
+        var offerDetails = new List<OfferRequestDetail>
+        {
+            new() { Product = "Wiener Schnitzel", RequestedQuantity = 10 }
+        };
+        var offerJson = await _tools.RequestOffer(1, offerDetails);
+        var offer = JsonSerializer.Deserialize<Offer>(offerJson);
+        Assert.NotNull(offer);
+
+        // Act - Try to place an order with wrong price
+        var orderDetailsJson = JsonSerializer.Serialize(new[]
+        {
+            new { ProductName = "Wiener Schnitzel", Price = 15.00m, Quantity = 10 } // Wrong price
+        });
+        var result = await _tools.PlaceOrder(
+            "REQ-003",
+            1,
+            DateTime.UtcNow.ToString("o"),
+            orderDetailsJson,
+            offer.OfferId.ToString());
+
+        // Assert
+        Assert.Contains("Error:", result);
+        Assert.Contains("does not match the offer price", result);
+    }
+
+    [Fact]
+    public async Task PlaceOrder_WithExceededQuantity_ReturnsError()
+    {
+        // Arrange - First request an offer
+        var offerDetails = new List<OfferRequestDetail>
+        {
+            new() { Product = "Wiener Schnitzel", RequestedQuantity = 10 }
+        };
+        var offerJson = await _tools.RequestOffer(1, offerDetails);
+        var offer = JsonSerializer.Deserialize<Offer>(offerJson);
+        Assert.NotNull(offer);
+
+        // Act - Try to place an order with more quantity than offered
+        var orderDetailsJson = JsonSerializer.Serialize(new[]
+        {
+            new { ProductName = "Wiener Schnitzel", Price = 14.00m, Quantity = 20 } // More than offered
+        });
+        var result = await _tools.PlaceOrder(
+            "REQ-004",
+            1,
+            DateTime.UtcNow.ToString("o"),
+            orderDetailsJson,
+            offer.OfferId.ToString());
+
+        // Assert
+        Assert.Contains("Error:", result);
+        Assert.Contains("exceeds the offered quantity", result);
+    }
+
+    [Fact]
+    public async Task PlaceOrder_WithoutOfferId_PlacesOrderSuccessfully()
+    {
+        // Arrange - No offer needed
+        var orderDetailsJson = JsonSerializer.Serialize(new[]
+        {
+            new { ProductName = "Wiener Schnitzel", Price = 14.00m, Quantity = 10 }
+        });
+
+        // Act - Place order without offer validation
+        var result = await _tools.PlaceOrder(
+            "REQ-005",
+            1,
+            DateTime.UtcNow.ToString("o"),
+            orderDetailsJson);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.DoesNotContain("Error:", result);
+        Assert.Contains("Order placed successfully", result);
+    }
+
+    [Fact]
+    public async Task PlaceOrder_WithMismatchedSupplier_ReturnsError()
+    {
+        // Arrange - Request offer from supplier 1
+        var offerDetails = new List<OfferRequestDetail>
+        {
+            new() { Product = "Wiener Schnitzel", RequestedQuantity = 10 }
+        };
+        var offerJson = await _tools.RequestOffer(1, offerDetails);
+        var offer = JsonSerializer.Deserialize<Offer>(offerJson);
+        Assert.NotNull(offer);
+
+        // Act - Try to place order with different supplier
+        var orderDetailsJson = JsonSerializer.Serialize(new[]
+        {
+            new { ProductName = "Wiener Schnitzel", Price = 14.00m, Quantity = 10 }
+        });
+        var result = await _tools.PlaceOrder(
+            "REQ-006",
+            2, // Different supplier
+            DateTime.UtcNow.ToString("o"),
+            orderDetailsJson,
+            offer.OfferId.ToString());
+
+        // Assert
+        Assert.Contains("Error:", result);
+        Assert.Contains("does not match the order supplier", result);
+    }
+
     public void Dispose()
     {
         _dbContext.Dispose();

@@ -13,4 +13,6 @@ public class Offer
     public List<OfferDetails> OfferDetails { get; set; } = new List<OfferDetails>();
 
     public string? Email { get; set; }
+
+    public OfferStatus Status { get; set; } = OfferStatus.Pending;
 }
