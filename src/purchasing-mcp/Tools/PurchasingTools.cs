@@ -1,7 +1,11 @@
 using System.ComponentModel;
 using System.Text.Json;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ModelContextProtocol.Server;
+using PurchasingService.Configuration;
+using PurchasingService.Graph;
 using PurchasingService.Models;
 using PurchasingService.Services;
 
@@ -18,17 +22,26 @@ public class PurchasingTools
     private readonly IInquiryService inquiryService;
     private readonly IOrderService orderService;
     private readonly ILogger<PurchasingTools> logger;
+    private readonly GraphHelper graphHelper;
+    private readonly IChatClient chatClient;
+    private readonly IOptions<EmailOptions> emailOptions;
 
     public PurchasingTools(
         ISupplierService supplierService,
         IInquiryService inquiryService,
         IOrderService orderService,
-        ILogger<PurchasingTools> logger)
+        ILogger<PurchasingTools> logger,
+        GraphHelper graphHelper,
+        IChatClient chatClient,
+        IOptions<EmailOptions> emailOptions)
     {
         this.supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
         this.inquiryService = inquiryService ?? throw new ArgumentNullException(nameof(inquiryService));
         this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.graphHelper = graphHelper ?? throw new ArgumentNullException(nameof(graphHelper));
+        this.chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
+        this.emailOptions = emailOptions ?? throw new ArgumentNullException(nameof(emailOptions));
     }
 
     [McpServerTool]
@@ -89,21 +102,20 @@ public class PurchasingTools
             throw new ArgumentException("Offer ID must be provided.", nameof(offerId));
         }
 
+        if (!Guid.TryParse(offerId, out var offerGuid))
+        {
+            throw new ArgumentException("Invalid OfferId format.", nameof(offerId));
+        }
+
+        var offer = await inquiryService.GetOfferByIdAsync(offerGuid);
+        if (offer == null)
+        {
+            throw new ArgumentException($"Offer with id {offerId} was not found.", nameof(offerId));
+        }
+
         List<OrderDetail> orderDetails;
         if (string.IsNullOrWhiteSpace(orderDetailsJson))
         {
-            // Fetch offer to get details
-            if (!Guid.TryParse(offerId, out var offerGuid))
-            {
-                throw new ArgumentException("Invalid OfferId format.", nameof(offerId));
-            }
-
-            var offer = await inquiryService.GetOfferByIdAsync(offerGuid);
-            if (offer == null)
-            {
-                throw new ArgumentException($"Offer with id {offerId} was not found.", nameof(offerId));
-            }
-
             orderDetails = offer.OfferDetails.Select(od => new OrderDetail
             {
                 ProductName = od.ProductName,
@@ -135,6 +147,10 @@ public class PurchasingTools
         try
         {
             var response = await orderService.PlaceOrderAsync(order);
+            if (!string.IsNullOrWhiteSpace(offer.Email))
+            {
+                await EmailResponseHandler.TrySendOrderConfirmationAsync(graphHelper, chatClient, (Order)response, offer, emailOptions.Value);
+            }
             return JsonSerializer.Serialize(response, new JsonSerializerOptions { WriteIndented = true });
         }
         catch (InvalidOperationException ex)

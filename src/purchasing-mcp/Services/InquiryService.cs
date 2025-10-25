@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Options;
+using PurchasingService.Configuration;
 using PurchasingService.Data;
 using PurchasingService.Graph;
 using PurchasingService.Models;
@@ -12,13 +14,15 @@ public class InquiryService : IInquiryService
     private readonly GraphHelper? _graphHelper;
     private readonly IChatClient? _chatClient;
     private readonly PurchasingDbContext _dbContext;
+    private readonly IOptions<EmailOptions> _emailOptions;
 
-    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper? graphHelper, IChatClient? chatClient, PurchasingDbContext dbContext)
+    public InquiryService(IOfferRandomizer offerRandomizer, GraphHelper? graphHelper, IChatClient? chatClient, PurchasingDbContext dbContext, IOptions<EmailOptions> emailOptions)
     {
         _offerRandomizer = offerRandomizer ?? throw new ArgumentNullException(nameof(offerRandomizer));
         _graphHelper = graphHelper;
         _chatClient = chatClient;
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _emailOptions = emailOptions ?? throw new ArgumentNullException(nameof(emailOptions));
     }
 
     public async Task<Offer> RequestOfferAsync(OfferRequest request)
@@ -85,7 +89,7 @@ public class InquiryService : IInquiryService
 
         if (_graphHelper != null && _chatClient != null)
         {
-            await EmailResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response).ConfigureAwait(false);
+            await EmailResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response, _emailOptions.Value).ConfigureAwait(false);
         }
 
         return response;

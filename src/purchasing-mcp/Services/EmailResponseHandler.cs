@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.AI;
+using PurchasingService.Configuration;
 using PurchasingService.Data;
 using PurchasingService.Graph;
 using PurchasingService.Models;
@@ -14,11 +15,12 @@ namespace PurchasingService.Services;
 
 public static class EmailResponseHandler
 {
-    public static async Task<bool> TrySendOfferAsync(GraphHelper graphHelper, IChatClient chatClient, Offer response)
+    public static async Task<bool> TrySendOfferAsync(GraphHelper graphHelper, IChatClient chatClient, Offer response, EmailOptions emailOptions)
     {
         ArgumentNullException.ThrowIfNull(graphHelper);
         ArgumentNullException.ThrowIfNull(chatClient);
         ArgumentNullException.ThrowIfNull(response);
+        ArgumentNullException.ThrowIfNull(emailOptions);
 
         if (string.IsNullOrWhiteSpace(response.Email))
         {
@@ -28,14 +30,14 @@ public static class EmailResponseHandler
         var sanitizedEmail = response.Email.Trim();
 
         var subject = "Offer";
-        var body = await BuildEmailBodyAsync(chatClient, response).ConfigureAwait(false);
+        var body = await BuildEmailBodyAsync(chatClient, response, emailOptions.OfferPromptyFile).ConfigureAwait(false);
 
         await graphHelper.SendMailAsync(subject, body, new[] { sanitizedEmail }).ConfigureAwait(false);
 
         return true;
     }
 
-    private static async Task<string> BuildEmailBodyAsync(IChatClient chatClient, Offer response)
+    private static async Task<string> BuildEmailBodyAsync(IChatClient chatClient, Offer response, string promptyName)
     {
         var details = response.OfferDetails;
         var supplier = SupplierStore.GetSupplierById(response.SupplierId);
@@ -53,7 +55,7 @@ public static class EmailResponseHandler
 
         try
         {
-            var promptyContent = await LoadPromptyFileAsync().ConfigureAwait(false);
+            var promptyContent = await LoadPromptyFileAsync(promptyName).ConfigureAwait(false);
             var prompty = ParsePromptyFile(promptyContent);
             var userMessage = ReplaceTemplateVariables(prompty.UserTemplate, new Dictionary<string, string>
             {
@@ -118,9 +120,9 @@ public static class EmailResponseHandler
         return string.Join(Environment.NewLine, fallbackSections);
     }
 
-    private static async Task<string> LoadPromptyFileAsync()
+    private static async Task<string> LoadPromptyFileAsync(string promptyName)
     {
-        var promptyPath = Path.Combine(AppContext.BaseDirectory, "Prompts", "EmailGeneration.prompty");
+        var promptyPath = Path.Combine(AppContext.BaseDirectory, "Prompts", promptyName);
         return await File.ReadAllTextAsync(promptyPath).ConfigureAwait(false);
     }
 
@@ -224,5 +226,102 @@ public static class EmailResponseHandler
 
         var productList = string.Join(", ", unavailableProducts);
         return $"Note: {productList} are currently unavailable for delivery.";
+    }
+
+    public static async Task<bool> TrySendOrderConfirmationAsync(GraphHelper graphHelper, IChatClient chatClient, Order order, Offer offer, EmailOptions emailOptions)
+    {
+        ArgumentNullException.ThrowIfNull(graphHelper);
+        ArgumentNullException.ThrowIfNull(chatClient);
+        ArgumentNullException.ThrowIfNull(order);
+        ArgumentNullException.ThrowIfNull(offer);
+        ArgumentNullException.ThrowIfNull(emailOptions);
+
+        if (string.IsNullOrWhiteSpace(offer.Email))
+        {
+            return false;
+        }
+
+        var sanitizedEmail = offer.Email.Trim();
+
+        var subject = "Order Confirmation";
+        var body = await BuildOrderEmailBodyAsync(chatClient, order, offer, emailOptions.OrderPromptyFile).ConfigureAwait(false);
+
+        await graphHelper.SendMailAsync(subject, body, new[] { sanitizedEmail }).ConfigureAwait(false);
+
+        return true;
+    }
+
+    private static async Task<string> BuildOrderEmailBodyAsync(IChatClient chatClient, Order order, Offer offer, string promptyName)
+    {
+        var details = order.OrderDetails;
+        var supplier = SupplierStore.GetSupplierById(order.SupplierId);
+        var currencyCulture = GetCurrencyCulture(supplier);
+        var detailLines = details.Select(detail =>
+        {
+            var total = detail.Quantity * detail.Price;
+            return $"- Product: {detail.ProductName}; Quantity: {detail.Quantity}; Price: {FormatCurrency(detail.Price, currencyCulture)}; Total: {FormatCurrency(total, currencyCulture)}";
+        });
+        var detailsText = detailLines.Any() ? string.Join(Environment.NewLine, detailLines) : "No order lines present.";
+
+        var supplierCompany = supplier?.CompanyName ?? $"Supplier {order.SupplierId}";
+        var supplierAddress = FormatSupplierAddress(supplier);
+
+        try
+        {
+            var promptyContent = await LoadPromptyFileAsync(promptyName).ConfigureAwait(false);
+            var prompty = ParsePromptyFile(promptyContent);
+            var userMessage = ReplaceTemplateVariables(prompty.UserTemplate, new Dictionary<string, string>
+            {
+                ["supplierId"] = order.SupplierId.ToString(CultureInfo.InvariantCulture),
+                ["supplierCompany"] = supplierCompany,
+                ["supplierAddress"] = supplierAddress,
+                ["orderId"] = order.Id.ToString(),
+                ["timestamp"] = DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture),
+                ["details"] = detailsText
+            });
+
+            var messages = new List<ChatMessage>
+            {
+                new(ChatRole.System, prompty.SystemMessage),
+                new(ChatRole.User, userMessage)
+            };
+
+            var result = await chatClient.GetResponseAsync(messages).ConfigureAwait(false);
+            var generated = result.Text;
+            if (!string.IsNullOrWhiteSpace(generated))
+            {
+                return generated;
+            }
+        }
+        catch (Exception)
+        {
+            // Intentionally swallow exceptions and fall back to deterministic formatting.
+        }
+
+        // Fallback deterministic formatting if AI generation fails or exception occurs
+        var fallbackDetails = order.OrderDetails;
+        var fallbackDetailBuilder = new StringBuilder();
+        foreach (var detail in fallbackDetails)
+        {
+            var total = detail.Quantity * detail.Price;
+            var line = $"- Product: {detail.ProductName}; Quantity: {detail.Quantity}; Price: {FormatCurrency(detail.Price, currencyCulture)}; Total: {FormatCurrency(total, currencyCulture)}";
+            fallbackDetailBuilder.AppendLine(line);
+        }
+
+        var fallbackDetailsText = fallbackDetailBuilder.Length == 0 ? "No order lines present." : fallbackDetailBuilder.ToString();
+
+        var fallbackSections = new List<string>
+        {
+            $"Order Confirmation from supplier {order.SupplierId} at {DateTime.UtcNow:u}",
+            "Details:",
+            fallbackDetailsText
+        };
+
+        fallbackSections.Add(string.Empty);
+        fallbackSections.Add("Supplier:");
+        fallbackSections.Add(supplierCompany);
+        fallbackSections.Add(supplierAddress);
+
+        return string.Join(Environment.NewLine, fallbackSections);
     }
 }

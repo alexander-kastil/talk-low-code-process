@@ -23,6 +23,7 @@ builder.Services.Configure<OfferRandomizerOptions>(builder.Configuration.GetSect
 builder.Services.Configure<GraphOptions>(builder.Configuration.GetSection("Graph"));
 builder.Services.Configure<AzureOpenAIOptions>(builder.Configuration.GetSection("AzureOpenAI"));
 builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
 
 // Configure Entity Framework
 var connectionString = builder.Configuration.GetConnectionString("DefaultDatabase");

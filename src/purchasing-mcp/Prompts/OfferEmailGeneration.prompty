@@ -1,5 +1,5 @@
 ---
-name: EmailGeneration
+name: OfferEmailGeneration
 description: Generate a concise, upbeat HTML email for food supply offers
 authors:
   - Purchasing Service
