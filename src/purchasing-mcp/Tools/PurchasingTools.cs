@@ -75,7 +75,7 @@ public class PurchasingTools
     }
 
     [McpServerTool]
-    [Description("Places an order with a supplier for specified products. Returns order confirmation with total cost.")]
+    [Description("Places an order with a supplier for specified products. Returns order confirmation details including the order's request ID, supplier ID, offer ID (if validated), and transportation cost (if applicable). If an offer ID is provided, validates the order against the offer and updates the offer status.")]
     public async Task<string> PlaceOrder(
         [Description("A unique identifier for this order request")] string requestId,
         [Description("The unique identifier of the supplier")] int supplierId,
@@ -125,7 +125,7 @@ public class PurchasingTools
     }
 
     [McpServerTool]
-    [Description("Retrieves an offer by its unique identifier, including all offer details.")]
+    [Description("Retrieves an offer by its unique identifier, including all offer details such as supplier ID, transportation cost, timestamp, status, email, and a list of offer details with product names, prices, requested quantities, available quantities, and delivery duration days. This information is essential for validating offers and preparing order placements.")]
     public async Task<string> GetOfferById(
         [Description("The unique identifier of the offer")] string offerId)
     {

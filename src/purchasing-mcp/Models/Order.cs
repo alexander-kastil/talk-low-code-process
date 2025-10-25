@@ -19,4 +19,5 @@ public class Order
     public string? OfferId { get; set; }
 
     public decimal? TransportationCost { get; set; }
+
 }
