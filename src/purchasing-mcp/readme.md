@@ -17,7 +17,7 @@ dotnet run
 npx @modelcontextprotocol/inspector --config inspector.config.json --server purchasing-mcp
 ```
 
-The config at `inspector.config.json` tells the inspector to use the Purchasing MCP server's Streamable HTTP base URL `http://localhost:5151`, matching the endpoint that `app.MapMcp()` exposes. This satisfies the newer CLI requirement that `--server` reference an entry in a config file.
+The config at `inspector.config.json` tells the inspector to use the Purchasing MCP server's streamable HTTP base URL `http://localhost:5151`, matching the endpoint that `app.MapMcp()` exposes. This satisfies the newer CLI requirement that `--server` reference an entry in a config file.
 
 #### Remote (Azure) deployment
 
