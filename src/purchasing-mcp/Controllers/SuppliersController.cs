@@ -22,23 +22,23 @@ public class SuppliersController : ControllerBase
     }
 
     [HttpGet("getSupplierByID/{id:int}")]
-    public async Task<ActionResult<Supplier>> GetSupplierById(int id)
+    public async Task<ActionResult<IEnumerable<Supplier>>> GetSupplierById(int id)
     {
-        var supplier = await _supplierService.GetSupplierByIdAsync(id);
-        return supplier is null ? NotFound() : Ok(supplier);
+        var suppliers = await _supplierService.GetSupplierByIdAsync(id);
+        return suppliers.Count == 0 ? NotFound() : Ok(suppliers);
     }
 
     [HttpGet("getSupplierByName/{name}")]
-    public async Task<ActionResult<Supplier>> GetSupplierByName(string name)
+    public async Task<ActionResult<IEnumerable<Supplier>>> GetSupplierByName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
             return BadRequest("Name must be provided.");
         }
 
-        var supplier = await _supplierService.GetSupplierByNameAsync(name);
+        var suppliers = await _supplierService.GetSupplierByNameAsync(name);
 
-        return supplier is null ? NotFound() : Ok(supplier);
+        return suppliers.Count == 0 ? NotFound() : Ok(suppliers);
     }
 
     [HttpGet("getSupplierFor/{product}")]

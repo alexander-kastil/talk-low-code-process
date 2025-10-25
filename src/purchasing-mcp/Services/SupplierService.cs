@@ -14,30 +14,52 @@ public class SupplierService : ISupplierService
 
     public async Task<List<Supplier>> GetAllSuppliersAsync()
     {
-        return await _dbContext.Suppliers
+        var suppliers = await _dbContext.Suppliers
             .Include(s => s.Products)
             .ToListAsync();
+        foreach (var s in suppliers)
+        {
+            s.AvailableProducts = s.Products.Select(p => p.Name).ToList();
+        }
+        return suppliers;
     }
 
-    public async Task<Supplier?> GetSupplierByIdAsync(int id)
+    public async Task<List<Supplier>> GetSupplierByIdAsync(int id)
     {
-        return await _dbContext.Suppliers
+        var supplier = await _dbContext.Suppliers
             .Include(s => s.Products)
             .FirstOrDefaultAsync(s => s.SupplierId == id);
+        if (supplier != null)
+        {
+            supplier.AvailableProducts = supplier.Products.Select(p => p.Name).ToList();
+            return new List<Supplier> { supplier };
+        }
+        return new List<Supplier>();
     }
 
-    public async Task<Supplier?> GetSupplierByNameAsync(string name)
+    public async Task<List<Supplier>> GetSupplierByNameAsync(string name)
     {
-        return await _dbContext.Suppliers
+        var supplier = await _dbContext.Suppliers
             .Include(s => s.Products)
             .FirstOrDefaultAsync(s => s.CompanyName == name);
+        if (supplier != null)
+        {
+            supplier.AvailableProducts = supplier.Products.Select(p => p.Name).ToList();
+            return new List<Supplier> { supplier };
+        }
+        return new List<Supplier>();
     }
 
     public async Task<List<Supplier>> GetSuppliersForProductAsync(string product)
     {
-        return await _dbContext.Suppliers
+        var suppliers = await _dbContext.Suppliers
             .Include(s => s.Products)
             .Where(s => s.Products.Any(p => p.Name == product))
             .ToListAsync();
+        foreach (var s in suppliers)
+        {
+            s.AvailableProducts = s.Products.Select(p => p.Name).ToList();
+        }
+        return suppliers;
     }
 }
