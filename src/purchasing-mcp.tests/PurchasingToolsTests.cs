@@ -1,14 +1,44 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
+using PurchasingService.Configuration;
 using PurchasingService.Data;
 using PurchasingService.Graph;
 using PurchasingService.Models;
 using PurchasingService.Services;
 using PurchasingService.Tools;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Xunit;
 
 namespace PurchasingService.Tests;
+
+// Mock IChatClient for testing
+internal class MockChatClient : IChatClient
+{
+    public ChatClientMetadata Metadata => new("MockClient");
+
+    public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> chatMessages, ChatOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        var response = new ChatResponse([new ChatMessage(ChatRole.Assistant, "Mock response")]);
+        return Task.FromResult(response);
+    }
+
+    public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(
+        IEnumerable<ChatMessage> chatMessages,
+        ChatOptions? options = null,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await Task.CompletedTask;
+        yield break;
+    }
+
+    public object? GetService(Type serviceType, object? key = null) => null;
+
+    public TService? GetService<TService>(object? key = null) where TService : class => null;
+
+    public void Dispose() { }
+}
 
 public class PurchasingToolsTests : IDisposable
 {
@@ -32,37 +62,24 @@ public class PurchasingToolsTests : IDisposable
         _supplierService = new SupplierService(_dbContext);
         
         var randomProvider = new SystemRandomProvider(42); // Fixed seed for deterministic tests
-        var randomizerOptions = new OfferRandomizerOptions
-        {
-            TransportationCost = 30m,
-            Pricing = new OfferRandomizerOptions.PricingOptions
-            {
-                BaseProbability = 1.0, // Always use base price for predictable tests
-                DiscountProbability = 0.0,
-                MarkupProbability = 0.0
-            },
-            Quantity = new OfferRandomizerOptions.QuantityOptions
-            {
-                FulfillProbability = 1.0, // Always fulfill for predictable tests
-                ReducedProbability = 0.0,
-                UnavailableProbability = 0.0
-            },
-            Delivery = new OfferRandomizerOptions.DeliveryOptions
-            {
-                SameDaySingleDeliveryPercentage = 100, // Always same day for predictable tests
-                CommonProbability = 0.7,
-                CommonDays = new[] { 2, 3 },
-                AdditionalDaysBase = 4,
-                AdditionalDaysRange = 4
-            }
-        };
-        _offerRandomizer = new OfferRandomizer(randomProvider, randomizerOptions, _dbContext);
+        var configService = new ConfigurationService(_dbContext);
+        _offerRandomizer = new OfferRandomizer(randomProvider, configService, _dbContext);
 
-        // Create null dependencies for optional services in tests
-        GraphHelper? graphHelper = null;
-        Microsoft.Extensions.AI.IChatClient? chatClient = null;
+        // Create mock dependencies for optional services in tests
+        var graphOptions = Microsoft.Extensions.Options.Options.Create(new GraphOptions 
+        { 
+            TenantId = "test", 
+            ClientId = "test", 
+            ClientSecret = "test", 
+            MailSender = "test@test.com" 
+        });
+        var graphHelper = new GraphHelper(graphOptions);
+        var emailOptions = Microsoft.Extensions.Options.Options.Create(new EmailOptions());
         
-        _inquiryService = new InquiryService(_offerRandomizer, graphHelper, chatClient, _dbContext);
+        // Create a minimal mock chat client - we won't use it in tests
+        var chatClient = new MockChatClient();
+        
+        _inquiryService = new InquiryService(_offerRandomizer, graphHelper, chatClient, _dbContext, emailOptions);
         
         var orderService = new OrderService(_dbContext);
         
@@ -70,11 +87,36 @@ public class PurchasingToolsTests : IDisposable
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
         var logger = loggerFactory.CreateLogger<PurchasingTools>();
         
-        _tools = new PurchasingTools(_supplierService, _inquiryService, orderService, logger);
+        _tools = new PurchasingTools(_supplierService, _inquiryService, orderService, logger, graphHelper, chatClient, emailOptions);
     }
 
     private void SeedTestData()
     {
+        // Seed configuration settings for OfferRandomizer
+        var configSettings = new List<ConfigurationSetting>
+        {
+            new() { Id = 1, Key = "OfferRandomizer_TransportationCost", Value = "30.00" },
+            new() { Id = 2, Key = "OfferRandomizer_Pricing_BaseProbability", Value = "1.0" }, // Always base price for tests
+            new() { Id = 3, Key = "OfferRandomizer_Pricing_DiscountProbability", Value = "0.0" },
+            new() { Id = 4, Key = "OfferRandomizer_Pricing_MarkupProbability", Value = "0.0" },
+            new() { Id = 5, Key = "OfferRandomizer_Pricing_DiscountMin", Value = "0.01" },
+            new() { Id = 6, Key = "OfferRandomizer_Pricing_DiscountMax", Value = "0.10" },
+            new() { Id = 7, Key = "OfferRandomizer_Pricing_MarkupMin", Value = "0.05" },
+            new() { Id = 8, Key = "OfferRandomizer_Pricing_MarkupMax", Value = "0.25" },
+            new() { Id = 9, Key = "OfferRandomizer_Quantity_FulfillProbability", Value = "1.0" }, // Always fulfill for tests
+            new() { Id = 10, Key = "OfferRandomizer_Quantity_ReducedProbability", Value = "0.0" },
+            new() { Id = 11, Key = "OfferRandomizer_Quantity_UnavailableProbability", Value = "0.0" },
+            new() { Id = 12, Key = "OfferRandomizer_Quantity_ReducedMin", Value = "0.01" },
+            new() { Id = 13, Key = "OfferRandomizer_Quantity_ReducedMax", Value = "0.30" },
+            new() { Id = 14, Key = "OfferRandomizer_Delivery_CommonProbability", Value = "0.7" },
+            new() { Id = 15, Key = "OfferRandomizer_Delivery_CommonDays", Value = "2,3" },
+            new() { Id = 16, Key = "OfferRandomizer_Delivery_AdditionalDaysBase", Value = "4" },
+            new() { Id = 17, Key = "OfferRandomizer_Delivery_AdditionalDaysRange", Value = "4" },
+            new() { Id = 18, Key = "OfferRandomizer_Delivery_SameDaySingleDeliveryPercentage", Value = "100" } // Always same day for tests
+        };
+        _dbContext.ConfigurationSettings.AddRange(configSettings);
+        _dbContext.SaveChanges();
+
         var products = new List<Product>
         {
             new() { ProductId = 1, Name = "Wiener Schnitzel", BasePrice = 14.00m },
@@ -217,11 +259,10 @@ public class PurchasingToolsTests : IDisposable
             new { ProductName = "Wiener Schnitzel", Price = 14.00m, Quantity = 10 }
         });
         var result = await _tools.PlaceOrder(
-            "REQ-001",
+            offer.OfferId.ToString(),
             1,
-            DateTime.UtcNow.ToString("o"),
             orderDetailsJson,
-            offer.OfferId.ToString());
+            "REQ-001");
 
         // Assert
         Assert.NotNull(result);
@@ -234,7 +275,7 @@ public class PurchasingToolsTests : IDisposable
     }
 
     [Fact]
-    public async Task PlaceOrder_WithInvalidOfferId_ReturnsError()
+    public async Task PlaceOrder_WithInvalidOfferId_ThrowsException()
     {
         // Arrange
         var orderDetailsJson = JsonSerializer.Serialize(new[]
@@ -242,17 +283,15 @@ public class PurchasingToolsTests : IDisposable
             new { ProductName = "Wiener Schnitzel", Price = 14.00m, Quantity = 10 }
         });
 
-        // Act
-        var result = await _tools.PlaceOrder(
-            "REQ-002",
-            1,
-            DateTime.UtcNow.ToString("o"),
-            orderDetailsJson,
-            Guid.NewGuid().ToString()); // Non-existent offer ID
-
-        // Assert
-        Assert.Contains("Error:", result);
-        Assert.Contains("was not found", result);
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<ArgumentException>(async () => 
+            await _tools.PlaceOrder(
+                Guid.NewGuid().ToString(), // Non-existent offer ID
+                1,
+                orderDetailsJson,
+                "REQ-002"));
+        
+        Assert.Contains("was not found", ex.Message);
     }
 
     [Fact]
@@ -273,11 +312,10 @@ public class PurchasingToolsTests : IDisposable
             new { ProductName = "Wiener Schnitzel", Price = 15.00m, Quantity = 10 } // Wrong price
         });
         var result = await _tools.PlaceOrder(
-            "REQ-003",
+            offer.OfferId.ToString(),
             1,
-            DateTime.UtcNow.ToString("o"),
             orderDetailsJson,
-            offer.OfferId.ToString());
+            "REQ-003");
 
         // Assert
         Assert.Contains("Error:", result);
@@ -302,11 +340,10 @@ public class PurchasingToolsTests : IDisposable
             new { ProductName = "Wiener Schnitzel", Price = 14.00m, Quantity = 20 } // More than offered
         });
         var result = await _tools.PlaceOrder(
-            "REQ-004",
+            offer.OfferId.ToString(),
             1,
-            DateTime.UtcNow.ToString("o"),
             orderDetailsJson,
-            offer.OfferId.ToString());
+            "REQ-004");
 
         // Assert
         Assert.Contains("Error:", result);
@@ -314,25 +351,27 @@ public class PurchasingToolsTests : IDisposable
     }
 
     [Fact]
-    public async Task PlaceOrder_WithoutOfferId_PlacesOrderSuccessfully()
+    public async Task PlaceOrder_WithValidOfferId_PlacesOrderSuccessfully()
     {
-        // Arrange - No offer needed
-        var orderDetailsJson = JsonSerializer.Serialize(new[]
+        // Arrange - First request an offer
+        var offerDetails = new List<OfferRequestDetail>
         {
-            new { ProductName = "Wiener Schnitzel", Price = 14.00m, Quantity = 10 }
-        });
+            new() { Product = "Wiener Schnitzel", RequestedQuantity = 10 }
+        };
+        var offerJson = await _tools.RequestOffer(1, offerDetails);
+        var offer = JsonSerializer.Deserialize<Offer>(offerJson);
+        Assert.NotNull(offer);
 
-        // Act - Place order without offer validation
+        // Act - Place order without providing orderDetailsJson (use offer details)
         var result = await _tools.PlaceOrder(
-            "REQ-005",
+            offer.OfferId.ToString(),
             1,
-            DateTime.UtcNow.ToString("o"),
-            orderDetailsJson);
+            null,
+            "REQ-005");
 
         // Assert
         Assert.NotNull(result);
         Assert.DoesNotContain("Error:", result);
-        Assert.Contains("Order placed successfully", result);
     }
 
     [Fact]
@@ -353,11 +392,10 @@ public class PurchasingToolsTests : IDisposable
             new { ProductName = "Wiener Schnitzel", Price = 14.00m, Quantity = 10 }
         });
         var result = await _tools.PlaceOrder(
-            "REQ-006",
+            offer.OfferId.ToString(),
             2, // Different supplier
-            DateTime.UtcNow.ToString("o"),
             orderDetailsJson,
-            offer.OfferId.ToString());
+            "REQ-006");
 
         // Assert
         Assert.Contains("Error:", result);

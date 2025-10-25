@@ -13,6 +13,32 @@ public static class DbSeeder
             return; // Database has been seeded
         }
 
+        // Seed OfferRandomizer configuration settings with flattened hierarchy
+        var configSettings = new List<ConfigurationSetting>
+        {
+            new() { Key = "OfferRandomizer_TransportationCost", Value = "30.00" },
+            new() { Key = "OfferRandomizer_Pricing_BaseProbability", Value = "0.4" },
+            new() { Key = "OfferRandomizer_Pricing_DiscountProbability", Value = "0.25" },
+            new() { Key = "OfferRandomizer_Pricing_MarkupProbability", Value = "0.35" },
+            new() { Key = "OfferRandomizer_Pricing_DiscountMin", Value = "0.01" },
+            new() { Key = "OfferRandomizer_Pricing_DiscountMax", Value = "0.10" },
+            new() { Key = "OfferRandomizer_Pricing_MarkupMin", Value = "0.05" },
+            new() { Key = "OfferRandomizer_Pricing_MarkupMax", Value = "0.25" },
+            new() { Key = "OfferRandomizer_Quantity_FulfillProbability", Value = "0.8" },
+            new() { Key = "OfferRandomizer_Quantity_ReducedProbability", Value = "0.1" },
+            new() { Key = "OfferRandomizer_Quantity_UnavailableProbability", Value = "0.1" },
+            new() { Key = "OfferRandomizer_Quantity_ReducedMin", Value = "0.01" },
+            new() { Key = "OfferRandomizer_Quantity_ReducedMax", Value = "0.30" },
+            new() { Key = "OfferRandomizer_Delivery_CommonProbability", Value = "0.7" },
+            new() { Key = "OfferRandomizer_Delivery_CommonDays", Value = "2,3" },
+            new() { Key = "OfferRandomizer_Delivery_AdditionalDaysBase", Value = "4" },
+            new() { Key = "OfferRandomizer_Delivery_AdditionalDaysRange", Value = "4" },
+            new() { Key = "OfferRandomizer_Delivery_SameDaySingleDeliveryPercentage", Value = "80" }
+        };
+
+        await context.ConfigurationSettings.AddRangeAsync(configSettings);
+        await context.SaveChangesAsync();
+
         // Create products with base prices
         var products = new List<Product>
         {

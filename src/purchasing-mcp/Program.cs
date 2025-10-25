@@ -18,8 +18,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Prefer a cryptographically-strong provider for less-predictable random values.
 builder.Services.AddSingleton<IRandomProvider, SecureRandomProvider>();
-// Bind OfferRandomizerOptions from configuration
-builder.Services.Configure<OfferRandomizerOptions>(builder.Configuration.GetSection("OfferRandomizer"));
+// Register ConfigurationService for loading settings from the database
+builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
 builder.Services.Configure<GraphOptions>(builder.Configuration.GetSection("Graph"));
 builder.Services.Configure<AzureOpenAIOptions>(builder.Configuration.GetSection("AzureOpenAI"));
 builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("ConnectionStrings"));
@@ -43,14 +43,8 @@ builder.Services.AddSingleton<IChatClient>(sp =>
     return chatClient.AsIChatClient();
 });
 
-// Register the IOfferRandomizer as a scoped service that resolves the configured options and DbContext
-builder.Services.AddScoped<IOfferRandomizer>(sp =>
-{
-    var options = sp.GetRequiredService<IOptions<OfferRandomizerOptions>>().Value;
-    var random = sp.GetRequiredService<IRandomProvider>();
-    var dbContext = sp.GetRequiredService<PurchasingDbContext>();
-    return new OfferRandomizer(random, options, dbContext);
-});
+// Register the IOfferRandomizer as a scoped service that loads options from database
+builder.Services.AddScoped<IOfferRandomizer, OfferRandomizer>();
 
 // Register purchasing services
 builder.Services.AddScoped<ISupplierService, SupplierService>();
