@@ -65,4 +65,27 @@ public class InquiryController : ControllerBase
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
     }
+
+    [HttpGet("getOffersByRequestId/{requestId}")]
+    public async Task<ActionResult<List<Offer>>> GetOffersByRequestId(string requestId)
+    {
+        if (string.IsNullOrWhiteSpace(requestId))
+        {
+            return BadRequest("Request ID is required.");
+        }
+
+        try
+        {
+            var offers = await _inquiryService.GetOffersByRequestIdAsync(requestId);
+            return Ok(offers);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
 }

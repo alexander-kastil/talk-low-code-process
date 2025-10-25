@@ -27,6 +27,7 @@ public class PurchasingDbContext : DbContext
             entity.Property(e => e.TransportationCost).HasColumnType("decimal(18,2)");
             entity.Property(e => e.Timestamp).IsRequired();
             entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.RequestId).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .IsRequired()
                 .HasDefaultValue(OfferStatus.Pending)
