@@ -12,4 +12,6 @@ public class OfferRequest
 
     [EmailAddress]
     public string? Email { get; set; }
+
+    public string? RequestId { get; set; }
 }

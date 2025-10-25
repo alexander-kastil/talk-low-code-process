@@ -15,4 +15,6 @@ public class Offer
     public string? Email { get; set; }
 
     public OfferStatus Status { get; set; } = OfferStatus.Pending;
+
+    public string? RequestId { get; set; }
 }

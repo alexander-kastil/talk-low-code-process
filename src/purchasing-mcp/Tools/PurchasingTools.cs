@@ -58,7 +58,8 @@ public class PurchasingTools
     public async Task<string> RequestOffer(
         [Description("The unique identifier of the supplier: supplierId")] int supplierId,
         [Description("Array of products to request. Each item must have 'Product' (string) and 'RequestedQuantity' (integer).")] List<OfferRequestDetail> offerDetails,
-        [Description("Optional email address to send the offer to")] string? email = null)
+        [Description("Optional email address to send the offer to")] string? email = null,
+        [Description("Optional request identifier to track this offer request")] string? requestId = null)
     {
         if (offerDetails is null || offerDetails.Count == 0)
         {
@@ -69,7 +70,8 @@ public class PurchasingTools
         {
             SupplierId = supplierId,
             RequestDetails = offerDetails,
-            Email = email
+            Email = email,
+            RequestId = requestId
         };
 
         try
@@ -179,6 +181,37 @@ public class PurchasingTools
                 return $"Error: Offer with ID {offerId} was not found.";
             }
             return JsonSerializer.Serialize(offer, new JsonSerializerOptions { WriteIndented = true });
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
+    }
+
+    [McpServerTool]
+    [Description("Retrieves all offers associated with a specific request identifier. This enables tracking and managing offers based on their originating requests. Returns a list of offers ordered by timestamp (most recent first).")]
+    public async Task<string> GetOffersByRequestId(
+        [Description("The request identifier to search for")] string requestId)
+    {
+        if (string.IsNullOrWhiteSpace(requestId))
+        {
+            return "Error: Request ID is required.";
+        }
+
+        logger.LogInformation("Retrieving offers for request ID {RequestId}", requestId);
+
+        try
+        {
+            var offers = await inquiryService.GetOffersByRequestIdAsync(requestId);
+            if (offers.Count == 0)
+            {
+                return $"No offers found for request ID: {requestId}";
+            }
+            return JsonSerializer.Serialize(offers, new JsonSerializerOptions { WriteIndented = true });
+        }
+        catch (ArgumentException ex)
+        {
+            return $"Error: {ex.Message}";
         }
         catch (Exception ex)
         {

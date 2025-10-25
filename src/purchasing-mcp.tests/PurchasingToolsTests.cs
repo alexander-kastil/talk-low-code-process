@@ -402,6 +402,126 @@ public class PurchasingToolsTests : IDisposable
         Assert.Contains("does not match the order supplier", result);
     }
 
+    [Fact]
+    public async Task RequestOffer_StoresRequestId_WhenProvided()
+    {
+        // Arrange
+        var offerDetails = new List<OfferRequestDetail>
+        {
+            new() { Product = "Wiener Schnitzel", RequestedQuantity = 10 }
+        };
+        var requestId = "TEST-REQ-001";
+
+        // Act
+        var result = await _tools.RequestOffer(1, offerDetails, null, requestId);
+
+        // Assert
+        Assert.NotNull(result);
+        var offer = JsonSerializer.Deserialize<Offer>(result);
+        Assert.NotNull(offer);
+        Assert.Equal(requestId, offer.RequestId);
+    }
+
+    [Fact]
+    public async Task RequestOffer_AllowsNullRequestId()
+    {
+        // Arrange
+        var offerDetails = new List<OfferRequestDetail>
+        {
+            new() { Product = "Wiener Schnitzel", RequestedQuantity = 10 }
+        };
+
+        // Act
+        var result = await _tools.RequestOffer(1, offerDetails, null, null);
+
+        // Assert
+        Assert.NotNull(result);
+        var offer = JsonSerializer.Deserialize<Offer>(result);
+        Assert.NotNull(offer);
+        Assert.Null(offer.RequestId);
+    }
+
+    [Fact]
+    public async Task GetOffersByRequestId_ReturnsMatchingOffers()
+    {
+        // Arrange
+        var requestId = "TEST-REQ-002";
+        var offerDetails = new List<OfferRequestDetail>
+        {
+            new() { Product = "Wiener Schnitzel", RequestedQuantity = 10 }
+        };
+
+        // Create two offers with the same requestId
+        await _tools.RequestOffer(1, offerDetails, null, requestId);
+        await Task.Delay(10); // Small delay to ensure different timestamps
+        await _tools.RequestOffer(1, offerDetails, null, requestId);
+
+        // Act
+        var result = await _tools.GetOffersByRequestId(requestId);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.DoesNotContain("Error:", result);
+        var offers = JsonSerializer.Deserialize<List<Offer>>(result);
+        Assert.NotNull(offers);
+        Assert.Equal(2, offers.Count);
+        Assert.All(offers, o => Assert.Equal(requestId, o.RequestId));
+        
+        // Verify they are ordered by timestamp descending (most recent first)
+        Assert.True(offers[0].Timestamp >= offers[1].Timestamp);
+    }
+
+    [Fact]
+    public async Task GetOffersByRequestId_ReturnsEmpty_WhenNoMatchingOffers()
+    {
+        // Arrange
+        var requestId = "NONEXISTENT-REQ";
+
+        // Act
+        var result = await _tools.GetOffersByRequestId(requestId);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Contains("No offers found", result);
+    }
+
+    [Fact]
+    public async Task GetOffersByRequestId_ReturnsError_WhenRequestIdIsEmpty()
+    {
+        // Act
+        var result = await _tools.GetOffersByRequestId("");
+
+        // Assert
+        Assert.Contains("Error:", result);
+    }
+
+    [Fact]
+    public async Task GetOffersByRequestId_OnlyReturnsOffersWithMatchingRequestId()
+    {
+        // Arrange
+        var requestId1 = "TEST-REQ-003";
+        var requestId2 = "TEST-REQ-004";
+        var offerDetails = new List<OfferRequestDetail>
+        {
+            new() { Product = "Wiener Schnitzel", RequestedQuantity = 10 }
+        };
+
+        // Create offers with different requestIds
+        await _tools.RequestOffer(1, offerDetails, null, requestId1);
+        await _tools.RequestOffer(1, offerDetails, null, requestId2);
+        await _tools.RequestOffer(1, offerDetails, null, requestId1);
+
+        // Act
+        var result = await _tools.GetOffersByRequestId(requestId1);
+
+        // Assert
+        Assert.NotNull(result);
+        var offers = JsonSerializer.Deserialize<List<Offer>>(result);
+        Assert.NotNull(offers);
+        Assert.Equal(2, offers.Count);
+        Assert.All(offers, o => Assert.Equal(requestId1, o.RequestId));
+    }
+
     public void Dispose()
     {
         _dbContext.Dispose();

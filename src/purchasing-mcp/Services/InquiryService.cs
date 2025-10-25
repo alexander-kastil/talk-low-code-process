@@ -80,7 +80,8 @@ public class InquiryService : IInquiryService
             TransportationCost = _offerRandomizer.TransportationCost,
             Timestamp = DateTimeOffset.UtcNow,
             OfferDetails = offerLines,
-            Email = request.Email?.Trim()
+            Email = request.Email?.Trim(),
+            RequestId = request.RequestId?.Trim()
         };
 
         // Save the offer to the database
@@ -100,5 +101,19 @@ public class InquiryService : IInquiryService
         return await _dbContext.Offers
             .Include(o => o.OfferDetails)
             .FirstOrDefaultAsync(o => o.OfferId == offerId);
+    }
+
+    public async Task<List<Offer>> GetOffersByRequestIdAsync(string requestId)
+    {
+        if (string.IsNullOrWhiteSpace(requestId))
+        {
+            throw new ArgumentException("Request ID cannot be null or empty.", nameof(requestId));
+        }
+
+        return await _dbContext.Offers
+            .Include(o => o.OfferDetails)
+            .Where(o => o.RequestId == requestId)
+            .OrderByDescending(o => o.Timestamp)
+            .ToListAsync();
     }
 }
