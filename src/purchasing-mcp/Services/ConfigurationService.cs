@@ -4,6 +4,9 @@ using System.Globalization;
 
 namespace PurchasingService.Services;
 
+/// <summary>
+/// Service for loading configuration from the database.
+/// </summary>
 public interface IConfigurationService
 {
     Task<OfferRandomizerOptions> GetOfferRandomizerOptionsAsync();
