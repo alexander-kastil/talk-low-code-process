@@ -13,6 +13,7 @@ public class PurchasingDbContext : DbContext
     public DbSet<Offer> Offers { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<ConfigurationSetting> ConfigurationSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -72,6 +73,14 @@ public class PurchasingDbContext : DbContext
             entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
             entity.Property(e => e.BasePrice).HasColumnType("decimal(18,2)");
             entity.HasIndex(e => e.Name).IsUnique();
+        });
+
+        modelBuilder.Entity<ConfigurationSetting>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Key).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Value).IsRequired().HasMaxLength(500);
+            entity.HasIndex(e => e.Key).IsUnique();
         });
     }
 }

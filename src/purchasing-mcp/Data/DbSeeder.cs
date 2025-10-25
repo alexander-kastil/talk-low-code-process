@@ -13,6 +13,32 @@ public static class DbSeeder
             return; // Database has been seeded
         }
 
+        // Seed OfferRandomizer configuration settings with flattened hierarchy
+        var configSettings = new List<ConfigurationSetting>
+        {
+            new() { Id = 1, Key = "OfferRandomizer_TransportationCost", Value = "30.00" },
+            new() { Id = 2, Key = "OfferRandomizer_Pricing_BaseProbability", Value = "0.4" },
+            new() { Id = 3, Key = "OfferRandomizer_Pricing_DiscountProbability", Value = "0.25" },
+            new() { Id = 4, Key = "OfferRandomizer_Pricing_MarkupProbability", Value = "0.35" },
+            new() { Id = 5, Key = "OfferRandomizer_Pricing_DiscountMin", Value = "0.01" },
+            new() { Id = 6, Key = "OfferRandomizer_Pricing_DiscountMax", Value = "0.10" },
+            new() { Id = 7, Key = "OfferRandomizer_Pricing_MarkupMin", Value = "0.05" },
+            new() { Id = 8, Key = "OfferRandomizer_Pricing_MarkupMax", Value = "0.25" },
+            new() { Id = 9, Key = "OfferRandomizer_Quantity_FulfillProbability", Value = "0.8" },
+            new() { Id = 10, Key = "OfferRandomizer_Quantity_ReducedProbability", Value = "0.1" },
+            new() { Id = 11, Key = "OfferRandomizer_Quantity_UnavailableProbability", Value = "0.1" },
+            new() { Id = 12, Key = "OfferRandomizer_Quantity_ReducedMin", Value = "0.01" },
+            new() { Id = 13, Key = "OfferRandomizer_Quantity_ReducedMax", Value = "0.30" },
+            new() { Id = 14, Key = "OfferRandomizer_Delivery_CommonProbability", Value = "0.7" },
+            new() { Id = 15, Key = "OfferRandomizer_Delivery_CommonDays", Value = "2,3" },
+            new() { Id = 16, Key = "OfferRandomizer_Delivery_AdditionalDaysBase", Value = "4" },
+            new() { Id = 17, Key = "OfferRandomizer_Delivery_AdditionalDaysRange", Value = "4" },
+            new() { Id = 18, Key = "OfferRandomizer_Delivery_SameDaySingleDeliveryPercentage", Value = "80" }
+        };
+
+        await context.ConfigurationSettings.AddRangeAsync(configSettings);
+        await context.SaveChangesAsync();
+
         // Create products with base prices
         var products = new List<Product>
         {

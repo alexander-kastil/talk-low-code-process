@@ -77,17 +77,35 @@ public interface IOfferRandomizer
 public sealed class OfferRandomizer : IOfferRandomizer
 {
     private readonly IRandomProvider _random;
-    private readonly OfferRandomizerOptions _options;
+    private readonly IConfigurationService _configService;
     private readonly PurchasingDbContext _dbContext;
+    private OfferRandomizerOptions? _options;
 
-    public OfferRandomizer(IRandomProvider randomProvider, OfferRandomizerOptions options, PurchasingDbContext dbContext)
+    public OfferRandomizer(IRandomProvider randomProvider, IConfigurationService configService, PurchasingDbContext dbContext)
     {
         _random = randomProvider ?? throw new ArgumentNullException(nameof(randomProvider));
-        _options = options ?? throw new ArgumentNullException(nameof(options));
+        _configService = configService ?? throw new ArgumentNullException(nameof(configService));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public decimal TransportationCost => _options.TransportationCost;
+    private async Task<OfferRandomizerOptions> GetOptionsAsync()
+    {
+        if (_options == null)
+        {
+            _options = await _configService.GetOfferRandomizerOptionsAsync();
+        }
+        return _options;
+    }
+
+    public decimal TransportationCost
+    {
+        get
+        {
+            // For synchronous access, we need to block here
+            // This is not ideal but necessary for the interface contract
+            return GetOptionsAsync().GetAwaiter().GetResult().TransportationCost;
+        }
+    }
 
     private async Task<decimal?> TryGetBasePriceAsync(string productName)
     {
@@ -108,14 +126,16 @@ public sealed class OfferRandomizer : IOfferRandomizer
             throw new ArgumentOutOfRangeException(nameof(requestedAmount), "Requested amount must be greater than zero.");
         }
 
+        var options = await GetOptionsAsync();
+
         var basePrice = await TryGetBasePriceAsync(productName);
         if (!basePrice.HasValue)
         {
             throw new ArgumentException($"No base price configured for product '{productName}'.", nameof(productName));
         }
 
-        var offeredPrice = CalculateOfferedPrice(basePrice.Value);
-        var sameDayProbability = Math.Clamp(_options.Delivery.SameDaySingleDeliveryPercentage, 0d, 100d) / 100d;
+        var offeredPrice = CalculateOfferedPrice(basePrice.Value, options);
+        var sameDayProbability = Math.Clamp(options.Delivery.SameDaySingleDeliveryPercentage, 0d, 100d) / 100d;
         var isSameDaySingleDelivery = _random.NextDouble() < sameDayProbability;
 
         int offeredAmount;
@@ -131,8 +151,8 @@ public sealed class OfferRandomizer : IOfferRandomizer
         }
         else
         {
-            (offeredAmount, isAvailable) = CalculateOfferedAmount(requestedAmount);
-            deliveryDurationDays = CalculateDeliveryDurationDays();
+            (offeredAmount, isAvailable) = CalculateOfferedAmount(requestedAmount, options);
+            deliveryDurationDays = CalculateDeliveryDurationDays(options);
         }
 
         return new OfferDetails
@@ -145,10 +165,10 @@ public sealed class OfferRandomizer : IOfferRandomizer
         };
     }
 
-    private decimal CalculateOfferedPrice(decimal basePrice)
+    private decimal CalculateOfferedPrice(decimal basePrice, OfferRandomizerOptions options)
     {
         var decision = _random.NextDouble();
-        var pricing = _options.Pricing;
+        var pricing = options.Pricing;
 
         if (decision < pricing.BaseProbability)
         {
@@ -168,10 +188,10 @@ public sealed class OfferRandomizer : IOfferRandomizer
         return RoundMoney(basePrice * (1 + markup));
     }
 
-    private (int OfferedAmount, bool IsAvailable) CalculateOfferedAmount(int requestedAmount)
+    private (int OfferedAmount, bool IsAvailable) CalculateOfferedAmount(int requestedAmount, OfferRandomizerOptions options)
     {
         var decision = _random.NextDouble();
-        var qty = _options.Quantity;
+        var qty = options.Quantity;
 
         if (decision < qty.FulfillProbability)
         {
@@ -191,10 +211,10 @@ public sealed class OfferRandomizer : IOfferRandomizer
         return (0, false);
     }
 
-    private int CalculateDeliveryDurationDays()
+    private int CalculateDeliveryDurationDays(OfferRandomizerOptions options)
     {
         var decision = _random.NextDouble();
-        var delivery = _options.Delivery;
+        var delivery = options.Delivery;
 
         if (decision < delivery.CommonProbability)
         {
