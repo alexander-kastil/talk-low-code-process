@@ -85,7 +85,7 @@ public class InquiryService : IInquiryService
 
         if (_graphHelper != null && _chatClient != null)
         {
-            await OfferResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response).ConfigureAwait(false);
+            await EmailResponseHandler.TrySendOfferAsync(_graphHelper, _chatClient, response).ConfigureAwait(false);
         }
 
         return response;
