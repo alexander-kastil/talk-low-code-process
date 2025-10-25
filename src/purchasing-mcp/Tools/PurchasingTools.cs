@@ -14,10 +14,10 @@ namespace PurchasingService.Tools;
 [McpServerToolType]
 public class PurchasingTools
 {
-    private readonly ISupplierService _supplierService;
-    private readonly IInquiryService _inquiryService;
-    private readonly IOrderService _orderService;
-    private readonly ILogger<PurchasingTools> _logger;
+    private readonly ISupplierService supplierService;
+    private readonly IInquiryService inquiryService;
+    private readonly IOrderService orderService;
+    private readonly ILogger<PurchasingTools> logger;
 
     public PurchasingTools(
         ISupplierService supplierService,
@@ -25,18 +25,18 @@ public class PurchasingTools
         IOrderService orderService,
         ILogger<PurchasingTools> logger)
     {
-        _supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
-        _inquiryService = inquiryService ?? throw new ArgumentNullException(nameof(inquiryService));
-        _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
+        this.inquiryService = inquiryService ?? throw new ArgumentNullException(nameof(inquiryService));
+        this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     [McpServerTool]
     [Description("Retrieves the complete list of suppliers. It includes the supplierId, companyName information what suppliers can deliver which products in the availableProducts array.")]
     public async Task<SupplierCollection> GetSuppliers()
     {
-        _logger.LogInformation("Fetching all suppliers");
-        var suppliers = await _supplierService.GetAllSuppliersAsync();
+        logger.LogInformation("Fetching all suppliers");
+        var suppliers = await supplierService.GetAllSuppliersAsync();
         return new SupplierCollection { Suppliers = suppliers };
     }
 
@@ -61,7 +61,7 @@ public class PurchasingTools
 
         try
         {
-            var response = await _inquiryService.RequestOfferAsync(request);
+            var response = await inquiryService.RequestOfferAsync(request);
             return JsonSerializer.Serialize(response, new JsonSerializerOptions { WriteIndented = true });
         }
         catch (InvalidOperationException ex)
@@ -75,34 +75,53 @@ public class PurchasingTools
     }
 
     [McpServerTool]
-    [Description("Places an order with a supplier for specified products. Returns order confirmation details including the order's request ID, supplier ID, offer ID (if validated), and transportation cost (if applicable). If an offer ID is provided, validates the order against the offer and updates the offer status.")]
+    [Description("Places an order with a supplier based on a validated offer. Requires a valid offer ID. If order details are provided, they will be validated against the offer. If not provided, the order will be placed using the offer's details without additional validation.")]
     public async Task<string> PlaceOrder(
-        [Description("A unique identifier for this order request")] string requestId,
+        [Description("The unique identifier of the offer (offerId) to accept")] string offerId,
         [Description("The unique identifier of the supplier")] int supplierId,
-        [Description("JSON array of order items. Each item must have 'productName' (string), 'price' (decimal), and 'quantity' (integer). Example: [{\"productName\":\"Chai\",\"price\":18.50,\"quantity\":100}]")] string orderDetailsJson,
-        [Description("Optional: The unique identifier of the offer to validate against")] string? offerId = null)
+        [Description("Optional: JSON array of order items. If provided, must match the offer details. If not provided, order will use the offer's details. Example: [{\"productName\":\"Chai\",\"price\":18.50,\"quantity\":100}]")] string? orderDetailsJson = null,
+        [Description("Optional: A unique identifier for this order request.")] string? requestId = null)
     {
-        _logger.LogInformation("Placing order for supplier {SupplierId}, request {RequestId}", supplierId, requestId);
+        logger.LogInformation("Placing order for supplier {SupplierId}, offer {OfferId}", supplierId, offerId);
 
-        if (string.IsNullOrWhiteSpace(requestId))
+        if (string.IsNullOrWhiteSpace(offerId))
         {
-            throw new ArgumentException("Request ID must be provided.", nameof(requestId));
-        }
-
-        if (string.IsNullOrWhiteSpace(orderDetailsJson))
-        {
-            throw new ArgumentException("Order details must be provided.", nameof(orderDetailsJson));
+            throw new ArgumentException("Offer ID must be provided.", nameof(offerId));
         }
 
         List<OrderDetail> orderDetails;
-        try
+        if (string.IsNullOrWhiteSpace(orderDetailsJson))
         {
-            orderDetails = JsonSerializer.Deserialize<List<OrderDetail>>(orderDetailsJson)
-                ?? throw new ArgumentException("Failed to parse order details JSON.", nameof(orderDetailsJson));
+            // Fetch offer to get details
+            if (!Guid.TryParse(offerId, out var offerGuid))
+            {
+                throw new ArgumentException("Invalid OfferId format.", nameof(offerId));
+            }
+
+            var offer = await inquiryService.GetOfferByIdAsync(offerGuid);
+            if (offer == null)
+            {
+                throw new ArgumentException($"Offer with id {offerId} was not found.", nameof(offerId));
+            }
+
+            orderDetails = offer.OfferDetails.Select(od => new OrderDetail
+            {
+                ProductName = od.ProductName,
+                Price = od.Price,
+                Quantity = od.Quantity
+            }).ToList();
         }
-        catch (JsonException ex)
+        else
         {
-            throw new ArgumentException($"Invalid JSON format for order details: {ex.Message}", nameof(orderDetailsJson));
+            try
+            {
+                orderDetails = JsonSerializer.Deserialize<List<OrderDetail>>(orderDetailsJson)
+                    ?? throw new ArgumentException("Failed to parse order details JSON.", nameof(orderDetailsJson));
+            }
+            catch (JsonException ex)
+            {
+                throw new ArgumentException($"Invalid JSON format for order details: {ex.Message}", nameof(orderDetailsJson));
+            }
         }
 
         var order = new Order
@@ -115,7 +134,7 @@ public class PurchasingTools
 
         try
         {
-            var response = await _orderService.PlaceOrderAsync(order);
+            var response = await orderService.PlaceOrderAsync(order);
             return JsonSerializer.Serialize(response, new JsonSerializerOptions { WriteIndented = true });
         }
         catch (InvalidOperationException ex)
@@ -134,11 +153,11 @@ public class PurchasingTools
             return "Error: Invalid GUID format.";
         }
 
-        _logger.LogInformation("Retrieving offer {OfferId}", offerId);
+        logger.LogInformation("Retrieving offer {OfferId}", offerId);
 
         try
         {
-            var offer = await _inquiryService.GetOfferByIdAsync(guid);
+            var offer = await inquiryService.GetOfferByIdAsync(guid);
             if (offer == null)
             {
                 return $"Error: Offer with ID {offerId} was not found.";
