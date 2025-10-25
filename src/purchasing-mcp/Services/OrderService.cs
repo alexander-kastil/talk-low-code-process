@@ -82,7 +82,7 @@ public class OrderService : IOrderService
                 OfferId = order.OfferId,
                 TransportationCost = offer.TransportationCost,
                 Total = total,
-                PlannedDeliveryDate = DateTimeOffset.Now.AddDays(maxDeliveryDays)
+                PlannedDeliveryDate = DateTimeOffset.Now.AddDays(maxDeliveryDays).ToString("yyyy-MM-dd")
             };
 
             return response;
