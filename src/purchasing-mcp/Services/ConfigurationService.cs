@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PurchasingService.Data;
 using System.Globalization;
 
@@ -15,14 +16,23 @@ public interface IConfigurationService
 public class ConfigurationService : IConfigurationService
 {
     private readonly PurchasingDbContext _dbContext;
+    private readonly ILogger<ConfigurationService>? _logger;
+    private OfferRandomizerOptions? _cachedOptions;
 
-    public ConfigurationService(PurchasingDbContext dbContext)
+    public ConfigurationService(PurchasingDbContext dbContext, ILogger<ConfigurationService>? logger = null)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _logger = logger;
     }
 
     public async Task<OfferRandomizerOptions> GetOfferRandomizerOptionsAsync()
     {
+        // Return cached options if available
+        if (_cachedOptions != null)
+        {
+            return _cachedOptions;
+        }
+
         var settings = await _dbContext.ConfigurationSettings
             .Where(s => s.Key.StartsWith("OfferRandomizer_"))
             .ToDictionaryAsync(s => s.Key, s => s.Value);
@@ -58,6 +68,9 @@ public class ConfigurationService : IConfigurationService
             }
         };
 
+        // Cache the options for future requests
+        _cachedOptions = options;
+
         return options;
     }
 
@@ -88,21 +101,33 @@ public class ConfigurationService : IConfigurationService
         return defaultValue;
     }
 
-    private static int[] GetIntArrayValue(Dictionary<string, string> settings, string key, int[] defaultValue)
+    private int[] GetIntArrayValue(Dictionary<string, string> settings, string key, int[] defaultValue)
     {
         if (settings.TryGetValue(key, out var value))
         {
             var parts = value.Split(',', StringSplitOptions.RemoveEmptyEntries);
             var result = new List<int>();
+            var hasErrors = false;
+            
             foreach (var part in parts)
             {
                 if (int.TryParse(part.Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out var intValue))
                 {
                     result.Add(intValue);
                 }
+                else
+                {
+                    hasErrors = true;
+                    _logger?.LogWarning("Invalid integer value '{Part}' in configuration key '{Key}'", part, key);
+                }
             }
+            
             if (result.Count > 0)
             {
+                if (hasErrors)
+                {
+                    _logger?.LogWarning("Configuration key '{Key}' contains invalid values. Only valid integers were used.", key);
+                }
                 return result.ToArray();
             }
         }
