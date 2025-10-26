@@ -2,6 +2,19 @@
 
 This microservice exposes a small purchasing API used to request price offers from known suppliers and to list supplier information. The README below focuses on what the service does and how the code behaves at runtime (endpoints, request/response shapes and business logic), not on installation or deployment.
 
+Server Description:
+
+```plaintext
+Helps with finding suppliers, requesting offers (inquires),
+looking up offers, order placement and order tracking.
+```
+
+Server Url Endpoints:
+
+```url
+http://purchasing-mcp-dev.azurewebsites.net
+```
+
 ### Run the server
 
 ```powershell
