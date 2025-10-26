@@ -5,7 +5,7 @@
             "url": "http://localhost:5151",
             "note": "Local Purchasing MCP Server running on port 5151"
         },
-        "purchasing-mcp-azure-dev": {
+        "purchasing-mcp-azure": {
             "type": "streamable-http",
             "url": "https://purchasing-mcp-dev.azurewebsites.net",
             "note": "Purchasing MCP mock hosted on Azure App Service"

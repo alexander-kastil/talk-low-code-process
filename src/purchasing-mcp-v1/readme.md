@@ -35,7 +35,7 @@ The config at `inspector.config.json` tells the inspector to use the Purchasing 
 #### Remote (Azure) deployment
 
 ```powershell
-npx @modelcontextprotocol/inspector --config inspector.config.json --server purchasing-mcp-azure-dev
+npx @modelcontextprotocol/inspector --config inspector.config.json --server purchasing-mcp-azure
 ```
 
 This reuses the same inspector config but selects the `purchasing-mcp-azure-dev` entry, which points at `https://purchasing-mcp-server-dev.azurewebsites.net`. Make sure the Azure app is running and reachable before launching the inspector.
