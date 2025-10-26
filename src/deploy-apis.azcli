@@ -1,10 +1,10 @@
 env=dev
-grp=agentic-process-$env
+grp=cs-business-process-$env
 loc=westeurope
-acct=agenticprocess$env
+acct=cs-businessprocess$env
 container=food
-law=agentic-process-law-$env
-appInsights=agenticprocess-ai-$env
+law=cs-business-process-law-$env
+appInsights=cs-businessprocess-ai-$env
 foodConStr="$(printenv fooddb)"
 purchasingConStr="$(printenv purchasingdb)"
 
@@ -32,4 +32,10 @@ cd purchasing-mcp
 az webapp up -n purchasing-mcp-$env -g $grp -p process-purchasing-plan-$env -l $loc -r "dotnet:9"
 az webapp cors add --allowed-origins "*" --name purchasing-mcp-$env --resource-group $grp
 az webapp config appsettings set -g $grp -n purchasing-mcp-$env --settings "ConnectionStrings:DefaultDatabase=$purchasingConStr"
+cd ..
+
+cd hr-mcp-server
+az webapp up -n human-resource-mcp-$env -g $grp -p human-resource-plan-$env -l $loc -r "dotnet:9"
+az webapp cors add --allowed-origins "*" --name human-resource-mcp-$env --resource-group $grp
+az webapp config appsettings set -g $grp -n human-resource-mcp-$env --settings "ConnectionStrings:DefaultDatabase=$purchasingConStr"
 cd ..
