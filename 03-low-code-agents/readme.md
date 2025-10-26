@@ -6,7 +6,7 @@ An agentic food ordering assistant that automates the ordering process.
 
 ### Sample Conversation
 
-User: list all food in stock: name and instock
+User: List all food in stock: name and quantity in stock, price in € as table
 
 Food Order Buddy: Here is the list of food items in stock along with their availability:
 ...

@@ -45,7 +45,7 @@ public class PurchasingTools
     }
 
     [McpServerTool]
-    [Description("Retrieves the complete list of suppliers. It includes the supplierId, companyName information what suppliers can deliver which products in the availableProducts array.")]
+    [Description("Retrieves the complete list of suppliers for food products. It includes the supplierId, companyName information and which food products can be delivered in the availableProducts array.")]
     public async Task<SupplierCollection> GetSuppliers()
     {
         logger.LogInformation("Fetching all suppliers");
@@ -54,7 +54,7 @@ public class PurchasingTools
     }
 
     [McpServerTool]
-    [Description("Requests an offer (inquiry) from a supplier for specified products. Returns offer details including pricing and availability.")]
+    [Description("Requests an offer (inquiry) from a supplier for specified food products. Returns offer details including pricing and availability.")]
     public async Task<string> RequestOffer(
         [Description("The unique identifier of the supplier: supplierId")] int supplierId,
         [Description("Array of products to request. Each item must have 'Product' (string) and 'RequestedQuantity' (integer).")] List<OfferRequestDetail> offerDetails,
