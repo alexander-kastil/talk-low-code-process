@@ -20,7 +20,7 @@ The config at `inspector.config.json` tells the inspector to use the HR MCP serv
 #### Remote (Azure) deployment
 
 ```powershell
-npx @modelcontextprotocol/inspector --config inspector.config.json --server hr-mcp-azure-dev
+npx @modelcontextprotocol/inspector --config inspector.config.json --server hr-mcp-azure
 ```
 
 This reuses the same inspector config but selects the `hr-mcp-azure-dev` entry, which points at `https://hr-mcp-server-dev.azurewebsites.net`. Make sure the Azure app is running and reachable before launching the inspector.

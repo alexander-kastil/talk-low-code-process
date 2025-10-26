@@ -1,7 +1,7 @@
 env=dev
 grp=cs-business-process-$env
 loc=westeurope
-acct=cs-businessprocess$env
+acct=csbusinessprocess$env
 container=food
 law=cs-business-process-law-$env
 appInsights=cs-businessprocess-ai-$env
