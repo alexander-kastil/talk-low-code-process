@@ -46,14 +46,20 @@ Point out the following Documents:
 Help me create a vacation request form that includes fields for first name, last name, email address, department, and dates of the requested time off and other common fields in a vacation request form.
 ```
 
+- Add the form to to the agents instructions for vacation requests:
+
+```plaintext
+When asked about vacation requests always provide this link to the vacation request form
+```
+
 #### Hardware Problem Reporting - Survey
 
 ```plaintext
 Help me create a survey to report hardware problems and request replacements for laptops, phones, iPads, and access keys. Please include fields for first name, last name, department, and email address.
 ```
 
-Update description:
+Add the form the agents instructions for hardware problem reporting: https://forms.office.com/Pages/DesignPageV2.aspx?prevorigin=shell&origin=NeoPortalPage&subpage=design&id=fiQr2eCQaUShKWoyhmwNCpcyhSUYFMRPluwi-LyDpktUMEtSR1RWNE5QRjEyVlhUUUlNNzE3OE5HNC4u
 
 ```plaintext
-When asked about hardware problems always provide this link to report them
+When asked about hardware problem reporting always provide this link to the hardware problem reporting form
 ```
