@@ -1,6 +1,6 @@
 # Name: Submit Refund Request
 kind: AdaptiveDialog
-modelDescription: The user want to submit a refund request
+modelDescription: The user want to submit a travel expense claim
 beginDialog:
   kind: OnRecognizedIntent
   id: main
@@ -101,22 +101,36 @@ beginDialog:
 
     - kind: SetVariable
       id: normalizeDepartureIso
+<<<<<<< 
       variable: init:Topic.departureDateIso
       value: =Topic.departureDate & "T00:00:00Z"
+=======
+      variable: Topic.departureDateIso
+      value: =Topic.departureDate & "T00:00:00Z"
+>>>>>>> 
 
     - kind: SetVariable
       id: normalizeReturnIso
       variable: Topic.returnDateIso
+<<<<<<< 
+      value: =Topic.returnDate & "T00:00:00Z"
+=======
       value: =Topic.returnDate & "T00:00:00Z"
 
+    - kind: SetVariable
+      id: setVariable_VXHZ8x
+      variable: Topic.claimID
+      value: =Text(GUID())
+>>>>>>> 
+
     - kind: InvokeFlowAction
-      id: invokeFlowAction_KCrsds
+      id: invokeFlowAction_9yzo79
       input:
         binding:
           date: =Topic.departureDateIso
           date_1: =Topic.returnDateIso
           number: =Topic.amount
-          text: =Topic.email
+          text: =Topic.claimID
           text_1: =Topic.email
           text_2: =Topic.destination
           text_3: =Topic.comment
