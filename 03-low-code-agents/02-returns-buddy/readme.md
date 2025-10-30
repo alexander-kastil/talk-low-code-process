@@ -4,16 +4,9 @@ This is a simple agent that helps users with their return requests by providing 
 
 It demonstrates the following fundamentals:
 
-- Knowledge - uploaded document about return policies
-- Topic basics - collecting and using user input
--
-
-## Main Implementation Components
-
-- Flow: Summarize Patient Symptoms
-- Topic: Check Symptoms
-- Topic: Post to Teams
-- Topic: Resolve E-Mail Address
+- Knowledge: Returns Policy Document
+- Triggers: When an email arrives in the shared mailbox
+- Tools: Send an email
 
 ## Sample Conversation
 
