@@ -1,0 +1,56 @@
+# Name: Resolve E-Mail Address
+# This tool receives a full name which it will resolve to an email address
+kind: AdaptiveDialog
+inputs:
+  - kind: AutomaticTaskInput
+    propertyName: Fullname
+    description: The full name of the user
+    entity: PersonNamePrebuiltEntity
+    shouldPromptUser: true
+
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - resolve email issue
+      - fix my email
+      - email not working
+      - trouble with email
+      - can't send emails
+      - problems receiving emails
+      - help with my email account
+      - email error message
+      - why is my email failing?
+      - email support needed
+
+  actions:
+    - kind: InvokeConnectorAction
+      id: invokeConnectorAction_LQFtp8
+      input:
+        binding:
+          searchTerm: =Topic.Fullname
+          top: 1
+
+      output:
+        kind: SingleVariableOutputBinding
+        variable: Topic.userProfile
+
+      connectionReference: integrat_symptomChecker.shared_office365users.012fa3ea5a40407e9305a13b4a69d300
+      connectionProperties:
+        mode: Invoker
+
+      operationId: SearchUserV2
+
+    - kind: SendActivity
+      id: sendActivity_xCHrtn
+      activity: "{JSON(Topic.userProfile)}"
+
+inputType:
+  properties:
+    Fullname:
+      displayName: Fullname
+      description: The full name of the user
+      type: String
+
+outputType: {}
