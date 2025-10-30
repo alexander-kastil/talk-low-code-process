@@ -1,5 +1,5 @@
 kind: AdaptiveDialog
-modelDescription: "Collect demand for food items to order. Triggered by phrases like: I want to provide my demand, I want to tell you what food I need"
+modelDescription: "Collect demand for food to order. Triggered by phrases like: I want to provide my demand, I want to tell you what food I need"
 beginDialog:
   kind: OnRecognizedIntent
   id: main
@@ -376,15 +376,15 @@ beginDialog:
 
     - kind: SetVariable
       id: setOutput
-      variable: Topic.niceOutput
+      variable: Topic.orderDemandClean
       value: '=JSON(Filter(Table({Name: "Kaiserschmarrn", Quantity: Topic.qtyKaiserschmarrn}, {Name: "WeisswurstMitBrezn", Quantity: Topic.qtyWeisswurstMitBrezn}, {Name: "WienerSchnitzel", Quantity: Topic.qtyWienerSchnitzel}, {Name: "PizzaNapoli", Quantity: Topic.qtyPizzaNapoli}, {Name: "Germknoedel", Quantity: Topic.qtyGermknoedel}, {Name: "AranciniNapoletana", Quantity: Topic.qtyAranciniNapoletana}, {Name: "SchweinshaxeMitKraut", Quantity: Topic.qtySchweinshaxeMitKraut}, {Name: "PadKaPrao", Quantity: Topic.qtyPadKaPrao}, {Name: "GreenCurry", Quantity: Topic.qtyGreenCurry}), Quantity > 0), JSONFormat.Compact)'
 
     - kind: SendActivity
       id: sendActivity_MnOZNi
       activity:
-        value: =Topic.niceOutput
+        value: =Topic.orderDemandClean
         text:
-          - "Your demand was successfully noted:{Topic.niceOutput}"
+          - "Your demand was successfully noted:{Topic.orderDemandClean}"
 
 inputType: {}
 outputType: {}
