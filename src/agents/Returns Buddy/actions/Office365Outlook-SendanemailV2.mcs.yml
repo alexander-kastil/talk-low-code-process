@@ -1,0 +1,16 @@
+# Name: Office 365 Outlook - Send an email (V2)
+kind: TaskDialog
+modelDisplayName: Send an email (V2)
+modelDescription: This operation sends an email message.
+outputs:
+  - propertyName: Response
+
+action:
+  kind: InvokeConnectorTaskAction
+  connectionReference: integrat_csReturnsAgent.shared_office365.shared-office365-da310b26-4202-44aa-a60e-31dbccd4eb8f
+  connectionProperties:
+    mode: Invoker
+
+  operationId: SendEmailV2
+
+outputMode: All

@@ -1,0 +1,6 @@
+# Name: Lohnsteuerliche Behandlung von Dienstreisen
+# Official Resource for what is a business travel and what fees can be used
+kind: KnowledgeSourceConfiguration
+source:
+  kind: PublicSiteSearchSource
+  site: https://www.wko.at/lohnverrechnung/lohnsteuerliche-behandlung-dienstreisen

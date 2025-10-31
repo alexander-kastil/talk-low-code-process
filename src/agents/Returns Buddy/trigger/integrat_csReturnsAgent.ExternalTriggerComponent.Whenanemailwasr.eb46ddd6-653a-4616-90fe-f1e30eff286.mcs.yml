@@ -1,0 +1,11 @@
+# Name: When an email was received in the returns mailbox
+# Trigger your agent with certain message upon event: When a new email arrives in a shared mailbox (V2).
+kind: ExternalTriggerConfiguration
+externalTriggerSource:
+  kind: WorkflowExternalTrigger
+  flowId: ee02260d-51b3-f011-bbd2-7c1e52278fc9
+
+extensionData:
+  flowName: 1bf8a5a4-58e7-9ced-fdce-69a2219fa629
+  flowUrl: /providers/Microsoft.ProcessSimple/environments/Default-d92b247e-90e0-4469-a129-6a32866c0d0a/flows/1bf8a5a4-58e7-9ced-fdce-69a2219fa629
+  triggerConnectionType: Office 365 Outlook

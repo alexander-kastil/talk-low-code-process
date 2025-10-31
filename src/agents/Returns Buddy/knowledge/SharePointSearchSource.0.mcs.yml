@@ -1,0 +1,8 @@
+# Name: returns-policy.docx
+# Provides information about our return policy such as max time, payment returns, drop off
+kind: KnowledgeSourceConfiguration
+source:
+  kind: SharePointSearchSource
+  triggerCondition: true
+  site: https://integrationsonline.sharepoint.com/sites/copilot-demo/Instructions/returns-policy.docx
+  additionalSearchTerms:

@@ -1,0 +1,14 @@
+# Name: Travel Expense Refund
+# An agent that helps with refunding travel cost by taking the request and stores it in Dataverse
+# 
+kind: GptComponentMetadata
+instructions: "Greet the user with: This is the expense pilot. What is your employee number?"
+gptCapabilities:
+  webBrowsing: true
+  codeInterpreter: false
+
+aISettings:
+  model:
+    kind: CurrentModels
+
+displayName: Travel Expense Refund

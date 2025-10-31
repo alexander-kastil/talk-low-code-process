@@ -1,0 +1,27 @@
+﻿displayName: Health Advisor
+schemaName: integrat_symptomChecker
+accessControlPolicy: Any
+authenticationMode: Integrated
+authenticationTrigger: Always
+authorizedSecurityGroupIds:
+  - 45a2aefc-3170-4258-b0e7-393b3bc33832
+configuration:
+  settings:
+    GenerativeActionsEnabled: true
+
+  gPTSettings:
+    defaultSchemaName: integrat_symptomChecker.gpt.default
+
+  aISettings:
+    useModelKnowledge: true
+    isFileAnalysisEnabled: true
+    isSemanticSearchEnabled: true
+    contentModeration: High
+    optInUseLatestModels: false
+
+  recognizer:
+    kind: GenerativeAIRecognizer
+
+publishedOn: 2025-10-29T08:45:43.0000000Z
+template: default-2.1.0
+language: 1033

@@ -1,0 +1,134 @@
+@host = http://localhost:5151
+@email = offers@integrations.at
+
+### Test 1: Bulk order - 3 products
+POST {{host}}/inquiry/requestOffer
+Content-Type: application/json
+
+{
+  "supplierId": 1,
+  "requestDetails": [
+    { "product": "Wiener Schnitzel", "requestedQuantity": 14 },
+    { "product": "Germknoedel", "requestedQuantity": 15 },
+    { "product": "Kaiserschmarrn", "requestedQuantity": 16 }
+  ],
+  "email": "{{email}}"
+}
+
+### Test 1: Bulk order - 3 products - no email
+POST {{host}}/inquiry/requestOffer
+Content-Type: application/json
+
+{
+  "supplierId": 1,
+  "requestDetails": [
+    { "product": "Wiener Schnitzel", "requestedQuantity": 14 },
+    { "product": "Germknoedel", "requestedQuantity": 15 },
+    { "product": "Kaiserschmarrn", "requestedQuantity": 16 }
+  ]
+}
+
+### Test 2: Bulk order - 2 products
+POST {{host}}/inquiry/requestOffer
+Content-Type: application/json
+
+{
+  "supplierId": 2,
+  "requestDetails": [
+    { "product": "Weisswurst mit Brezn", "requestedQuantity": 20 },
+    { "product": "Schweinshaxe mit Kraut", "requestedQuantity": 18 }
+  ],
+  "email": "{{email}}"
+}
+
+### Test 3: Bulk order - 2 products
+POST {{host}}/inquiry/requestOffer
+Content-Type: application/json
+
+{
+  "supplierId": 3,
+  "requestDetails": [
+    { "product": "Pizza Napoli", "requestedQuantity": 22 },
+    { "product": "Arancini Napoletana", "requestedQuantity": 24 }
+  ],
+  "email": "{{email}}"
+}
+
+### Test 4: Bulk order - 2 products
+POST {{host}}/inquiry/requestOffer
+Content-Type: application/json
+
+{
+  "supplierId": 4,
+  "requestDetails": [
+    { "product": "Pad Ka Prao", "requestedQuantity": 16 },
+    { "product": "Green Curry", "requestedQuantity": 14 }
+  ],
+  "email": "{{email}}"
+}
+
+### Test 5: Bulk order with one invalid product
+POST {{host}}/inquiry/requestOffer
+Content-Type: application/json
+
+{
+  "supplierId": 1,
+  "requestDetails": [
+    { "product": "Wiener Schnitzel", "requestedQuantity": 10 },
+    { "product": "Invalid Product", "requestedQuantity": 10 }
+  ],
+  "email": "{{email}}"
+}
+
+### Suppliers tests
+
+### Get all suppliers
+GET {{host}}/Suppliers/getSuppliers
+
+### Get supplier by ID (existing: 1)
+GET {{host}}/Suppliers/getSupplierByID/1
+
+### Get supplier by name (existing example: "Acme Foods")
+GET {{host}}/Suppliers/getSupplierByName/Acme%20Foods
+
+### Get supplier for Wiener Schnitzel
+GET {{host}}/Suppliers/getSupplierFor/Wiener%20Schnitzel
+
+### Get supplier for Pad Ka Prao
+GET {{host}}/Suppliers/getSupplierFor/Pad%20Ka%20Prao
+
+### Inquiry tests
+
+### Get offer by ID (use a real offer ID from a previous POST request, this placeholder will return 404)
+GET {{host}}/inquiry/getOfferById/DF2568ED-A73E-45C4-ACB1-696651F40643
+
+### Order tests
+
+### Place order (correct details - valid offer ID)
+POST {{host}}/order/placeOrder
+Content-Type: application/json
+
+{
+  "offerId": "DF2568ED-A73E-45C4-ACB1-696651F40643",
+  "supplierId": 1,
+  "orderDetails": [
+    { "productName": "Wiener Schnitzel", "price": 14, "quantity": 14 },
+    { "productName": "Germknoedel", "price": 7, "quantity": 15 },
+    { "productName": "Kaiserschmarrn", "price": 8, "quantity": 16 }
+  ]
+}
+
+### Place order (mismatch - invalid offer ID)
+POST {{host}}/order/placeOrder
+Content-Type: application/json
+
+{
+  "offerId": "DF2568ED-A73E-45C4-ACB1-696651F40643",
+  "requestId": "REQ124",
+  "supplierId": 1,
+  "orderDetails": [
+    { "productName": "Wiener Schnitzel", "price": 14, "quantity": 14 },
+    { "productName": "Germknoedel", "price": 7, "quantity": 15 },
+    { "productName": "Kaiserschmarrn", "price": 4, "quantity": 16 }
+  ]
+}

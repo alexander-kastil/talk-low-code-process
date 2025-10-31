@@ -1,0 +1,499 @@
+{
+    "swagger": "2.0",
+    "host": "purchasing-service-dev.azurewebsites.net",
+    "schemes": [
+        "https"
+    ],
+    "basePath": "/",
+    "info": {
+        "title": "PurchasingService",
+        "version": "1.0",
+        "description": "API for requesting supplier offers and retrieving supplier information"
+    },
+    "x-ms-openai-manifest": {
+        "humanName": "PurchasingService",
+        "modelDescription": "Request purchase offers and browse supplier details",
+        "contactEmail": "",
+        "legalUrl": ""
+    },
+    "paths": {
+        "/Inquiry/requestOffer": {
+            "post": {
+                "tags": [
+                    "Inquiry"
+                ],
+                "summary": "Request purchase offer",
+                "description": "Submit an offer request for a supplier and receive pricing details",
+                "operationId": "RequestOffer",
+                "consumes": [
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "text/plain",
+                    "application/json",
+                    "text/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/OfferRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/OfferResponse"
+                        }
+                    }
+                },
+                "x-ms-openai-data": {
+                    "openai-enabled": true,
+                    "operations": [
+                        {
+                            "x-ms-require-user-confirmation": false
+                        }
+                    ]
+                }
+            }
+        },
+        "/Order/placeOrder": {
+            "post": {
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Place order",
+                "description": "Submit a purchase order for processing",
+                "operationId": "PlaceOrder",
+                "consumes": [
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "text/plain",
+                    "application/json",
+                    "text/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "x-ms-openai-data": {
+                    "openai-enabled": true,
+                    "operations": [
+                        {
+                            "x-ms-require-user-confirmation": false
+                        }
+                    ]
+                }
+            }
+        },
+        "/Suppliers/getSuppliers": {
+            "get": {
+                "tags": [
+                    "Suppliers"
+                ],
+                "summary": "List suppliers",
+                "description": "Retrieve all suppliers",
+                "operationId": "GetSuppliers",
+                "produces": [
+                    "text/plain",
+                    "application/json",
+                    "text/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Supplier"
+                            }
+                        }
+                    }
+                },
+                "x-ms-openai-data": {
+                    "openai-enabled": true,
+                    "operations": [
+                        {
+                            "x-ms-require-user-confirmation": false
+                        }
+                    ]
+                }
+            }
+        },
+        "/Suppliers/getSupplierByID/{id}": {
+            "get": {
+                "tags": [
+                    "Suppliers"
+                ],
+                "summary": "Get supplier by ID",
+                "description": "Retrieve supplier details by numeric identifier",
+                "operationId": "GetSupplierById",
+                "produces": [
+                    "text/plain",
+                    "application/json",
+                    "text/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Supplier"
+                        }
+                    }
+                },
+                "x-ms-openai-data": {
+                    "openai-enabled": true,
+                    "operations": [
+                        {
+                            "x-ms-require-user-confirmation": false
+                        }
+                    ]
+                }
+            }
+        },
+        "/Suppliers/getSupplierByName/{name}": {
+            "get": {
+                "tags": [
+                    "Suppliers"
+                ],
+                "summary": "Get supplier by name",
+                "description": "Retrieve supplier details by company name",
+                "operationId": "GetSupplierByName",
+                "produces": [
+                    "text/plain",
+                    "application/json",
+                    "text/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Supplier"
+                        }
+                    }
+                },
+                "x-ms-openai-data": {
+                    "openai-enabled": true,
+                    "operations": [
+                        {
+                            "x-ms-require-user-confirmation": false
+                        }
+                    ]
+                }
+            }
+        },
+        "/Suppliers/getSupplierFor/{product}": {
+            "get": {
+                "tags": [
+                    "Suppliers"
+                ],
+                "summary": "Get suppliers for product",
+                "description": "Retrieve suppliers that provide the specified product",
+                "operationId": "GetSupplierForProduct",
+                "produces": [
+                    "text/plain",
+                    "application/json",
+                    "text/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Supplier"
+                            }
+                        }
+                    }
+                },
+                "x-ms-openai-data": {
+                    "openai-enabled": true,
+                    "operations": [
+                        {
+                            "x-ms-require-user-confirmation": false
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "definitions": {
+        "OfferRequest": {
+            "type": "object",
+            "required": [
+                "requestDetails",
+                "supplierId"
+            ],
+            "properties": {
+                "supplierId": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "requestDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/OfferRequestDetail"
+                    }
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email",
+                    "x-nullable": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "OfferRequestDetail": {
+            "type": "object",
+            "required": [
+                "product"
+            ],
+            "properties": {
+                "product": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "requestedQuantity": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                }
+            },
+            "additionalProperties": false
+        },
+        "OfferResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "supplierId": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "transportationCost": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "requestDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/OfferResponseDetail"
+                    },
+                    "x-nullable": true
+                },
+                "email": {
+                    "type": "string",
+                    "x-nullable": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "OfferResponseDetail": {
+            "type": "object",
+            "properties": {
+                "productName": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "basePrice": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "offeredPrice": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "requestedQuantity": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "offeredQuantity": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "deliveryDurationDays": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "isAvailable": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
+        },
+        "Order": {
+            "type": "object",
+            "required": [
+                "date",
+                "requestId"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "requestId": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "supplierId": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                },
+                "date": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "orderDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/OrderDetail"
+                    },
+                    "minItems": 1,
+                    "x-nullable": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "OrderDetail": {
+            "type": "object",
+            "required": [
+                "productName"
+            ],
+            "properties": {
+                "productName": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "price": {
+                    "type": "number",
+                    "format": "double",
+                    "minimum": 0.01
+                },
+                "quantity": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                }
+            },
+            "additionalProperties": false
+        },
+        "Supplier": {
+            "type": "object",
+            "properties": {
+                "supplierId": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "companyName": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "contactName": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "contactTitle": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "address": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "city": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "region": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "postalCode": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "country": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "phone": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "eMail": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "homePage": {
+                    "type": "string",
+                    "x-nullable": true
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "x-nullable": true
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "securityDefinitions": {}
+}

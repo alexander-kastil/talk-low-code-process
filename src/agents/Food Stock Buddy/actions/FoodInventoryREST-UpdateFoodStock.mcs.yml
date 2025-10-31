@@ -1,0 +1,38 @@
+# Name: Food Inventory REST - UpdateFoodStock
+kind: TaskDialog
+inputs:
+  - kind: AutomaticTaskInput
+    propertyName: id
+    description: The id for the food product
+
+  - kind: AutomaticTaskInput
+    propertyName: amount
+    name: amount
+    description: The amount by which the current stock will be incremented / decremented
+
+modelDisplayName: Update Food Stock
+modelDescription: Updates the in-stock quantity for a specific food item. A positive number is added to the current stock - a negative number will be substracted
+outputs:
+  - propertyName: description
+
+  - propertyName: id
+
+  - propertyName: inStock
+
+  - propertyName: minStock
+
+  - propertyName: name
+
+  - propertyName: pictureUrl
+
+  - propertyName: price
+
+action:
+  kind: InvokeConnectorTaskAction
+  connectionReference: iits_foodOrdersBuddy.shared_food-20inventory-20rest-5f0af75e9cbdc7cbac-5f26dfabd9fb0863ca.46131fd9-caa1-436e-b6aa-7d86cc8eda7d
+  connectionProperties:
+    mode: Invoker
+
+  operationId: UpdateFoodStock
+
+outputMode: All

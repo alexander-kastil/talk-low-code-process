@@ -1,0 +1,7 @@
+# Name: Event
+# After work events like cooking classes, theater, concerts that are sponsored by out company
+kind: KnowledgeSourceConfiguration
+source:
+  kind: DataverseStructuredSearchSource
+  triggerCondition: true
+  skillConfiguration: Event_M7ERZxZ1Uh_K3MPBuEr5k

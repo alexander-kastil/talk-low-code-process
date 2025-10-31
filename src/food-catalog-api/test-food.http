@@ -1,0 +1,46 @@
+# @baseUrl = https://food-catalog-api-dev.azurewebsites.net
+@baseUrl = http://localhost:5000
+@blobBaseUrl = https://agenticprocessdev.blob.core.windows.net/food
+
+### Get all food items
+GET {{baseUrl}}/food
+
+### Get a single food item by ID
+GET {{baseUrl}}/food/1
+
+### Create a new food item
+POST {{baseUrl}}/food
+Content-Type: application/json
+
+{
+  "name": "Massaman Curry",
+  "price": 12.0,
+  "inStock": 20,
+  "pictureUrl": "{{blobBaseUrl}}/massaman.jpg",
+  "description": "Rich and aromatic Thai curry made with tender beef, potatoes, and roasted peanuts in a creamy coconut milk sauce. A comforting blend of sweet, savory, and mildly spicy flavors."
+}
+
+### Update an existing food item
+PUT {{baseUrl}}/food
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Butter Chicken Deluxe",
+  "price": 14.0,
+  "inStock": 8,
+  "pictureUrl": "{{blobBaseUrl}}/butter-chicken.jpg",
+  "description": "A richer, creamier take on the classic butter chicken, with extra spices and a touch of honey."
+}
+
+### Delete a food item
+DELETE {{baseUrl}}/deleteFood/1
+
+### Get food items by name
+GET {{baseUrl}}/getFoodByName?name=Butter%20Chicken
+
+### Update in-stock amount for a food item (increment by 5)
+PATCH {{baseUrl}}/updateStock/1?amount=5
+
+### Update in-stock amount for a food item (decrement by 3)
+PATCH {{baseUrl}}/updateStock/1?amount=-3

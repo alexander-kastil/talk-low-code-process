@@ -1,0 +1,6 @@
+# Name: Docfinder
+# Doctors directory
+kind: KnowledgeSourceConfiguration
+source:
+  kind: PublicSiteSearchSource
+  site: https://www.docfinder.at/

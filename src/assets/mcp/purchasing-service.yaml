@@ -1,0 +1,18 @@
+swagger: "2.0"
+info:
+  title: Purchasing MCP Server
+  description: Provides tools to manage suppliers, request offers, and place orders with suppliers through a Model Context Protocol interface
+  version: 1.0.0
+host: purchasing-service-dev.azurewebsites.net
+basePath: /
+schemes:
+  - https
+paths:
+  /:
+    post:
+      summary: Purchasing MCP Server
+      x-ms-agentic-protocol: mcp-streamable-1.0
+      operationId: InvokeMCP
+      responses:
+        "200":
+          description: Success

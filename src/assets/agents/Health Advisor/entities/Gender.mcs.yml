@@ -1,0 +1,14 @@
+# Name: Gender
+# The gender at the time of birth
+kind: ClosedListEntity
+smartMatchingEnabled: true
+items:
+  - id: Nsigur
+    displayName: male
+    synonyms:
+      - man
+
+  - id: SWZCXk
+    displayName: female
+    synonyms:
+      - woman
