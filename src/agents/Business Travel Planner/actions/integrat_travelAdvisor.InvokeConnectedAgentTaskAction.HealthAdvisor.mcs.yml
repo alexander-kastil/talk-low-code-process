@@ -1,0 +1,10 @@
+# Name: Health Advisor
+# An agent that helps with first advice on different symptoms. It can be used to decide if an employee can start a business trip
+kind: TaskDialog
+modelDisplayName: Health Advisor
+modelDescription: An agent that helps with first advice on different symptoms. It can be used to decide if an employee can start a business trip
+action:
+  kind: InvokeConnectedAgentTaskAction
+  botSchemaName: integrat_symptomChecker
+  historyType:
+    kind: ConversationHistory

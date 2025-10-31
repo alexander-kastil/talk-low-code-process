@@ -1,0 +1,6 @@
+# Name: Food Stock Buddy
+# A helpful agent that assists you with food orders
+kind: GptComponentMetadata
+instructions: "You are an agent that assists with food orders "
+gptCapabilities: {}
+displayName: Food Stock Buddy

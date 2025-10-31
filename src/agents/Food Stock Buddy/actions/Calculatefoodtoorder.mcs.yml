@@ -1,0 +1,20 @@
+# Name: Calculate food to order
+kind: TaskDialog
+inputs:
+  - kind: AutomaticTaskInput
+    propertyName: foodDemand
+    name: foodDemand
+    shouldPromptUser: true
+
+  - kind: AutomaticTaskInput
+    propertyName: foodStock
+    name: foodStock
+    shouldPromptUser: true
+
+modelDisplayName: Calculate food to order
+modelDescription: Calculate food to order
+action:
+  kind: InvokeAIBuilderModelTaskAction
+  aIModelId: a647be5e-845b-4579-8836-2947a7e37387
+
+outputMode: All

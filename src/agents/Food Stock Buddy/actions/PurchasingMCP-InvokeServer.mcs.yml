@@ -1,0 +1,14 @@
+# Name: Purchasing MCP - InvokeServer
+kind: TaskDialog
+modelDisplayName: Purchasing MCP
+modelDescription: InvokeServer
+action:
+  kind: InvokeExternalAgentTaskAction
+  connectionReference: iits_foodOrdersBuddy.shared_integrat-5fpurchasing-20mcp-5f0af75e9cbdc7cbac.62d9dcc7ec2542558baa76d41ff08778
+  connectionProperties:
+    mode: Invoker
+    usageDescription: Purchasing Server help in the food order process by providing services like find suppliers of food, request an offer or place an offer
+
+  operationDetails:
+    kind: ModelContextProtocolMetadata
+    operationId: InvokeServer

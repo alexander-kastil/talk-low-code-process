@@ -1,0 +1,32 @@
+# Name: Post to teams
+# this topic posts any given information to teams
+kind: AdaptiveDialog
+inputs:
+  - kind: AutomaticTaskInput
+    propertyName: SymptomsSummary
+    description: The advice from the agent
+    shouldPromptUser: true
+
+modelDescription: This topic can send text content to teams. Can you save this information to my teams
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_H1wT1u
+      input:
+        binding:
+          text: =Topic.SymptomsSummary
+
+      output: {}
+      flowId: 1c2684b6-77b3-f011-bbd2-7c1e52278fc9
+
+inputType:
+  properties:
+    SymptomsSummary:
+      displayName: SymptomsSummary
+      description: The advice from the agent
+      type: String
+
+outputType: {}

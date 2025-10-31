@@ -1,0 +1,64 @@
+# Name: Check Symptoms
+kind: AdaptiveDialog
+modelDescription: This topic captures symptoms that a patient is experiencing and provides a potential diagnosis. It can answer questions like I want to check my symptoms
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: SendActivity
+      id: sendActivity_8wdAHg
+      activity: _I’m happy to help you, I just need to capture some more details_
+
+    - kind: Question
+      id: question_vYxJMf
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Age
+      prompt: How old are you
+      entity: AgePrebuiltEntity
+
+    - kind: Question
+      id: question_aM78CD
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.Gender
+      prompt: What is your gender
+      entity:
+        kind: ClosedListEntityReference
+        entityId: integrat_symptomChecker.entity.Gender
+        selectedItems:
+          - Nsigur
+          - SWZCXk
+
+    - kind: Question
+      id: question_wl3tzv
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.UserSymptoms
+      prompt: _Describe to me the symptoms that you're having_
+      entity: StringPrebuiltEntity
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_UHtH96
+      input:
+        binding:
+          number: =Topic.Age
+          text: Text(Gender)
+          text_1: =Topic.UserSymptoms
+
+      output:
+        binding:
+          summarized_text: Topic.SymptomsSummary
+
+      flowId: b78f3625-bf63-f011-bec3-6045bd9415bc
+
+    - kind: SendActivity
+      id: sendActivity_vdcDGE
+      activity: "According to out experts this is our advice: {Topic.SymptomsSummary}"
+
+inputType: {}
+outputType: {}

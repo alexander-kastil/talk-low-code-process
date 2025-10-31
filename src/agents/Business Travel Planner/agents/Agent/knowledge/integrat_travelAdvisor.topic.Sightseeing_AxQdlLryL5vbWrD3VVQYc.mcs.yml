@@ -1,0 +1,6 @@
+# Name: Sightseeing
+# This knowledge source provides information found in Sightseeing recommendations like places to visit or restaurants
+kind: KnowledgeSourceConfiguration
+source:
+  kind: SharePointSearchSource
+  site: https://integrationsonline.sharepoint.com/sites/copilot-demo/Sightseeing

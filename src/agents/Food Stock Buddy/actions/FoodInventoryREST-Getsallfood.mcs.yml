@@ -1,0 +1,16 @@
+# Name: Food Inventory REST - Gets all food
+kind: TaskDialog
+modelDisplayName: Gets all food
+modelDescription: Gets all food in stock including name, price, min stock, in stock, description
+outputs:
+  - propertyName: Response
+
+action:
+  kind: InvokeConnectorTaskAction
+  connectionReference: iits_foodOrdersBuddy.shared_food-20inventory-20rest-5f0af75e9cbdc7cbac-5f26dfabd9fb0863ca.46131fd9-caa1-436e-b6aa-7d86cc8eda7d
+  connectionProperties:
+    mode: Invoker
+
+  operationId: GetFood
+
+outputMode: All
