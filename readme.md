@@ -95,7 +95,7 @@ Cloned Copilot Studio agents created using the [Copilot Studio Visual Studio Cod
 
 ### [Purchasing MCP Server v1](./src/purchasing-mcp-v1//)
 
-- Simpler version of the Purchasing MCP Server
+- Simpler version of the Purchasing MCP Server that does not require a database
 
 ### [HR MCP Server](./src/hr-mcp-server/)
 
